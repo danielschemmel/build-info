@@ -1,5 +1,5 @@
-versionator::versionator!(VERSION);
+versionator::versionator!(version);
 
 fn main() {
-	println!("{:?}", *VERSION);
+	println!("{:?}", version());
 }
