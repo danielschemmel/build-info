@@ -1,15 +1,18 @@
 use anyhow::{anyhow, Result};
 use git2::{Repository, StatusOptions};
 
-use versionator::VersionControl;
+use versionator::{GitInformation, VersionControl};
 
-fn get_git_info() -> Result<VersionControl> {
+fn get_git_info() -> Result<GitInformation> {
 	let repo = Repository::discover(".")?;
 	println!("cargo:rerun-if-changed={}", repo.path().join("HEAD").to_str().unwrap());
 
 	let head = repo.head()?;
 	if head.name() != None && head.name() != Some("HEAD") {
-		println!("cargo:rerun-if-changed={}", repo.path().join("refs").join(head.name().unwrap()).to_str().unwrap());
+		println!(
+			"cargo:rerun-if-changed={}",
+			repo.path().join("refs").join(head.name().unwrap()).to_str().unwrap()
+		);
 	}
 	let commit_hash = head
 		.target()
@@ -19,7 +22,7 @@ fn get_git_info() -> Result<VersionControl> {
 	let changes = repo.statuses(Some(StatusOptions::new().include_ignored(false)))?;
 	let dirty = !changes.is_empty();
 
-	Ok(VersionControl::Git {
+	Ok(GitInformation{
 		commit_hash: commit_hash,
 		dirty: dirty,
 		name: head.shorthand().map(|s| s.to_string()),
@@ -28,7 +31,7 @@ fn get_git_info() -> Result<VersionControl> {
 
 pub fn get_info() -> Option<VersionControl> {
 	if let Ok(info) = get_git_info() {
-		return Some(info);
+		return Some(VersionControl::Git(info));
 	}
 
 	None

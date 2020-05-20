@@ -10,4 +10,6 @@ proc-macro = true
 [dependencies]
 proc-macro2 = "1.0"
 quote = "1.0"
+ron = "0.5"
 syn = "1.0"
+versionator-common = { path = "../versionator-common", features = ["proc-macro"] }

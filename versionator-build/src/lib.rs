@@ -9,8 +9,5 @@ pub fn build_script() {
 		version_control: version_control::get_info(),
 	};
 
-	println!(
-		"cargo:rustc-env=VERSIONATOR={}",
-		build_info.serialize()
-	);
+	println!("cargo:rustc-env=VERSIONATOR={}", build_info.serialize());
 }
