@@ -1,10 +1,10 @@
-// use versionator::versionator_static;
+use versionator::version;
 
-versionator::versionator!(fn version);
-
-static VERSION: &'static str = concat!("sample ");
+versionator::versionator!(fn full_version);
 
 fn main() {
-	println!("{}", VERSION);
-	println!("{:?}", version());
+	println!("{:?}", full_version());
+	println!("{:?}", version!(.version_control?.name));
+	println!("{:?}", version!(.compiler.commit_hash?));
+	println!("{:?}", version!(.compiler.version.pre));
 }
