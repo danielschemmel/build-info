@@ -8,3 +8,8 @@ edition = "2018"
 
 [dependencies]
 derive-new = "0.5"
+semver = { version = "0.9", optional = true }
+
+[features]
+default = ["with-semver"]
+with-semver = ["semver"]
