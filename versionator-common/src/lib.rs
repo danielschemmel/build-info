@@ -33,5 +33,9 @@ pub enum CompilerChannel {
 
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum VersionControl<'a> {
-	Git { commit_hash: &'a str, dirty: bool },
+	Git {
+		commit_hash: &'a str,
+		dirty: bool,
+		name: Option<&'a str>,
+	},
 }

@@ -11,6 +11,12 @@ fn get_git_info() -> Result<TokenStream> {
 		.target()
 		.ok_or_else(|| anyhow!("Could not unwrap the commit hash"))?
 		.to_string();
+	
+	let name = if let Some(name) = head.shorthand() {
+		quote!(Some(#name))
+	} else {
+		quote!(None)
+	};
 
 	let changes = repo.statuses(Some(StatusOptions::new().include_ignored(false)))?;
 	let dirty = !changes.is_empty();
@@ -18,6 +24,7 @@ fn get_git_info() -> Result<TokenStream> {
 	Ok(quote!(Some(versionator::VersionControl::Git{
 		commit_hash: #commit_hash,
 		dirty: #dirty,
+		name: #name,
 	})))
 }
 
