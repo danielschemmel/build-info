@@ -14,9 +14,7 @@ fn compiler_version() -> proc_macro2::TokenStream {
 		Channel::Dev => quote!(versionator::CompilerChannel::Dev),
 	};
 
-	assert_eq!(version.host, env!("HOST_TRIPLE"));
 	let host_triple = &version.host;
-
 	let target_triple = env!("TARGET_TRIPLE");
 
 	quote!(versionator::CompilerVersion{
