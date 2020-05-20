@@ -8,6 +8,8 @@ edition = "2018"
 proc-macro = true
 
 [dependencies]
+anyhow = "1.0"
+git2 = { version = "0.13", default-features = false }
 proc-macro2 = "1.0"
 quote = "1.0"
 rustc_version = "0.2"

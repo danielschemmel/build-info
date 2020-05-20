@@ -3,6 +3,7 @@ pub use semver::Version;
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct BuildInfo<'a> {
 	pub compiler: CompilerVersion<'a>,
+	pub version_control: Option<VersionControl<'a>>,
 }
 
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
@@ -28,4 +29,9 @@ pub enum CompilerChannel {
 	Nightly,
 	Beta,
 	Stable,
+}
+
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub enum VersionControl<'a> {
+	Git { commit_hash: &'a str, dirty: bool },
 }
