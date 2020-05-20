@@ -8,4 +8,4 @@ edition = "2018"
 anyhow = "1.0"
 git2 = { version = "0.13", default-features = false }
 rustc_version = "0.2"
-versionator-common = { path = "../versionator-common" }
+versionator = { path = "../versionator" }

@@ -1,4 +1,4 @@
-use versionator_common::BuildInfo;
+use versionator::BuildInfo;
 
 mod compiler;
 mod version_control;
