@@ -7,6 +7,16 @@ pub struct BuildInfo {
 	pub version_control: Option<VersionControl>,
 }
 
+impl BuildInfo {
+	pub fn serialize(&self) -> String {
+		serde_json::to_string(self).unwrap()
+	}
+
+	pub fn deserialize(value: &str) -> Self {
+		serde_json::from_str(value).unwrap()
+	}
+}
+
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct CompilerVersion {
 	pub version: Version,

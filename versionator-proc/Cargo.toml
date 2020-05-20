@@ -1,11 +1,14 @@
 [package]
-name = "versionator-build"
+name = "versionator-proc"
 version = "0.1.0"
 authors = ["Daniel Schemmel <daniel.schemmel@comsys.rwth-aachen.de>"]
 edition = "2018"
 
+[lib]
+proc-macro = true
+
 [dependencies]
-anyhow = "1.0"
-git2 = { version = "0.13", default-features = false }
-rustc_version = "0.2"
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = "1.0"
 versionator-common = { path = "../versionator-common" }

@@ -5,4 +5,5 @@ members = [
 	"versionator",
 	"versionator-build",
 	"versionator-common",
+	"versionator-proc",
 ]

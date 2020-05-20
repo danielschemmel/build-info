@@ -11,6 +11,6 @@ pub fn build_script() {
 
 	println!(
 		"cargo:rustc-env=VERSIONATOR={}",
-		serde_json::to_string(&build_info).unwrap()
+		build_info.serialize()
 	);
 }

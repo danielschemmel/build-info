@@ -1,5 +1,5 @@
-fn main() {
-	println!("{}", env!("VERSIONATOR"));
+versionator::versionator!(VERSION);
 
-	versionator_build::build_script();
+fn main() {
+	println!("{:?}", *VERSION);
 }

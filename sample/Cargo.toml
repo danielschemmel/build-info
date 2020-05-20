@@ -8,7 +8,6 @@ edition = "2018"
 
 [dependencies]
 versionator = { path = "../versionator" }
-versionator-build = { path = "../versionator-build" }
 
 [build-dependencies]
 versionator-build = { path = "../versionator-build" }
