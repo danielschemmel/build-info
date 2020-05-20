@@ -1,7 +1,8 @@
 [workspace]
 
 members = [
+	"sample",
 	"versionator",
+	"versionator-build",
 	"versionator-common",
-	"versionator-proc",
 ]

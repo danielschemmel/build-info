@@ -1,29 +1,23 @@
 pub use semver::Version;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
-pub struct BuildInfo<'a> {
-	pub compiler: CompilerVersion<'a>,
-	pub version_control: Option<VersionControl<'a>>,
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub struct BuildInfo {
+	pub compiler: CompilerVersion,
+	pub version_control: Option<VersionControl>,
 }
 
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
-pub struct CompilerVersion<'a> {
-	pub version_str: &'a str,
-	pub commit_hash: Option<&'a str>,
-	pub commit_date: Option<&'a str>,
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub struct CompilerVersion {
+	pub version: Version,
+	pub commit_hash: Option<String>,
+	pub commit_date: Option<String>,
 	pub channel: CompilerChannel,
-	pub host_triple: &'a str,
-	pub target_triple: &'a str,
+	pub host_triple: String,
+	pub target_triple: String,
 }
 
-#[cfg(feature = "semver")]
-impl<'a> CompilerVersion<'a> {
-	pub fn version(&self) -> Version {
-		Version::parse(self.version_str).unwrap()
-	}
-}
-
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum CompilerChannel {
 	Dev,
 	Nightly,
@@ -31,11 +25,11 @@ pub enum CompilerChannel {
 	Stable,
 }
 
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
-pub enum VersionControl<'a> {
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub enum VersionControl {
 	Git {
-		commit_hash: &'a str,
+		commit_hash: String,
 		dirty: bool,
-		name: Option<&'a str>,
+		name: Option<String>,
 	},
 }
