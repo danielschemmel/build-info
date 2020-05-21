@@ -3,6 +3,7 @@ name = "sample"
 version = "0.0.0"
 authors = ["Daniel Schemmel <daniel.schemmel@comsys.rwth-aachen.de>"]
 edition = "2018"
+publish = false
 
 [dependencies]
 versionator = { path = "../versionator" }
