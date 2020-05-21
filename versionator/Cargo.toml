@@ -1,6 +1,6 @@
 [package]
 name = "versionator"
-version = "0.1.0"
+version = "0.0.0"
 authors = ["Daniel Schemmel <daniel.schemmel@comsys.rwth-aachen.de>"]
 edition = "2018"
 
