@@ -91,8 +91,7 @@ impl ToTokens for CompilerVersion {
 	}
 }
 
-#[derive(Display)]
-#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+#[derive(Display, Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum CompilerChannel {
 	Dev,
 	Nightly,

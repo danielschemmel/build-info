@@ -59,7 +59,10 @@ impl parse::Parse for TraceSyntax {
 					if input.peek(syn::token::Paren) {
 						let content;
 						syn::parenthesized!(content in input);
-						assert!(content.is_empty(), "Function calls with parameters are not currently supported");
+						assert!(
+							content.is_empty(),
+							"Function calls with parameters are not currently supported"
+						);
 						id += "()";
 					}
 					trace.ids.push_back(id);
@@ -165,7 +168,10 @@ fn compilerchannel_value(mut ids: VecDeque<String>, value: versionator_common::C
 	if let Some(id) = id {
 		match id.as_ref() {
 			"to_string()" => raw_value(ids, &value.to_string()),
-			_ => panic!(format!("The member {} is not valid for versionator::CompilerChannel", id)),
+			_ => panic!(format!(
+				"The member {} is not valid for versionator::CompilerChannel",
+				id
+			)),
 		}
 	} else {
 		debug_assert!(ids.is_empty());
