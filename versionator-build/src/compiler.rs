@@ -16,8 +16,8 @@ pub fn get_info() -> CompilerVersion {
 		version: version.semver,
 		commit_hash: version.commit_hash,
 		commit_date: version.commit_date,
-		channel: channel,
+		channel,
 		host_triple: version.host,
-		target_triple: std::env::var("TARGET").unwrap_or("UNKNOWN".to_string()),
+		target_triple: std::env::var("TARGET").unwrap_or_else(|_| "UNKNOWN".to_string()),
 	}
 }

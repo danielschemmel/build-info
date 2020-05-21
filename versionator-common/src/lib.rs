@@ -2,7 +2,7 @@ pub use semver::{Identifier, Version};
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "proc-macro")]
-use proc_macro2::{Group, Delimiter, TokenStream};
+use proc_macro2::{Delimiter, Group, TokenStream};
 #[cfg(feature = "proc-macro")]
 use quote::{quote, ToTokens, TokenStreamExt};
 
@@ -85,7 +85,7 @@ impl ToTokens for CompilerVersion {
 		initializer.append_all(quote!(target_triple:));
 		self.target_triple.to_tokens_ext(&mut initializer);
 		initializer.append_all(quote!(,));
-		
+
 		tokens.append(Group::new(Delimiter::Brace, initializer));
 	}
 }
@@ -153,7 +153,7 @@ impl ToTokens for GitInformation {
 		initializer.append_all(quote!(name:));
 		self.name.to_tokens_ext(&mut initializer);
 		initializer.append_all(quote!(,));
-		
+
 		tokens.append(Group::new(Delimiter::Brace, initializer));
 	}
 }

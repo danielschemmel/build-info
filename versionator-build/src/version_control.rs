@@ -22,9 +22,9 @@ fn get_git_info() -> Result<GitInformation> {
 	let changes = repo.statuses(Some(StatusOptions::new().include_ignored(false)))?;
 	let dirty = !changes.is_empty();
 
-	Ok(GitInformation{
-		commit_hash: commit_hash,
-		dirty: dirty,
+	Ok(GitInformation {
+		commit_hash,
+		dirty,
 		name: head.shorthand().map(|s| s.to_string()),
 	})
 }

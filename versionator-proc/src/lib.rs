@@ -27,6 +27,7 @@ pub fn versionator(input: TokenStream) -> TokenStream {
 
 	let buildinfo = versionator_common::BuildInfo::deserialize(&std::env::var("VERSIONATOR").unwrap());
 
+	#[allow(clippy::let_and_return)]
 	let output = quote! {
 		#visibility fn #id() -> &'static versionator::BuildInfo {
 			versionator::lazy_static! {
@@ -46,9 +47,7 @@ struct TraceSyntax {
 
 impl parse::Parse for TraceSyntax {
 	fn parse(input: parse::ParseStream) -> parse::Result<Self> {
-		let mut trace = TraceSyntax {
-			ids: VecDeque::new(),
-		};
+		let mut trace = TraceSyntax { ids: VecDeque::new() };
 		while !input.is_empty() {
 			let lookahead = input.lookahead1();
 			if lookahead.peek(Token![.]) {
@@ -56,17 +55,17 @@ impl parse::Parse for TraceSyntax {
 
 				let lookahead = input.lookahead1();
 				if lookahead.peek(Ident) {
-						trace.ids.push_back(input.parse::<Ident>()?.to_string());
+					trace.ids.push_back(input.parse::<Ident>()?.to_string());
 				} else if lookahead.peek(LitInt) {
 					trace.ids.push_back(input.parse::<LitInt>()?.to_string());
 				} else {
-					Err(lookahead.error())?;
+					return Err(lookahead.error());
 				}
 			} else if lookahead.peek(Token![?]) {
 				input.parse::<Token![?]>()?;
 				trace.ids.push_back("?".to_string());
 			} else {
-				Err(lookahead.error())?;
+				return Err(lookahead.error());
 			}
 		}
 		Ok(trace)
@@ -77,6 +76,8 @@ impl parse::Parse for TraceSyntax {
 pub fn version(input: TokenStream) -> TokenStream {
 	let trace = parse_macro_input!(input as TraceSyntax);
 	let buildinfo = versionator_common::BuildInfo::deserialize(&std::env::var("VERSIONATOR").unwrap());
+
+	#[allow(clippy::let_and_return)]
 	let output = buildinfo_value(trace.ids, buildinfo);
 
 	// println!("{}", output.to_string());
@@ -109,7 +110,10 @@ fn compilerversion_value(mut ids: VecDeque<String>, value: versionator_common::C
 		"channel" => compilerchannel_value(ids, value.channel),
 		"host_triple" => raw_value(ids, &value.host_triple),
 		"target_triple" => raw_value(ids, &value.target_triple),
-		_ => panic!(format!("The member {} is not valid for versionator::CompilerVersion", id)),
+		_ => panic!(format!(
+			"The member {} is not valid for versionator::CompilerVersion",
+			id
+		)),
 	}
 }
 
@@ -159,7 +163,10 @@ fn compilerchannel_value(ids: VecDeque<String>, value: versionator_common::Compi
 	}
 }
 
-fn option_versioncontrol_value(mut ids: VecDeque<String>, value: Option<versionator_common::VersionControl>) -> TokenStream {
+fn option_versioncontrol_value(
+	mut ids: VecDeque<String>,
+	value: Option<versionator_common::VersionControl>,
+) -> TokenStream {
 	if ids.is_empty() {
 		return quote!(#value).into();
 	}
@@ -167,7 +174,10 @@ fn option_versioncontrol_value(mut ids: VecDeque<String>, value: Option<versiona
 	let id = ids.pop_front().unwrap();
 	match id.as_ref() {
 		"?" => versioncontrol_value(ids, value.unwrap()),
-		_ => panic!(format!("The member {} is not valid for Option<versionator::VersionControl>", id)),
+		_ => panic!(format!(
+			"The member {} is not valid for Option<versionator::VersionControl>",
+			id
+		)),
 	}
 }
 
@@ -187,7 +197,10 @@ fn gitinformation_value(mut ids: VecDeque<String>, value: versionator_common::Gi
 		"commit_hash" => raw_value(ids, &value.commit_hash),
 		"dirty" => raw_value(ids, &value.dirty),
 		"name" => option_string_value(ids, value.name),
-		_ => panic!(format!("The member {} is not valid for versionator::GitInformation", id)),
+		_ => panic!(format!(
+			"The member {} is not valid for versionator::GitInformation",
+			id
+		)),
 	}
 }
 
@@ -199,7 +212,10 @@ fn option_string_value(mut ids: VecDeque<String>, value: Option<String>) -> Toke
 	let id = ids.pop_front().unwrap();
 	match id.as_ref() {
 		"?" => raw_value(ids, &value.unwrap()),
-		_ => panic!(format!("The member {} is not valid for Option<versionator::VersionControl>", id)),
+		_ => panic!(format!(
+			"The member {} is not valid for Option<versionator::VersionControl>",
+			id
+		)),
 	}
 }
 

@@ -1,4 +1,4 @@
-use proc_macro2::{Group, Delimiter, TokenStream};
+use proc_macro2::{Delimiter, Group, TokenStream};
 use quote::{quote, ToTokens, TokenStreamExt};
 
 use crate::{Version, VersionControl};
