@@ -79,7 +79,7 @@ pub fn version(input: TokenStream) -> TokenStream {
 	let buildinfo = versionator_common::BuildInfo::deserialize(&std::env::var("VERSIONATOR").unwrap());
 	let output = buildinfo_value(trace.ids, buildinfo);
 
-	println!("{:?}", output.to_string());
+	// println!("{}", output.to_string());
 	output
 }
 
