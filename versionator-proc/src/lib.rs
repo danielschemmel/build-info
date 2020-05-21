@@ -55,7 +55,14 @@ impl parse::Parse for TraceSyntax {
 
 				let lookahead = input.lookahead1();
 				if lookahead.peek(Ident) {
-					trace.ids.push_back(input.parse::<Ident>()?.to_string());
+					let mut id = input.parse::<Ident>()?.to_string();
+					if input.peek(syn::token::Paren) {
+						let content;
+						syn::parenthesized!(content in input);
+						assert!(content.is_empty(), "Function calls with parameters are not currently supported");
+						id += "()";
+					}
+					trace.ids.push_back(id);
 				} else if lookahead.peek(LitInt) {
 					trace.ids.push_back(input.parse::<LitInt>()?.to_string());
 				} else {
@@ -130,6 +137,7 @@ fn version_value(mut ids: VecDeque<String>, value: versionator_common::Version) 
 		"patch" => raw_value(ids, &value.patch),
 		"pre" => vec_identifier_value(ids, value.pre),
 		"build" => vec_identifier_value(ids, value.build),
+		"to_string()" => raw_value(ids, &value.to_string()),
 		_ => panic!(format!("The member {} is not valid for versionator::Version", id)),
 	}
 }
@@ -152,14 +160,22 @@ fn vec_identifier_value(ids: VecDeque<String>, value: Vec<versionator_common::Id
 	grouped(output, proc_macro2::Delimiter::Parenthesis).into()
 }
 
-fn compilerchannel_value(ids: VecDeque<String>, value: versionator_common::CompilerChannel) -> TokenStream {
-	assert!(ids.is_empty());
+fn compilerchannel_value(mut ids: VecDeque<String>, value: versionator_common::CompilerChannel) -> TokenStream {
+	let id = ids.pop_front();
+	if let Some(id) = id {
+		match id.as_ref() {
+			"to_string()" => raw_value(ids, &value.to_string()),
+			_ => panic!(format!("The member {} is not valid for versionator::CompilerChannel", id)),
+		}
+	} else {
+		debug_assert!(ids.is_empty());
 
-	match value {
-		versionator_common::CompilerChannel::Stable => quote!(versionator::CompilerChannel::Stable).into(),
-		versionator_common::CompilerChannel::Beta => quote!(versionator::CompilerChannel::Beta).into(),
-		versionator_common::CompilerChannel::Nightly => quote!(versionator::CompilerChannel::Nightly).into(),
-		versionator_common::CompilerChannel::Dev => quote!(versionator::CompilerChannel::Dev).into(),
+		match value {
+			versionator_common::CompilerChannel::Stable => quote!(versionator::CompilerChannel::Stable).into(),
+			versionator_common::CompilerChannel::Beta => quote!(versionator::CompilerChannel::Beta).into(),
+			versionator_common::CompilerChannel::Nightly => quote!(versionator::CompilerChannel::Nightly).into(),
+			versionator_common::CompilerChannel::Dev => quote!(versionator::CompilerChannel::Dev).into(),
+		}
 	}
 }
 

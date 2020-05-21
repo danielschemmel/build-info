@@ -6,5 +6,6 @@ fn main() {
 	println!("{:?}", full_version());
 	println!("{:?}", version!(.version_control?.name));
 	println!("{:?}", version!(.compiler.commit_hash?));
-	println!("{:?}", version!(.compiler.version.pre));
+	println!("{:?}", version!(.compiler.channel.to_string()));
+	println!("{:?}", version!(.compiler.version.to_string()));
 }

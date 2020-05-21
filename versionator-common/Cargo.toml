@@ -6,6 +6,7 @@ edition = "2018"
 publish = false
 
 [dependencies]
+derive_more = "0.99"
 proc-macro2 = { version = "1.0", optional = true }
 quote = { version = "1.0", optional = true }
 semver = { version = "0.9", features = ["serde"] }

@@ -1,3 +1,4 @@
+use derive_more::Display;
 pub use semver::{Identifier, Version};
 use serde::{Deserialize, Serialize};
 
@@ -90,6 +91,7 @@ impl ToTokens for CompilerVersion {
 	}
 }
 
+#[derive(Display)]
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum CompilerChannel {
 	Dev,
