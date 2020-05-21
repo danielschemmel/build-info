@@ -1,4 +1,5 @@
 use proc_macro::TokenStream;
+use proc_macro_crate::crate_name;
 use proc_macro_hack::proc_macro_hack;
 use quote::quote;
 use syn::parse;
@@ -22,6 +23,8 @@ impl parse::Parse for VersionatorSyntax {
 
 #[proc_macro]
 pub fn versionator(input: TokenStream) -> TokenStream {
+	let versionator = Ident::new(&crate_name("versionator").expect("versionator must be a direct dependency"), proc_macro2::Span::call_site());
+
 	let VersionatorSyntax { visibility, id } = parse_macro_input!(input as VersionatorSyntax);
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));
 
@@ -29,9 +32,9 @@ pub fn versionator(input: TokenStream) -> TokenStream {
 
 	#[allow(clippy::let_and_return)]
 	let output = quote! {
-		#visibility fn #id() -> &'static versionator::BuildInfo {
-			versionator::lazy_static! {
-				static ref VERSION: versionator::BuildInfo = #buildinfo;
+		#visibility fn #id() -> &'static #versionator::BuildInfo {
+			#versionator::lazy_static! {
+				static ref VERSION: #versionator::BuildInfo = #buildinfo;
 			}
 			&VERSION
 		}
