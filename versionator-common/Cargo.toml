@@ -6,6 +6,7 @@ edition = "2018"
 publish = false
 
 [dependencies]
+chrono = { version = "0.4", features = ["serde"] }
 derive_more = "0.99"
 semver = { version = "0.9", features = ["serde"] }
 serde = { version = "1.0", features = ["derive"] }

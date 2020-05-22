@@ -1,5 +1,5 @@
 use versionator_common::{
-	BuildInfo, CompilerChannel, CompilerVersion, GitInformation, Identifier, Version, VersionControl,
+	BuildInfo, CompilerChannel, CompilerVersion, DateTime, GitInformation, Identifier, Utc, Version, VersionControl,
 };
 
 use std::collections::VecDeque;
@@ -20,10 +20,21 @@ impl StringValue for BuildInfo {
 
 		let index = indeces.pop_front().unwrap();
 		match index.as_ref() {
+			"timestamp" => string_value(&self.timestamp, indeces),
 			"compiler" => string_value(&self.compiler, indeces),
 			"version_control" => string_value(&self.version_control, indeces),
 			_ => panic!(format!("The member {} is not valid for versionator::BuildInfo", index)),
 		}
+	}
+}
+impl StringValue for DateTime<Utc> {
+	fn string_value(&self, mut indeces: VecDeque<String>) -> String {
+		if indeces.is_empty() {
+			return self.format("%Y-%m-%d %H:%M:%S%.fZ").to_string();
+		}
+
+		let index = indeces.pop_front().unwrap();
+		panic!(format!("The member {} is not valid for DateTime<Utc>", index));
 	}
 }
 

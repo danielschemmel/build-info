@@ -1,9 +1,11 @@
+pub use chrono::{DateTime, TimeZone, Utc};
 use derive_more::Display;
 pub use semver::{Identifier, Version};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct BuildInfo {
+	pub timestamp: DateTime<Utc>,
 	pub compiler: CompilerVersion,
 	pub version_control: Option<VersionControl>,
 }
@@ -16,6 +18,10 @@ impl BuildInfo {
 	pub fn deserialize(value: &str) -> Self {
 		serde_json::from_str(value).unwrap()
 	}
+}
+
+pub fn nanos_to_utc(nanos: i64) -> DateTime<Utc> {
+	Utc.timestamp_nanos(nanos)
 }
 
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]

@@ -67,10 +67,19 @@ fn buildinfo_value(mut ids: VecDeque<String>, value: versionator_common::BuildIn
 
 	let id = ids.pop_front().unwrap();
 	match id.as_ref() {
+		"timestamp" => utc_value(ids, value.timestamp),
 		"compiler" => compilerversion_value(ids, value.compiler),
 		"version_control" => option_versioncontrol_value(ids, value.version_control),
 		_ => panic!(format!("The member {} is not valid for versionator::BuildInfo", id)),
 	}
+}
+
+fn utc_value(ids: VecDeque<String>, value: versionator_common::DateTime<versionator_common::Utc>) -> TokenStream {
+	if ids.is_empty() {
+		return init_value_tokens(&value).into();
+	}
+
+	unimplemented!();
 }
 
 fn compilerversion_value(mut ids: VecDeque<String>, value: versionator_common::CompilerVersion) -> TokenStream {
