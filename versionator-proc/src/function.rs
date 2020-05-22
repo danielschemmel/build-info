@@ -19,7 +19,10 @@ impl parse::Parse for VersionatorSyntax {
 }
 
 pub fn versionator(input: TokenStream) -> TokenStream {
-	let versionator = Ident::new(&crate_name("versionator").expect("versionator must be a direct dependency"), proc_macro2::Span::call_site());
+	let versionator = Ident::new(
+		&crate_name("versionator").expect("versionator must be a direct dependency"),
+		proc_macro2::Span::call_site(),
+	);
 
 	let VersionatorSyntax { visibility, id } = parse_macro_input!(input as VersionatorSyntax);
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));

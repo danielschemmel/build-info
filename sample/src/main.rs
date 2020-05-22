@@ -8,4 +8,8 @@ fn main() {
 	println!("{:?}", version!(.compiler.commit_hash?));
 	println!("{:?}", version!(.compiler.channel.to_string()));
 	println!("{:?}", version!(.compiler.version.to_string()));
+	println!(
+		"{}",
+		versionator::format!("Built with rustc version {.compiler.version} {.compiler.commit_hash}")
+	);
 }

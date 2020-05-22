@@ -1,4 +1,4 @@
-use proc_macro2::{Delimiter, Ident, Group, TokenStream};
+use proc_macro2::{Delimiter, Group, Ident, TokenStream};
 use proc_macro_crate::crate_name;
 use quote::{quote, ToTokens, TokenStreamExt};
 
@@ -29,7 +29,10 @@ impl ToTokensExt for String {
 
 impl ToTokensExt for Version {
 	fn to_tokens_ext(&self, tokens: &mut TokenStream) {
-		let versionator = Ident::new(&crate_name("versionator").expect("versionator must be a direct dependency"), proc_macro2::Span::call_site());
+		let versionator = Ident::new(
+			&crate_name("versionator").expect("versionator must be a direct dependency"),
+			proc_macro2::Span::call_site(),
+		);
 
 		let version_string = self.to_string();
 		tokens.append_all(quote!(#versionator::Version::parse(#version_string).unwrap()));

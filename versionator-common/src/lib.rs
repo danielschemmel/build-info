@@ -3,7 +3,7 @@ pub use semver::{Identifier, Version};
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "proc-macro")]
-use proc_macro2::{Delimiter, Ident, Group, TokenStream};
+use proc_macro2::{Delimiter, Group, Ident, TokenStream};
 #[cfg(feature = "proc-macro")]
 use proc_macro_crate::crate_name;
 #[cfg(feature = "proc-macro")]
@@ -34,7 +34,10 @@ impl BuildInfo {
 #[cfg(feature = "proc-macro")]
 impl ToTokens for BuildInfo {
 	fn to_tokens(&self, tokens: &mut TokenStream) {
-		let versionator = Ident::new(&crate_name("versionator").expect("versionator must be a direct dependency"), proc_macro2::Span::call_site());
+		let versionator = Ident::new(
+			&crate_name("versionator").expect("versionator must be a direct dependency"),
+			proc_macro2::Span::call_site(),
+		);
 
 		tokens.append_all(quote!(#versionator::BuildInfo));
 		let mut initializer = TokenStream::new();
@@ -64,7 +67,10 @@ pub struct CompilerVersion {
 #[cfg(feature = "proc-macro")]
 impl ToTokens for CompilerVersion {
 	fn to_tokens(&self, tokens: &mut TokenStream) {
-		let versionator = Ident::new(&crate_name("versionator").expect("versionator must be a direct dependency"), proc_macro2::Span::call_site());
+		let versionator = Ident::new(
+			&crate_name("versionator").expect("versionator must be a direct dependency"),
+			proc_macro2::Span::call_site(),
+		);
 
 		tokens.append_all(quote!(#versionator::CompilerVersion));
 		let mut initializer = TokenStream::new();
@@ -108,7 +114,10 @@ pub enum CompilerChannel {
 #[cfg(feature = "proc-macro")]
 impl ToTokens for CompilerChannel {
 	fn to_tokens(&self, tokens: &mut TokenStream) {
-		let versionator = Ident::new(&crate_name("versionator").expect("versionator must be a direct dependency"), proc_macro2::Span::call_site());
+		let versionator = Ident::new(
+			&crate_name("versionator").expect("versionator must be a direct dependency"),
+			proc_macro2::Span::call_site(),
+		);
 
 		match self {
 			CompilerChannel::Dev => tokens.append_all(quote!(#versionator::CompilerChannel::Dev)),
@@ -127,7 +136,10 @@ pub enum VersionControl {
 #[cfg(feature = "proc-macro")]
 impl ToTokens for VersionControl {
 	fn to_tokens(&self, tokens: &mut TokenStream) {
-		let versionator = Ident::new(&crate_name("versionator").expect("versionator must be a direct dependency"), proc_macro2::Span::call_site());
+		let versionator = Ident::new(
+			&crate_name("versionator").expect("versionator must be a direct dependency"),
+			proc_macro2::Span::call_site(),
+		);
 
 		match self {
 			VersionControl::Git(data) => {
@@ -150,7 +162,10 @@ pub struct GitInformation {
 #[cfg(feature = "proc-macro")]
 impl ToTokens for GitInformation {
 	fn to_tokens(&self, tokens: &mut TokenStream) {
-		let versionator = Ident::new(&crate_name("versionator").expect("versionator must be a direct dependency"), proc_macro2::Span::call_site());
+		let versionator = Ident::new(
+			&crate_name("versionator").expect("versionator must be a direct dependency"),
+			proc_macro2::Span::call_site(),
+		);
 
 		tokens.append_all(quote!(#versionator::GitInformation));
 		let mut initializer = TokenStream::new();
