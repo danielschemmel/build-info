@@ -6,11 +6,12 @@ edition = "2018"
 publish = false
 
 [dependencies]
-lazy_static = "1.4"
+lazy_static = { version = "1.4", optional = true }
 proc-macro-hack = "0.5"
 versionator-common = { path = "../versionator-common" }
 versionator-proc = { path = "../versionator-proc" }
 
 [features]
-default = []
+default = ["runtime"]
+runtime = ["lazy_static", "versionator-proc/runtime"]
 serde = ["versionator-common/enable-serde"]
