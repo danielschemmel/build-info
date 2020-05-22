@@ -12,7 +12,7 @@ use indexed_string_value::indexed_string_value;
 
 pub fn format(input: TokenStream) -> TokenStream {
 	let format = parse_macro_input!(input as LitStr).value();
-	let buildinfo = BuildInfo::deserialize(&std::env::var("VERSIONATOR").unwrap());
+	let buildinfo: BuildInfo = serde_json::from_str(&std::env::var("VERSIONATOR").unwrap()).unwrap();
 
 	let res = interpolate(format, &buildinfo);
 	#[allow(clippy::let_and_return)]

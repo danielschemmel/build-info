@@ -9,5 +9,6 @@ publish = false
 anyhow = "1.0"
 git2 = { version = "0.13", default-features = false }
 rustc_version = "0.2"
+serde_json = "1.0"
 toml = "0.5"
-versionator = { path = "../versionator" }
+versionator = { path = "../versionator", features = ["serde"] }

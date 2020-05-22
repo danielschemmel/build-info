@@ -18,5 +18,5 @@ pub fn build_script() {
 		version_control,
 	};
 
-	println!("cargo:rustc-env=VERSIONATOR={}", build_info.serialize());
+	println!("cargo:rustc-env=VERSIONATOR={}", serde_json::to_string(&build_info).unwrap());
 }

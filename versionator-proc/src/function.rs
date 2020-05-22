@@ -4,6 +4,8 @@ use quote::quote;
 use syn::parse;
 use syn::{parse_macro_input, Ident, Token, Visibility};
 
+use versionator_common::BuildInfo;
+
 use crate::init_value::init_value;
 
 struct VersionatorSyntax {
@@ -29,7 +31,7 @@ pub fn versionator(input: TokenStream) -> TokenStream {
 	let VersionatorSyntax { visibility, id } = parse_macro_input!(input as VersionatorSyntax);
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));
 
-	let buildinfo = versionator_common::BuildInfo::deserialize(&std::env::var("VERSIONATOR").unwrap());
+	let buildinfo: BuildInfo = serde_json::from_str(&std::env::var("VERSIONATOR").unwrap()).unwrap();
 	let mut tokens = proc_macro2::TokenStream::new();
 	init_value(&buildinfo, &mut tokens);
 
