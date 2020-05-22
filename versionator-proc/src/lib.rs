@@ -4,6 +4,7 @@ use proc_macro_hack::proc_macro_hack;
 mod expression;
 mod format;
 mod function;
+mod init_value;
 
 #[proc_macro]
 pub fn versionator(input: TokenStream) -> TokenStream {

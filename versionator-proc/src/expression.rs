@@ -1,9 +1,12 @@
 use proc_macro::TokenStream;
+use proc_macro_crate::crate_name;
 use quote::quote;
 use syn::parse;
 use syn::{parse_macro_input, Ident, LitInt, Token};
 
 use std::collections::VecDeque;
+
+use crate::init_value::{init_value_tokens, InitValue};
 
 pub fn version(input: TokenStream) -> TokenStream {
 	let trace = parse_macro_input!(input as TraceSyntax);
@@ -59,7 +62,7 @@ impl parse::Parse for TraceSyntax {
 
 fn buildinfo_value(mut ids: VecDeque<String>, value: versionator_common::BuildInfo) -> TokenStream {
 	if ids.is_empty() {
-		return quote!(#value).into();
+		return init_value_tokens(&value).into();
 	}
 
 	let id = ids.pop_front().unwrap();
@@ -72,7 +75,7 @@ fn buildinfo_value(mut ids: VecDeque<String>, value: versionator_common::BuildIn
 
 fn compilerversion_value(mut ids: VecDeque<String>, value: versionator_common::CompilerVersion) -> TokenStream {
 	if ids.is_empty() {
-		return quote!(#value).into();
+		return init_value_tokens(&value).into();
 	}
 
 	let id = ids.pop_front().unwrap();
@@ -92,8 +95,12 @@ fn compilerversion_value(mut ids: VecDeque<String>, value: versionator_common::C
 
 fn version_value(mut ids: VecDeque<String>, value: versionator_common::Version) -> TokenStream {
 	if ids.is_empty() {
+		let versionator = Ident::new(
+			&crate_name("versionator").expect("versionator must be a direct dependency"),
+			proc_macro2::Span::call_site(),
+		);
 		let version_string = value.to_string();
-		return quote!(versionator::Version::parse(#version_string).unwrap()).into();
+		return quote!(#versionator::Version::parse(#version_string).unwrap()).into();
 	}
 
 	let id = ids.pop_front().unwrap();
@@ -112,6 +119,11 @@ fn vec_identifier_value(ids: VecDeque<String>, value: Vec<versionator_common::Id
 	assert!(ids.is_empty());
 
 	use quote::TokenStreamExt;
+	
+	let versionator = Ident::new(
+		&crate_name("versionator").expect("versionator must be a direct dependency"),
+		proc_macro2::Span::call_site(),
+	);
 
 	let mut output = proc_macro2::TokenStream::new();
 	output.append_all(quote!(&));
@@ -122,7 +134,7 @@ fn vec_identifier_value(ids: VecDeque<String>, value: Vec<versionator_common::Id
 	}
 
 	output.append(proc_macro2::Group::new(proc_macro2::Delimiter::Bracket, elements));
-	output.append_all(quote!(as &[versionator::Identifier]));
+	output.append_all(quote!(as &[#versionator::Identifier]));
 	grouped(output, proc_macro2::Delimiter::Parenthesis).into()
 }
 
@@ -139,11 +151,15 @@ fn compilerchannel_value(mut ids: VecDeque<String>, value: versionator_common::C
 	} else {
 		debug_assert!(ids.is_empty());
 
+		let versionator = Ident::new(
+			&crate_name("versionator").expect("versionator must be a direct dependency"),
+			proc_macro2::Span::call_site(),
+		);
 		match value {
-			versionator_common::CompilerChannel::Stable => quote!(versionator::CompilerChannel::Stable).into(),
-			versionator_common::CompilerChannel::Beta => quote!(versionator::CompilerChannel::Beta).into(),
-			versionator_common::CompilerChannel::Nightly => quote!(versionator::CompilerChannel::Nightly).into(),
-			versionator_common::CompilerChannel::Dev => quote!(versionator::CompilerChannel::Dev).into(),
+			versionator_common::CompilerChannel::Stable => quote!(#versionator::CompilerChannel::Stable).into(),
+			versionator_common::CompilerChannel::Beta => quote!(#versionator::CompilerChannel::Beta).into(),
+			versionator_common::CompilerChannel::Nightly => quote!(#versionator::CompilerChannel::Nightly).into(),
+			versionator_common::CompilerChannel::Dev => quote!(#versionator::CompilerChannel::Dev).into(),
 		}
 	}
 }
@@ -153,7 +169,7 @@ fn option_versioncontrol_value(
 	value: Option<versionator_common::VersionControl>,
 ) -> TokenStream {
 	if ids.is_empty() {
-		return quote!(#value).into();
+		return init_value_tokens(&value).into();
 	}
 
 	let id = ids.pop_front().unwrap();
@@ -174,7 +190,7 @@ fn versioncontrol_value(ids: VecDeque<String>, value: versionator_common::Versio
 
 fn gitinformation_value(mut ids: VecDeque<String>, value: versionator_common::GitInformation) -> TokenStream {
 	if ids.is_empty() {
-		return quote!(#value).into();
+		return init_value_tokens(&value).into();
 	}
 
 	let id = ids.pop_front().unwrap();
@@ -191,7 +207,7 @@ fn gitinformation_value(mut ids: VecDeque<String>, value: versionator_common::Gi
 
 fn option_string_value(mut ids: VecDeque<String>, value: Option<String>) -> TokenStream {
 	if ids.is_empty() {
-		return quote!(#value).into();
+		return init_value_tokens(&value).into();
 	}
 
 	let id = ids.pop_front().unwrap();
@@ -204,9 +220,9 @@ fn option_string_value(mut ids: VecDeque<String>, value: Option<String>) -> Toke
 	}
 }
 
-fn raw_value<T: quote::ToTokens>(ids: VecDeque<String>, value: &T) -> TokenStream {
+fn raw_value<T: InitValue>(ids: VecDeque<String>, value: &T) -> TokenStream {
 	assert!(ids.is_empty());
-	quote!(#value).into()
+	init_value_tokens(value).into()
 }
 
 fn grouped(tokens: proc_macro2::TokenStream, delimiter: proc_macro2::Delimiter) -> proc_macro2::TokenStream {

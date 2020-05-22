@@ -4,6 +4,8 @@ use quote::quote;
 use syn::parse;
 use syn::{parse_macro_input, Ident, Token, Visibility};
 
+use crate::init_value::init_value;
+
 struct VersionatorSyntax {
 	visibility: Option<Visibility>,
 	id: Ident,
@@ -28,12 +30,14 @@ pub fn versionator(input: TokenStream) -> TokenStream {
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));
 
 	let buildinfo = versionator_common::BuildInfo::deserialize(&std::env::var("VERSIONATOR").unwrap());
+	let mut tokens = proc_macro2::TokenStream::new();
+	init_value(&buildinfo, &mut tokens);
 
 	#[allow(clippy::let_and_return)]
 	let output = quote! {
 		#visibility fn #id() -> &'static #versionator::BuildInfo {
 			#versionator::lazy_static! {
-				static ref VERSION: #versionator::BuildInfo = #buildinfo;
+				static ref VERSION: #versionator::BuildInfo = #tokens;
 			}
 			&VERSION
 		}
