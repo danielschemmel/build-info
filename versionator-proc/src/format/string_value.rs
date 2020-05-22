@@ -174,7 +174,7 @@ impl StringValue for GitInformation {
 		if indeces.is_empty() {
 			let dirty = if self.dirty { "+" } else { "" };
 			if let Some(name) = &self.name {
-				return format!("{}{} ({}{})", name, dirty, &self.commit_hash, dirty);
+				return format!("{}{} ({})", &self.commit_hash, dirty, name);
 			} else {
 				return format!("{}{}", &self.commit_hash, dirty);
 			}
