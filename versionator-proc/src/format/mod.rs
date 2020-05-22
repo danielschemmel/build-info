@@ -35,6 +35,15 @@ fn interpolate(format: String, buildinfo: &BuildInfo) -> String {
 			} else {
 				res.push_str(&interpolate_once(n, &mut chars, buildinfo))
 			}
+		} else if c == '}' {
+			let n = chars
+				.next()
+				.expect("Format string has an closing brace without a matching opening brace");
+			if n == '}' {
+				res.push(c);
+			} else {
+				panic!("Format string has an closing brace without a matching opening brace")
+			}
 		} else {
 			res.push(c);
 		}

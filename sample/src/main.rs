@@ -10,6 +10,6 @@ fn main() {
 	println!("{:?}", version!(.compiler.version.to_string()));
 	println!(
 		"{}",
-		versionator::format!("Built with rustc version {.compiler.version} {.compiler.commit_hash} at {.timestamp}")
+		versionator::format!("{{Built with rustc version {.compiler.version} {.compiler.commit_hash} at {.timestamp}}}")
 	);
 }
