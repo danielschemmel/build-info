@@ -7,8 +7,8 @@ use std::str::Chars;
 
 use versionator_common::BuildInfo;
 
-mod string_value;
-use string_value::string_value;
+mod indexed_string_value;
+use indexed_string_value::indexed_string_value;
 
 pub fn format(input: TokenStream) -> TokenStream {
 	let format = parse_macro_input!(input as LitStr).value();
@@ -88,7 +88,7 @@ fn interpolate_once(mut c: char, chars: &mut Chars, buildinfo: &BuildInfo) -> St
 		}
 	}
 
-	string_value(buildinfo, trace)
+	indexed_string_value(buildinfo, trace)
 }
 
 fn skip_ws(mut c: char, chars: &mut Chars) -> Option<char> {

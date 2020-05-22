@@ -2,24 +2,20 @@ use proc_macro2::{Delimiter, Group, Ident, TokenStream};
 use proc_macro_crate::crate_name;
 use quote::{quote, TokenStreamExt};
 
-use versionator_common::{BuildInfo, CompilerChannel, CompilerVersion, DateTime, Utc, GitInformation, Version, VersionControl};
-
-pub(crate) fn init_value_tokens<T: InitValue>(this: &T) -> TokenStream {
-	let mut tokens = TokenStream::new();
-	this.to_tokens(&mut tokens);
-	tokens
-}
+use versionator_common::{
+	BuildInfo, CompilerChannel, CompilerVersion, CrateInfo, DateTime, GitInformation, Utc, Version, VersionControl,
+};
 
 pub(crate) fn init_value<T: InitValue>(this: &T, tokens: &mut TokenStream) {
-	this.to_tokens(tokens)
+	this.init_value(tokens)
 }
 
 pub(crate) trait InitValue {
-	fn to_tokens(&self, tokens: &mut TokenStream);
+	fn init_value(&self, tokens: &mut TokenStream);
 }
 
 impl InitValue for BuildInfo {
-	fn to_tokens(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream) {
 		let versionator = Ident::new(
 			&crate_name("versionator").expect("versionator must be a direct dependency"),
 			proc_macro2::Span::call_site(),
@@ -30,6 +26,10 @@ impl InitValue for BuildInfo {
 
 		initializer.append_all(quote!(timestamp:));
 		init_value(&self.timestamp, &mut initializer);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(crate_info:));
+		init_value(&self.crate_info, &mut initializer);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(compiler:));
@@ -44,8 +44,30 @@ impl InitValue for BuildInfo {
 	}
 }
 
+impl InitValue for CrateInfo {
+	fn init_value(&self, tokens: &mut TokenStream) {
+		let versionator = Ident::new(
+			&crate_name("versionator").expect("versionator must be a direct dependency"),
+			proc_macro2::Span::call_site(),
+		);
+
+		tokens.append_all(quote!(#versionator::CrateInfo));
+		let mut initializer = TokenStream::new();
+
+		initializer.append_all(quote!(name:));
+		init_value(&self.name, &mut initializer);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(version:));
+		init_value(&self.version, &mut initializer);
+		initializer.append_all(quote!(,));
+
+		tokens.append(Group::new(Delimiter::Brace, initializer));
+	}
+}
+
 impl InitValue for CompilerVersion {
-	fn to_tokens(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream) {
 		let versionator = Ident::new(
 			&crate_name("versionator").expect("versionator must be a direct dependency"),
 			proc_macro2::Span::call_site(),
@@ -83,7 +105,7 @@ impl InitValue for CompilerVersion {
 }
 
 impl InitValue for CompilerChannel {
-	fn to_tokens(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream) {
 		let versionator = Ident::new(
 			&crate_name("versionator").expect("versionator must be a direct dependency"),
 			proc_macro2::Span::call_site(),
@@ -99,7 +121,7 @@ impl InitValue for CompilerChannel {
 }
 
 impl<T: InitValue> InitValue for Option<T> {
-	fn to_tokens(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream) {
 		if let Some(value) = self {
 			tokens.append_all(quote!(Some));
 			let mut initializer = TokenStream::new();
@@ -112,7 +134,7 @@ impl<T: InitValue> InitValue for Option<T> {
 }
 
 impl InitValue for VersionControl {
-	fn to_tokens(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream) {
 		let versionator = Ident::new(
 			&crate_name("versionator").expect("versionator must be a direct dependency"),
 			proc_macro2::Span::call_site(),
@@ -130,7 +152,7 @@ impl InitValue for VersionControl {
 }
 
 impl InitValue for GitInformation {
-	fn to_tokens(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream) {
 		let versionator = Ident::new(
 			&crate_name("versionator").expect("versionator must be a direct dependency"),
 			proc_macro2::Span::call_site(),
@@ -156,7 +178,7 @@ impl InitValue for GitInformation {
 }
 
 impl InitValue for Version {
-	fn to_tokens(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream) {
 		let versionator = Ident::new(
 			&crate_name("versionator").expect("versionator must be a direct dependency"),
 			proc_macro2::Span::call_site(),
@@ -168,7 +190,7 @@ impl InitValue for Version {
 }
 
 impl InitValue for DateTime<Utc> {
-	fn to_tokens(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream) {
 		let versionator = Ident::new(
 			&crate_name("versionator").expect("versionator must be a direct dependency"),
 			proc_macro2::Span::call_site(),
@@ -180,19 +202,25 @@ impl InitValue for DateTime<Utc> {
 }
 
 impl InitValue for bool {
-	fn to_tokens(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream) {
 		tokens.append_all(quote!(#self));
 	}
 }
 
 impl InitValue for u64 {
-	fn to_tokens(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream) {
 		tokens.append_all(quote!(#self));
 	}
 }
 
 impl InitValue for String {
-	fn to_tokens(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream) {
 		tokens.append_all(quote!(#self.to_string()));
+	}
+}
+
+impl InitValue for str {
+	fn init_value(&self, tokens: &mut TokenStream) {
+		tokens.append_all(quote!(#self));
 	}
 }

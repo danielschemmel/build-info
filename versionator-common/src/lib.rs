@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct BuildInfo {
 	pub timestamp: DateTime<Utc>,
+	pub crate_info: CrateInfo,
 	pub compiler: CompilerVersion,
 	pub version_control: Option<VersionControl>,
 }
@@ -22,6 +23,12 @@ impl BuildInfo {
 
 pub fn nanos_to_utc(nanos: i64) -> DateTime<Utc> {
 	Utc.timestamp_nanos(nanos)
+}
+
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub struct CrateInfo {
+	pub name: String,
+	pub version: Version,
 }
 
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
