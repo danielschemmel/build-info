@@ -14,4 +14,5 @@ versionator-proc = { path = "../versionator-proc" }
 [features]
 default = ["runtime"]
 runtime = ["lazy_static", "versionator-proc/runtime"]
+chrono = ["versionator-common/full-chrono"]
 serde = ["versionator-common/enable-serde"]

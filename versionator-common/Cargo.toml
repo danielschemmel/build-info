@@ -6,7 +6,7 @@ edition = "2018"
 publish = false
 
 [dependencies]
-chrono = { version = "0.4" }
+chrono = { version = "0.4", default-features = false }
 derive_more = "0.99"
 semver = { version = "0.9" }
 serde = { version = "1.0", features = ["derive"], optional = true }
@@ -14,3 +14,4 @@ serde = { version = "1.0", features = ["derive"], optional = true }
 [features]
 default = []
 enable-serde = ["serde", "semver/serde", "chrono/serde"]
+full-chrono = ["chrono/default"]
