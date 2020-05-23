@@ -16,3 +16,12 @@ versionator::format!("{{{.crate_info.name} v{.crate_info.version} built at {.tim
 ```
 
 The [sample](sample) project shows both variants.
+
+# Caveats
+As of the time of writing, Rust does not support function-like proc-macros used as expressions.
+The `format!` macro can often still be used as an expression, thanks to [the `proc-macro-hack` crate](https://crates.io/crates/proc-macro-hack).
+However, its result will not behave like a string literal in all cases; for example, it cannot be used as an argument to `concat!`.
+
+The build script will ask cargo to rerun it whenever the project or the currently checked out commit changes.
+It will not necessarily be rerun if only the dependencies change (`versionator_build::build_script` will try to find the lockfile and depend on it, but it is not really aware of any of the more intricate features, such as, cargo workspaces).
+Please open an issue if your specific use case requires a more strict rerun policy for `build.rs` and include a short description what additional files should trigger a rebuild when changed.

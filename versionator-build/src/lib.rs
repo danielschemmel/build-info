@@ -1,5 +1,7 @@
 use versionator::BuildInfo;
 
+use std::path::Path;
+
 mod compiler;
 mod crate_info;
 mod version_control;
@@ -7,6 +9,12 @@ mod version_control;
 /// Emits a `cargo:rerun-if-changed` line for each file of the target project.
 fn rebuild_if_project_changes() {
 	println!("cargo:rerun-if-changed=Cargo.toml");
+	if Path::new("Cargo.lock").is_file() {
+		println!("cargo:rerun-if-changed=Cargo.lock");
+	} else if Path::new("../Cargo.lock").is_file() {
+		println!("cargo:rerun-if-changed=../Cargo.lock");
+	}
+	
 	for source in glob::glob_with(
 		"**/*.rs",
 		glob::MatchOptions {
