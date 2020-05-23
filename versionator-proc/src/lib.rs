@@ -4,7 +4,6 @@ use proc_macro_hack::proc_macro_hack;
 mod format;
 #[cfg(feature = "runtime")]
 mod function;
-mod init_value;
 
 #[cfg(feature = "runtime")]
 #[proc_macro]

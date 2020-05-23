@@ -51,35 +51,50 @@ fn interpolate(format: String, buildinfo: &BuildInfo) -> String {
 	res
 }
 
+#[derive(Debug)]
+pub(crate) enum Index {
+	Unwrap,
+	Field(String),
+	Function(String, Vec<String>),
+}
+
+const CLOSING_BRACE_EXPECTED: &str = "Format string has an opening brace without a matching closing brace";
+
 fn interpolate_once(mut c: char, chars: &mut Chars, buildinfo: &BuildInfo) -> String {
 	let mut trace = VecDeque::new();
 	while c != '}' {
-		c = skip_ws(c, chars).expect("Format string has an opening brace without a matching closing brace");
+		c = skip_ws(c, chars);
 		if c == '?' {
-			trace.push_back("?".to_string());
-			c = chars
-				.next()
-				.expect("Format string has an opening brace without a matching closing brace");
+			trace.push_back(Index::Unwrap);
+			c = chars.next().expect(CLOSING_BRACE_EXPECTED);
 		} else if c == '.' {
-			c = chars
-				.next()
-				.expect("Format string has an opening brace without a matching closing brace");
-			c = skip_ws(c, chars).expect("Format string has an opening brace without a matching closing brace");
-			if !(c.is_alphabetic() || c == '_') {
-				panic!(format!(
-					"Unexpected character found while parsing identifier in format string: {:?}",
-					c
-				));
+			c = chars.next().expect(CLOSING_BRACE_EXPECTED);
+			c = skip_ws(c, chars);
+
+			let (n, id) = parse_id(c, chars);
+			c = n;
+
+			c = skip_ws(c, chars);
+
+			if c == '(' {
+				c = chars.next().expect(CLOSING_BRACE_EXPECTED);
+				let args = Vec::new();
+				loop {
+					c = skip_ws(c, chars);
+					if c == ')' {
+						c = chars.next().expect(CLOSING_BRACE_EXPECTED);
+						break;
+					} else {
+						panic!(format!(
+							"Unexpected character found inside function call arguments while parsing format string: {:?}",
+							c
+						));
+					}
+				}
+				trace.push_back(Index::Function(id, args));
+			} else {
+				trace.push_back(Index::Field(id));
 			}
-			let mut id = String::new();
-			while {
-				id.push(c);
-				c = chars
-					.next()
-					.expect("Format string has an opening brace without a matching closing brace");
-				c.is_alphanumeric() || c == '_'
-			} {}
-			trace.push_back(id);
 		} else {
 			panic!(format!(
 				"Unexpected character found while parsing format string: {:?}",
@@ -91,13 +106,27 @@ fn interpolate_once(mut c: char, chars: &mut Chars, buildinfo: &BuildInfo) -> St
 	indexed_string_value(buildinfo, trace)
 }
 
-fn skip_ws(mut c: char, chars: &mut Chars) -> Option<char> {
-	while c.is_ascii_whitespace() {
-		if let Some(n) = chars.next() {
-			c = n;
-		} else {
-			return None;
-		}
+fn parse_id(mut c: char, chars: &mut Chars) -> (char, String) {
+	if !(c.is_alphabetic() || c == '_') {
+		panic!(format!(
+			"Unexpected character found while parsing identifier in format string: {:?}",
+			c
+		));
 	}
-	Some(c)
+
+	let mut id = String::new();
+	while {
+		id.push(c);
+		c = chars.next().expect(CLOSING_BRACE_EXPECTED);
+		c.is_alphanumeric() || c == '_'
+	} {}
+
+	(c, id)
+}
+
+fn skip_ws(mut c: char, chars: &mut Chars) -> char {
+	while c.is_ascii_whitespace() {
+		c = chars.next().expect(CLOSING_BRACE_EXPECTED);
+	}
+	c
 }

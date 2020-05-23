@@ -10,6 +10,7 @@ proc-macro = true
 
 [dependencies]
 chrono = { version = "0.4", default_features = true }
+format-buf = "1"
 proc-macro2 = "1"
 proc-macro-crate = "0.1"
 proc-macro-hack = "0.5"

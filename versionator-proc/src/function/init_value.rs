@@ -62,6 +62,10 @@ impl InitValue for CrateInfo {
 		init_value(&self.version, &mut initializer);
 		initializer.append_all(quote!(,));
 
+		initializer.append_all(quote!(authors:));
+		init_value(&self.authors, &mut initializer);
+		initializer.append_all(quote!(,));
+
 		tokens.append(Group::new(Delimiter::Brace, initializer));
 	}
 }
@@ -130,6 +134,25 @@ impl<T: InitValue> InitValue for Option<T> {
 		} else {
 			tokens.append_all(quote!(None));
 		}
+	}
+}
+
+impl<T: InitValue> InitValue for Vec<T> {
+	fn init_value(&self, tokens: &mut TokenStream) {
+		tokens.append_all(quote!(vec!));
+		let mut initializer = TokenStream::new();
+
+		let mut first = true;
+		for element in self {
+			if first {
+				first = false;
+			} else {
+				initializer.append_all(quote!(,));
+			}
+			init_value(element, &mut initializer);
+		}
+
+		tokens.append(Group::new(Delimiter::Bracket, initializer));
 	}
 }
 

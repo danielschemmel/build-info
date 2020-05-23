@@ -24,5 +24,18 @@ pub fn read_manifest() -> CrateInfo {
 		.to_string();
 	let version = Version::parse(&version_string).unwrap();
 
-	CrateInfo { name, version }
+	let authors: Vec<String> = pkg
+		.get("authors")
+		.expect("Could not find \"authors\" field in Cargo.toml's [package] table")
+		.as_array()
+		.expect("Cargo.toml's package.authors is not an array")
+		.iter()
+		.map(|s| {
+			s.as_str()
+				.expect("Cargo.toml's package.authors is not an array of strings")
+				.to_string()
+		})
+		.collect();
+
+	CrateInfo { name, version, authors }
 }

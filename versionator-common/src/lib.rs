@@ -22,6 +22,7 @@ pub fn nanos_to_utc(nanos: i64) -> DateTime<Utc> {
 pub struct CrateInfo {
 	pub name: String,
 	pub version: Version,
+	pub authors: Vec<String>,
 }
 
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]

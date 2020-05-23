@@ -6,7 +6,8 @@ use syn::{parse_macro_input, Ident, Token, Visibility};
 
 use versionator_common::BuildInfo;
 
-use crate::init_value::init_value;
+mod init_value;
+use init_value::init_value;
 
 struct VersionatorSyntax {
 	visibility: Option<Visibility>,
