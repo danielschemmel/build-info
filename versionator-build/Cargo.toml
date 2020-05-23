@@ -6,10 +6,10 @@ edition = "2018"
 publish = false
 
 [dependencies]
-anyhow = "1.0"
+anyhow = "1"
 git2 = { version = "0.13", default-features = false }
 glob = "0.3"
 rustc_version = "0.2"
-serde_json = "1.0"
+serde_json = "1"
 toml = "0.5"
 versionator = { path = "../versionator", features = ["serde"] }

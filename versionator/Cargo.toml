@@ -6,7 +6,7 @@ edition = "2018"
 publish = false
 
 [dependencies]
-lazy_static = { version = "1.4", optional = true }
+lazy_static = { version = "1", optional = true }
 proc-macro-hack = "0.5"
 versionator-common = { path = "../versionator-common" }
 versionator-proc = { path = "../versionator-proc" }
