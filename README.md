@@ -1,5 +1,4 @@
 # Usage
-
 Begin by adding `versionator` as a `[dependency]` and `versionator-build` as a `[build-dependency]` to your [`Cargo.toml`](sample/Cargo.toml).
 By separating those two crates, pure compile-time dependencies, such as `git2` are not compiled into your final program.
 
@@ -16,6 +15,12 @@ versionator::format!("{{{.crate_info.name} v{.crate_info.version} built at {.tim
 ```
 
 The [sample](sample) project shows both variants.
+
+## Features
+The `versionator` package supports several feature flags:
+- The `runtime` feature enables `versionator::versionator!`. It is enabled by default. If you intend to only use `versionator::format!`, it is safe to disable this flag.
+- The `chrono` feature enables the default features of the `chrono` package, which is used by `versionator::versionator!`. It is disabled by default.
+- The `serde` feature adds `Serialize`/`Deserialize` support to the types used by `versionator::versionator!`. It is disabled by default.
 
 # Caveats
 As of the time of writing, Rust does not support function-like proc-macros used as expressions.
