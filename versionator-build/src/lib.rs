@@ -14,7 +14,7 @@ fn rebuild_if_project_changes() {
 	} else if Path::new("../Cargo.lock").is_file() {
 		println!("cargo:rerun-if-changed=../Cargo.lock");
 	}
-	
+
 	for source in glob::glob_with(
 		"**/*.rs",
 		glob::MatchOptions {

@@ -9,9 +9,17 @@ fn get_git_info() -> Result<GitInformation> {
 
 	let head = repo.head()?;
 	if let Some(name) = head.name() {
+		// HEAD has already been added
 		if name != "HEAD" {
-			// already added
-			println!("cargo:rerun-if-changed={}", repo.path().join("logs").join(name).to_str().unwrap());
+			let path = repo.path().join(name);
+			if path.is_file() {
+				println!("cargo:rerun-if-changed={}", path.to_str().unwrap());
+			} else {
+				println!(
+					"cargo:rerun-if-changed={}",
+					repo.path().join("packed-refs").to_str().unwrap()
+				);
+			}
 		}
 	}
 	let commit_hash = head
