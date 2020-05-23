@@ -7,5 +7,6 @@ pub use lazy_static::lazy_static; // used by the proc macro
 #[cfg(feature = "runtime")]
 pub use versionator_proc::versionator;
 
-#[proc_macro_hack]
+#[cfg_attr(not(feature = "nested"), proc_macro_hack)]
+#[cfg_attr(feature = "nested", proc_macro_hack(support_nested))]
 pub use versionator_proc::format;

@@ -18,7 +18,8 @@ The [sample](sample) project shows both variants.
 
 ## Features
 The `versionator` package supports several feature flags:
-- The `runtime` feature enables `versionator::versionator!`. It is enabled by default. If you intend to only use `versionator::format!`, it is safe to disable this flag.
+- The `runtime` feature enables `versionator::versionator!`. It is enabled by default, but if you intend to only use `versionator::format!`, it is safe to disable this flag.
+- The `nested` feature adds support for [`proc-macro-nested`](https://crates.io/crates/proc-macro-nested), which lets the `versionator::format!` macro be nested inside other proc-macros. This may require you to set `#![recursion_limit = "..."]` in your crate. The feature is disabled by default.
 - The `chrono` feature enables the default features of the `chrono` package, which is used by `versionator::versionator!`. It is disabled by default.
 - The `serde` feature adds `Serialize`/`Deserialize` support to the types used by `versionator::versionator!`. It is disabled by default.
 
