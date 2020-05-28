@@ -6,6 +6,7 @@ edition = "2018"
 publish = ["crates-io"]
 repository = "https://github.com/danielschemmel/build-info/"
 description = "Provides the data consumed by the build-info crate. Use as a build-dependency."
+license = "MIT OR Apache-2.0"
 
 [dependencies]
 anyhow = "1"

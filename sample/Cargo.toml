@@ -6,6 +6,7 @@ edition = "2018"
 publish = false
 repository = "https://github.com/danielschemmel/build-info/"
 description = "A sample program that uses the build-info crate."
+license = "MIT OR Apache-2.0"
 
 [dependencies]
 build-info = { version = "=0.0.2", path = "../build-info" }

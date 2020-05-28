@@ -6,6 +6,7 @@ edition = "2018"
 publish = ["crates-io"]
 repository = "https://github.com/danielschemmel/build-info/"
 description = "Collects build-information of your Rust crate."
+license = "MIT OR Apache-2.0"
 
 [dependencies]
 lazy_static = { version = "1", optional = true }

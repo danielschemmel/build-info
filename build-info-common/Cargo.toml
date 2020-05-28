@@ -6,6 +6,7 @@ edition = "2018"
 publish = ["crates-io"]
 repository = "https://github.com/danielschemmel/build-info/"
 description = "Part of the build-info and build-info-build crates: This crate provides the types that are serialized by build-info-build and used by build-info."
+license = "MIT OR Apache-2.0"
 
 [dependencies]
 chrono = { version = "0.4", default-features = false }
