@@ -1,5 +1,5 @@
 # Usage
-Begin by adding `build_info` as a `[dependency]` and `build_info-build` as a `[build-dependency]` to your [`Cargo.toml`](sample/Cargo.toml).
+Begin by adding `build-info` as a `[dependency]` and `build-info-build` as a `[build-dependency]` to your [`Cargo.toml`](sample/Cargo.toml).
 By separating those two crates, pure compile-time dependencies, such as `git2` are not compiled into your final program.
 
 If it does not already exist, add a [`build.rs`](sample/build.rs) to your project's root, where you call `build_info_build::build_script()`.
