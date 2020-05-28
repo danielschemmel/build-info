@@ -1,11 +1,15 @@
 use rustc_version::{version_meta, Channel};
 
-use versionator::{CompilerChannel, CompilerVersion};
+use versionator::{CompilerChannel, CompilerVersion, Version};
 
 pub fn get_info() -> CompilerVersion {
-	let version = version_meta().unwrap();
+	let rustc_version = version_meta().unwrap();
 
-	let channel = match version.channel {
+	// By serializing and reparsing the version, we break the version-lock between semver as provided
+	// by rustc_version and semver as provided and used by this crate.
+	let version = Version::parse(&rustc_version.semver.to_string()).unwrap();
+
+	let channel = match rustc_version.channel {
 		Channel::Stable => CompilerChannel::Stable,
 		Channel::Beta => CompilerChannel::Beta,
 		Channel::Nightly => CompilerChannel::Nightly,
@@ -13,11 +17,11 @@ pub fn get_info() -> CompilerVersion {
 	};
 
 	CompilerVersion {
-		version: version.semver,
-		commit_hash: version.commit_hash,
-		commit_date: version.commit_date,
+		version,
+		commit_hash: rustc_version.commit_hash,
+		commit_date: rustc_version.commit_date,
 		channel,
-		host_triple: version.host,
+		host_triple: rustc_version.host,
 		target_triple: std::env::var("TARGET").unwrap_or_else(|_| "UNKNOWN".to_string()),
 	}
 }
