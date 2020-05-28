@@ -5,6 +5,7 @@ authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 edition = "2018"
 publish = ["crates-io"]
 repository = "https://github.com/danielschemmel/build-info/"
+description = "Provides the data consumed by the build-info crate. Use as a build-dependency."
 
 [dependencies]
 anyhow = "1"
