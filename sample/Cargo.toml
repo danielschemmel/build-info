@@ -1,6 +1,6 @@
 [package]
 name = "sample"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 edition = "2018"
 publish = false
@@ -9,7 +9,7 @@ description = "A sample program that uses the build-info crate."
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-build-info = { version = "=0.0.3", path = "../build-info" }
+build-info = { version = "=0.0.4", path = "../build-info" }
 
 [build-dependencies]
-build-info-build = { version = "=0.0.3", path = "../build-info-build" }
+build-info-build = { version = "=0.0.4", path = "../build-info-build" }
