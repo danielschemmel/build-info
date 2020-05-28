@@ -1,6 +1,6 @@
 [package]
 name = "build-info-proc"
-version = "0.0.6"
+version = "0.0.7"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 edition = "2018"
 publish = ["crates-io"]
@@ -21,7 +21,7 @@ proc-macro-hack = "0.5"
 quote = "1"
 serde_json = "1"
 syn = "1"
-build-info-common = { version = "=0.0.6", path = "../build-info-common", features = ["enable-serde"] }
+build-info-common = { version = "=0.0.7", path = "../build-info-common", features = ["enable-serde"] }
 
 [features]
 default = []
