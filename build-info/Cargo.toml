@@ -10,8 +10,8 @@ repository = "https://github.com/danielschemmel/build-info/"
 lazy_static = { version = "1", optional = true }
 proc-macro-hack = "0.5"
 proc-macro-nested = { version = "0.1", optional = true }
-build-info-common = { path = "../build-info-common" }
-build-info-proc = { path = "../build-info-proc" }
+build-info-common = { version = "0.0.1-alpha.1", path = "../build-info-common" }
+build-info-proc = { version = "0.0.1-alpha.1", path = "../build-info-proc" }
 
 [features]
 default = ["runtime"]
