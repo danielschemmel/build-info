@@ -1,4 +1,4 @@
-use build_info::BuildInfo;
+use build_info_common::BuildInfo;
 
 use std::path::Path;
 
@@ -41,7 +41,7 @@ pub fn build_script() {
 	let compiler = compiler::get_info();
 	let version_control = version_control::get_info();
 
-	let timestamp = build_info::Utc::now();
+	let timestamp = build_info_common::Utc::now();
 	let build_info = BuildInfo {
 		timestamp,
 		crate_info,

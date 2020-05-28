@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use git2::{Repository, StatusOptions};
 
-use build_info::{GitInformation, VersionControl};
+use build_info_common::{GitInformation, VersionControl};
 
 fn get_git_info() -> Result<GitInformation> {
 	let repo = Repository::discover(".")?;
