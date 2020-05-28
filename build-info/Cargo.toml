@@ -20,5 +20,4 @@ build-info-proc = { version = "=0.0.8", path = "../build-info-proc" }
 default = ["runtime"]
 nested = ["proc-macro-nested"]
 runtime = ["lazy_static", "build-info-common", "build-info-proc/runtime"]
-chrono = ["build-info-common/full-chrono"]
 serde = ["build-info-common/enable-serde"]
