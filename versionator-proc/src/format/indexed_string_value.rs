@@ -167,7 +167,7 @@ impl<T: IndexedStringValue + std::fmt::Display> IndexedStringValue for Vec<T> {
 	fn indexed_string_value(&self, mut indeces: VecDeque<Index>) -> String {
 		if indeces.is_empty() {
 			return self.iter().enumerate().fold(String::new(), |mut acc, (index, value)| {
-				&if index == self.len() - 1 {
+				if index == self.len() - 1 {
 					format!(acc, "{}", value)
 				} else {
 					format!(acc, "{}, ", value)
