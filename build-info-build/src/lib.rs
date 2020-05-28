@@ -30,7 +30,7 @@ fn rebuild_if_project_changes() {
 	}
 }
 
-/// Call this function in your `build.rs` script to generate the build_info data.
+/// Call this function in your `build.rs` script to generate the data consumed by the `build_info` crate.
 pub fn build_script() {
 	// Whenever any `cargo:rerun-if-changed` key is set, the default set is cleared.
 	// Since we will need to emit such keys to trigger rebuilds when the vcs repository changes state,
