@@ -1,6 +1,6 @@
 [package]
 name = "build-info-build"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 edition = "2018"
 publish = ["crates-io"]
@@ -15,4 +15,4 @@ glob = "0.3"
 rustc_version = "0.2"
 serde_json = "1"
 toml = "0.5"
-build-info = { version = "=0.0.2", path = "../build-info", features = ["serde"] }
+build-info = { version = "=0.0.3", path = "../build-info", features = ["serde"] }
