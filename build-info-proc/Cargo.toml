@@ -1,6 +1,6 @@
 [package]
 name = "build-info-proc"
-version = "0.0.4"
+version = "0.0.5"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 edition = "2018"
 publish = ["crates-io"]
