@@ -2,7 +2,7 @@ use format_buf::format;
 
 use std::collections::VecDeque;
 
-use versionator_common::{
+use build_info_common::{
 	BuildInfo, CompilerChannel, CompilerVersion, CrateInfo, DateTime, GitInformation, Identifier, Utc, Version,
 	VersionControl,
 };
@@ -29,7 +29,7 @@ impl IndexedStringValue for BuildInfo {
 			Index::Field(ref id) if id == "crate_info" => indexed_string_value(&self.crate_info, indeces),
 			Index::Field(ref id) if id == "compiler" => indexed_string_value(&self.compiler, indeces),
 			Index::Field(ref id) if id == "version_control" => indexed_string_value(&self.version_control, indeces),
-			_ => panic!(format!("{:?} is not valid on versionator::BuildInfo", index)),
+			_ => panic!(format!("{:?} is not valid on build_info::BuildInfo", index)),
 		}
 	}
 }
@@ -45,7 +45,7 @@ impl IndexedStringValue for CrateInfo {
 			Index::Field(ref id) if id == "name" => indexed_string_value(&self.name, indeces),
 			Index::Field(ref id) if id == "version" => indexed_string_value(&self.version, indeces),
 			Index::Field(ref id) if id == "authors" => indexed_string_value(&self.authors, indeces),
-			_ => panic!(format!("{:?} is not valid for versionator::CrateInfo", index)),
+			_ => panic!(format!("{:?} is not valid for build_info::CrateInfo", index)),
 		}
 	}
 }
@@ -96,7 +96,7 @@ impl IndexedStringValue for CompilerVersion {
 			Index::Field(ref id) if id == "channel" => indexed_string_value(&self.channel, indeces),
 			Index::Field(ref id) if id == "host_triple" => indexed_string_value(&self.host_triple, indeces),
 			Index::Field(ref id) if id == "target_triple" => indexed_string_value(&self.target_triple, indeces),
-			_ => panic!(format!("{:?} is not valid for versionator::CompilerVersion", index)),
+			_ => panic!(format!("{:?} is not valid for build_info::CompilerVersion", index)),
 		}
 	}
 }
@@ -114,7 +114,7 @@ impl IndexedStringValue for Version {
 			Index::Field(ref id) if id == "patch" => indexed_string_value(&self.patch, indeces),
 			Index::Field(ref id) if id == "pre" => indexed_string_value(&self.pre, indeces),
 			Index::Field(ref id) if id == "build" => indexed_string_value(&self.build, indeces),
-			_ => panic!(format!("{:?} is not valid for versionator::CompilerVersion", index)),
+			_ => panic!(format!("{:?} is not valid for build_info::CompilerVersion", index)),
 		}
 	}
 }
@@ -200,14 +200,14 @@ impl IndexedStringValue for CompilerChannel {
 		}
 
 		let index = indeces.pop_front().unwrap();
-		panic!(format!("{:?} is not valid for versionator::CompilerChannel", index));
+		panic!(format!("{:?} is not valid for build_info::CompilerChannel", index));
 	}
 }
 
 impl IndexedStringValue for VersionControl {
 	fn indexed_string_value(&self, indeces: VecDeque<Index>) -> String {
 		match self {
-			versionator_common::VersionControl::Git(value) => indexed_string_value(value, indeces),
+			build_info_common::VersionControl::Git(value) => indexed_string_value(value, indeces),
 		}
 	}
 }
@@ -228,7 +228,7 @@ impl IndexedStringValue for GitInformation {
 			Index::Field(ref id) if id == "commit_hash" => indexed_string_value(&self.commit_hash, indeces),
 			Index::Field(ref id) if id == "dirty" => indexed_string_value(&self.dirty, indeces),
 			Index::Field(ref id) if id == "name" => indexed_string_value(&self.name, indeces),
-			_ => panic!(format!("{:?} is not valid for versionator::GitInformation", index)),
+			_ => panic!(format!("{:?} is not valid for build_info::GitInformation", index)),
 		}
 	}
 }

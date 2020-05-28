@@ -5,7 +5,7 @@ use syn::{parse_macro_input, LitStr};
 use std::collections::VecDeque;
 use std::str::Chars;
 
-use versionator_common::BuildInfo;
+use build_info_common::BuildInfo;
 
 mod indexed_string_value;
 use indexed_string_value::indexed_string_value;

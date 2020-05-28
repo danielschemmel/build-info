@@ -2,8 +2,8 @@
 
 members = [
 	"sample",
-	"versionator",
-	"versionator-build",
-	"versionator-common",
-	"versionator-proc",
+	"build-info",
+	"build-info-build",
+	"build-info-common",
+	"build-info-proc",
 ]

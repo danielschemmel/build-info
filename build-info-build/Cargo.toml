@@ -1,7 +1,7 @@
 [package]
-name = "versionator-build"
+name = "build-info-build"
 version = "0.0.0"
-authors = ["Daniel Schemmel <daniel.schemmel@comsys.rwth-aachen.de>"]
+authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 edition = "2018"
 publish = false
 
@@ -12,4 +12,4 @@ glob = "0.3"
 rustc_version = "0.2"
 serde_json = "1"
 toml = "0.5"
-versionator = { path = "../versionator", features = ["serde"] }
+build-info = { path = "../build-info", features = ["serde"] }

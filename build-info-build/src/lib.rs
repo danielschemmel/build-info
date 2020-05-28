@@ -1,4 +1,4 @@
-use versionator::BuildInfo;
+use build_info::BuildInfo;
 
 use std::path::Path;
 
@@ -30,7 +30,7 @@ fn rebuild_if_project_changes() {
 	}
 }
 
-/// Call this function in your `build.rs` script to generate the versionator data.
+/// Call this function in your `build.rs` script to generate the build_info data.
 pub fn build_script() {
 	// Whenever any `cargo:rerun-if-changed` key is set, the default set is cleared.
 	// Since we will need to emit such keys to trigger rebuilds when the vcs repository changes state,
@@ -41,7 +41,7 @@ pub fn build_script() {
 	let compiler = compiler::get_info();
 	let version_control = version_control::get_info();
 
-	let timestamp = versionator::Utc::now();
+	let timestamp = build_info::Utc::now();
 	let build_info = BuildInfo {
 		timestamp,
 		crate_info,

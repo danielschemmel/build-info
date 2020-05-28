@@ -7,8 +7,8 @@ mod function;
 
 #[cfg(feature = "runtime")]
 #[proc_macro]
-pub fn versionator(input: TokenStream) -> TokenStream {
-	function::versionator(input)
+pub fn build_info(input: TokenStream) -> TokenStream {
+	function::build_info(input)
 }
 
 #[proc_macro_hack]

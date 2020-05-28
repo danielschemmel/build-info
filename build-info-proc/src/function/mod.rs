@@ -4,7 +4,7 @@ use quote::quote;
 use syn::parse;
 use syn::{parse_macro_input, Ident, Token, Visibility};
 
-use versionator_common::BuildInfo;
+use build_info_common::BuildInfo;
 
 mod init_value;
 use init_value::init_value;
@@ -23,9 +23,9 @@ impl parse::Parse for VersionatorSyntax {
 	}
 }
 
-pub fn versionator(input: TokenStream) -> TokenStream {
-	let versionator = Ident::new(
-		&crate_name("versionator").expect("versionator must be a direct dependency"),
+pub fn build_info(input: TokenStream) -> TokenStream {
+	let build_info = Ident::new(
+		&crate_name("build-info").expect("build-info must be a direct dependency"),
 		proc_macro2::Span::call_site(),
 	);
 
@@ -38,9 +38,9 @@ pub fn versionator(input: TokenStream) -> TokenStream {
 
 	#[allow(clippy::let_and_return)]
 	let output = quote! {
-		#visibility fn #id() -> &'static #versionator::BuildInfo {
-			#versionator::lazy_static! {
-				static ref VERSION: #versionator::BuildInfo = #tokens;
+		#visibility fn #id() -> &'static #build_info::BuildInfo {
+			#build_info::lazy_static! {
+				static ref VERSION: #build_info::BuildInfo = #tokens;
 			}
 			&VERSION
 		}

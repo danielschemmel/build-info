@@ -1,12 +1,12 @@
 [package]
 name = "sample"
 version = "0.0.0"
-authors = ["Daniel Schemmel <daniel.schemmel@comsys.rwth-aachen.de>"]
+authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 edition = "2018"
 publish = false
 
 [dependencies]
-versionator = { path = "../versionator" }
+build-info = { path = "../build-info" }
 
 [build-dependencies]
-versionator-build = { path = "../versionator-build" }
+build-info-build = { path = "../build-info-build" }

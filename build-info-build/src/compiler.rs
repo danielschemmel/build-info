@@ -1,6 +1,6 @@
 use rustc_version::{version_meta, Channel};
 
-use versionator::{CompilerChannel, CompilerVersion, Version};
+use build_info::{CompilerChannel, CompilerVersion, Version};
 
 pub fn get_info() -> CompilerVersion {
 	let rustc_version = version_meta().unwrap();
