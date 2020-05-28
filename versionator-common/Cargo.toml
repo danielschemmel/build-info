@@ -8,7 +8,7 @@ publish = false
 [dependencies]
 chrono = { version = "0.4", default-features = false }
 derive_more = "0.99"
-semver = { version = "0.9" }
+semver = "0.9"
 serde = { version = "1", features = ["derive"], optional = true }
 
 [features]
