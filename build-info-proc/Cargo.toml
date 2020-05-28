@@ -6,6 +6,7 @@ edition = "2018"
 publish = ["crates-io"]
 repository = "https://github.com/danielschemmel/build-info/"
 description = "Part of the build-info crate: This crate provides the proc-macros."
+readme = "../README.md"
 license = "MIT OR Apache-2.0"
 
 [lib]
