@@ -23,7 +23,7 @@ pub struct BuildInfo {
 	pub crate_info: CrateInfo,
 
 	/// Information about the compiler used.
-	pub compiler: CompilerVersion,
+	pub compiler: CompilerInfo,
 
 	/// `Some` if the project is inside a check-out of a supported version control system.
 	pub version_control: Option<VersionControl>,
@@ -52,7 +52,7 @@ pub struct CrateInfo {
 /// `rustc` version and configuration
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
-pub struct CompilerVersion {
+pub struct CompilerInfo {
 	/// Version of the current `rustc`
 	pub version: Version,
 

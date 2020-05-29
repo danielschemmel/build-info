@@ -1,8 +1,8 @@
 use rustc_version::{version_meta, Channel};
 
-use build_info_common::{CompilerChannel, CompilerVersion, Version};
+use build_info_common::{CompilerChannel, CompilerInfo, Version};
 
-pub fn get_info() -> CompilerVersion {
+pub fn get_info() -> CompilerInfo {
 	let rustc_version = version_meta().unwrap();
 
 	// By serializing and reparsing the version, we break the version-lock between semver as provided
@@ -16,7 +16,7 @@ pub fn get_info() -> CompilerVersion {
 		Channel::Dev => CompilerChannel::Dev,
 	};
 
-	CompilerVersion {
+	CompilerInfo {
 		version,
 		commit_hash: rustc_version.commit_hash,
 		commit_date: rustc_version.commit_date,

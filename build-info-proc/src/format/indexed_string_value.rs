@@ -3,7 +3,7 @@ use format_buf::format;
 use std::collections::VecDeque;
 
 use build_info_common::{
-	BuildInfo, CompilerChannel, CompilerVersion, CrateInfo, DateTime, GitInformation, Identifier, Utc, Version,
+	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, GitInformation, Identifier, Utc, Version,
 	VersionControl,
 };
 
@@ -82,7 +82,7 @@ impl<T: IndexedStringValue> IndexedStringValue for Option<T> {
 	}
 }
 
-impl IndexedStringValue for CompilerVersion {
+impl IndexedStringValue for CompilerInfo {
 	fn indexed_string_value(&self, mut indeces: VecDeque<Index>) -> String {
 		if indeces.is_empty() {
 			unimplemented!();
@@ -96,7 +96,7 @@ impl IndexedStringValue for CompilerVersion {
 			Index::Field(ref id) if id == "channel" => indexed_string_value(&self.channel, indeces),
 			Index::Field(ref id) if id == "host_triple" => indexed_string_value(&self.host_triple, indeces),
 			Index::Field(ref id) if id == "target_triple" => indexed_string_value(&self.target_triple, indeces),
-			_ => panic!(format!("{:?} is not valid for build_info::CompilerVersion", index)),
+			_ => panic!(format!("{:?} is not valid for build_info::CompilerInfo", index)),
 		}
 	}
 }
@@ -114,7 +114,7 @@ impl IndexedStringValue for Version {
 			Index::Field(ref id) if id == "patch" => indexed_string_value(&self.patch, indeces),
 			Index::Field(ref id) if id == "pre" => indexed_string_value(&self.pre, indeces),
 			Index::Field(ref id) if id == "build" => indexed_string_value(&self.build, indeces),
-			_ => panic!(format!("{:?} is not valid for build_info::CompilerVersion", index)),
+			_ => panic!(format!("{:?} is not valid for build_info::CompilerInfo", index)),
 		}
 	}
 }
