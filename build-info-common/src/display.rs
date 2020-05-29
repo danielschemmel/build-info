@@ -5,7 +5,7 @@ impl std::fmt::Display for crate::BuildInfo {
 		if let Some(crate::VersionControl::Git(ref git)) = self.version_control {
 			write!(f, " built from {}", git)?;
 		}
-		
+
 		Ok(())
 	}
 }

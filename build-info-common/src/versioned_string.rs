@@ -3,8 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::{crate_version, Version};
 
 /// Used internally to ensure that `build-info` and `build-info-build` use the same version of `build-info-common`.
-#[derive(Serialize, Deserialize)]
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct VersionedString {
 	pub version: Version,
 	pub string: String,
