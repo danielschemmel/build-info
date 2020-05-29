@@ -57,7 +57,7 @@ pub struct CompilerInfo {
 	pub version: Version,
 
 	/// Commit hash from which `rustc` was built
-	pub commit_hash: Option<String>,
+	pub commit_id: Option<String>,
 
 	/// Date on which `rustc` was built
 	pub commit_date: Option<String>,
@@ -99,11 +99,14 @@ currently checked out commit changes.
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct GitInfo {
 	/// Currently checked out git commit hash
-	pub commit_hash: String,
+	pub commit_id: String,
 
 	/// `true` iff the repository had uncommitted changes when building the project.
 	pub dirty: bool,
 
-	/// A friendly name for the currently checked out commit (e.g., `master`)
-	pub name: Option<String>,
+	/// Names the branch that is currently checked out, if any
+	pub branch: Option<String>,
+
+	/// All tags that point to the current commit (e.g., `["refs/tags/v0.0.10", "refs/tags/sample@v0.0.10"]`)
+	pub tags: Vec<String>,
 }

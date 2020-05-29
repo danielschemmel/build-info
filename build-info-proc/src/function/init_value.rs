@@ -84,8 +84,8 @@ impl InitValue for CompilerInfo {
 		init_value(&self.version, &mut initializer);
 		initializer.append_all(quote!(,));
 
-		initializer.append_all(quote!(commit_hash:));
-		init_value(&self.commit_hash, &mut initializer);
+		initializer.append_all(quote!(commit_id:));
+		init_value(&self.commit_id, &mut initializer);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(commit_date:));
@@ -184,16 +184,20 @@ impl InitValue for GitInfo {
 		tokens.append_all(quote!(#build_info::GitInfo));
 		let mut initializer = TokenStream::new();
 
-		initializer.append_all(quote!(commit_hash:));
-		init_value(&self.commit_hash, &mut initializer);
+		initializer.append_all(quote!(commit_id:));
+		init_value(&self.commit_id, &mut initializer);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(dirty:));
 		init_value(&self.dirty, &mut initializer);
 		initializer.append_all(quote!(,));
 
-		initializer.append_all(quote!(name:));
-		init_value(&self.name, &mut initializer);
+		initializer.append_all(quote!(branch:));
+		init_value(&self.branch, &mut initializer);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(tags:));
+		init_value(&self.tags, &mut initializer);
 		initializer.append_all(quote!(,));
 
 		tokens.append(Group::new(Delimiter::Brace, initializer));

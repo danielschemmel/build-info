@@ -3,8 +3,7 @@ use format_buf::format;
 use std::collections::VecDeque;
 
 use build_info_common::{
-	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, GitInfo, Identifier, Utc, Version,
-	VersionControl,
+	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, GitInfo, Identifier, Utc, Version, VersionControl,
 };
 
 use super::Index;
@@ -91,7 +90,7 @@ impl IndexedStringValue for CompilerInfo {
 		let index = indeces.pop_front().unwrap();
 		match index {
 			Index::Field(ref id) if id == "version" => indexed_string_value(&self.version, indeces),
-			Index::Field(ref id) if id == "commit_hash" => indexed_string_value(&self.commit_hash, indeces),
+			Index::Field(ref id) if id == "commit_id" => indexed_string_value(&self.commit_id, indeces),
 			Index::Field(ref id) if id == "commit_date" => indexed_string_value(&self.commit_date, indeces),
 			Index::Field(ref id) if id == "channel" => indexed_string_value(&self.channel, indeces),
 			Index::Field(ref id) if id == "host_triple" => indexed_string_value(&self.host_triple, indeces),
@@ -216,18 +215,19 @@ impl IndexedStringValue for GitInfo {
 	fn indexed_string_value(&self, mut indeces: VecDeque<Index>) -> String {
 		if indeces.is_empty() {
 			let dirty = if self.dirty { "+" } else { "" };
-			if let Some(name) = &self.name {
-				return format!("{}{} ({})", &self.commit_hash, dirty, name);
+			if let Some(branch) = &self.branch {
+				return format!("{}{} ({})", &self.commit_id, dirty, branch);
 			} else {
-				return format!("{}{}", &self.commit_hash, dirty);
+				return format!("{}{}", &self.commit_id, dirty);
 			}
 		}
 
 		let index = indeces.pop_front().unwrap();
 		match index {
-			Index::Field(ref id) if id == "commit_hash" => indexed_string_value(&self.commit_hash, indeces),
+			Index::Field(ref id) if id == "commit_id" => indexed_string_value(&self.commit_id, indeces),
 			Index::Field(ref id) if id == "dirty" => indexed_string_value(&self.dirty, indeces),
-			Index::Field(ref id) if id == "name" => indexed_string_value(&self.name, indeces),
+			Index::Field(ref id) if id == "branch" => indexed_string_value(&self.branch, indeces),
+			Index::Field(ref id) if id == "tags" => indexed_string_value(&self.tags, indeces),
 			_ => panic!(format!("{:?} is not valid for build_info::GitInfo", index)),
 		}
 	}

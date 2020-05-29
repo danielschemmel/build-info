@@ -18,7 +18,7 @@ pub fn get_info() -> CompilerInfo {
 
 	CompilerInfo {
 		version,
-		commit_hash: rustc_version.commit_hash,
+		commit_id: rustc_version.commit_hash,
 		commit_date: rustc_version.commit_date,
 		channel,
 		host_triple: rustc_version.host,
