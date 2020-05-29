@@ -5,7 +5,7 @@ build_info::build_info!(fn build_info);
 
 fn main() {
 	// We can now either use the `build_info` function to work with the collected data at runtime...
-	println!("{:?}", build_info());
+	println!("{:#?}", build_info());
 
 	// ... or format it directly to a single `&'static str` at compile time
 	println!(
