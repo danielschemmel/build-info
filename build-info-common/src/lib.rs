@@ -12,6 +12,33 @@ pub use semver::{Identifier, Version};
 #[cfg(feature = "enable-serde")]
 use serde::{Deserialize, Serialize};
 
+pub fn crate_version() -> Version {
+	Version::parse(env!("CARGO_PKG_VERSION")).unwrap()
+}
+
+/// Used internally to ensure that `build-info` and `build-info-build` use the same version of `build-info-common`.
+#[cfg(feature = "enable-serde")]
+#[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub struct VersionedString {
+	pub version: Version,
+	pub string: String,
+}
+
+#[cfg(feature = "enable-serde")]
+impl VersionedString {
+	pub fn build_info_common_versioned(string: String) -> Self {
+		Self {
+			version: crate_version(),
+			string,
+		}
+	}
+
+	pub fn check(&self) -> bool {
+		self.version == Version::parse(env!("CARGO_PKG_VERSION")).unwrap()
+	}
+}
+
 /// Information about the current build
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]

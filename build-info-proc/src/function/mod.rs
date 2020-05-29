@@ -23,8 +23,8 @@ impl parse::Parse for VersionatorSyntax {
 	}
 }
 
-pub fn build_info(input: TokenStream) -> TokenStream {
-	let build_info = Ident::new(
+pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
+	let build_info_crate = Ident::new(
 		&crate_name("build-info").expect("build-info must be a direct dependency"),
 		proc_macro2::Span::call_site(),
 	);
@@ -32,15 +32,14 @@ pub fn build_info(input: TokenStream) -> TokenStream {
 	let VersionatorSyntax { visibility, id } = parse_macro_input!(input as VersionatorSyntax);
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));
 
-	let buildinfo: BuildInfo = serde_json::from_str(&std::env::var("VERSIONATOR").unwrap()).unwrap();
 	let mut tokens = proc_macro2::TokenStream::new();
-	init_value(&buildinfo, &mut tokens);
+	init_value(&build_info, &mut tokens);
 
 	#[allow(clippy::let_and_return)]
 	let output = quote! {
-		#visibility fn #id() -> &'static #build_info::BuildInfo {
-			#build_info::lazy_static! {
-				static ref VERSION: #build_info::BuildInfo = #tokens;
+		#visibility fn #id() -> &'static #build_info_crate::BuildInfo {
+			#build_info_crate::lazy_static! {
+				static ref VERSION: #build_info_crate::BuildInfo = #tokens;
 			}
 			&VERSION
 		}

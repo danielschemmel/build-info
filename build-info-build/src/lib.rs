@@ -23,7 +23,7 @@ The ´build-info-build` crate has the following features:
 - `git` (enabled by default): Enables git support. A git repository will only be detected if this feature is available.
 */
 
-use build_info_common::BuildInfo;
+use build_info_common::{BuildInfo, VersionedString};
 
 use std::path::Path;
 
@@ -74,8 +74,10 @@ pub fn build_script() {
 		version_control,
 	};
 
+	let versioned = VersionedString::build_info_common_versioned(serde_json::to_string(&build_info).unwrap());
+
 	println!(
 		"cargo:rustc-env=VERSIONATOR={}",
-		serde_json::to_string(&build_info).unwrap()
+		serde_json::to_string(&versioned).unwrap()
 	);
 }

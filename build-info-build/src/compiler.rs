@@ -2,7 +2,7 @@ use rustc_version::{version_meta, Channel};
 
 use build_info_common::{CompilerChannel, CompilerInfo, Version};
 
-pub fn get_info() -> CompilerInfo {
+pub(crate) fn get_info() -> CompilerInfo {
 	let rustc_version = version_meta().unwrap();
 
 	// By serializing and reparsing the version, we break the version-lock between semver as provided

@@ -37,7 +37,11 @@ pub(crate) fn get_info() -> Result<GitInfo> {
 	Ok(GitInfo {
 		commit_id: commit_id.to_string(),
 		dirty,
-		branch: if head.is_branch() { head.shorthand().map(|s| s.to_string()) } else { None },
+		branch: if head.is_branch() {
+			head.shorthand().map(|s| s.to_string())
+		} else {
+			None
+		},
 		tags,
 	})
 }

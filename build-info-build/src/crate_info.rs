@@ -1,7 +1,7 @@
 use build_info_common::{CrateInfo, Version};
 use toml::Value;
 
-pub fn read_manifest() -> CrateInfo {
+pub(crate) fn read_manifest() -> CrateInfo {
 	let cargo_file = std::fs::read_to_string("Cargo.toml").expect("Could not open Cargo.toml");
 	let cargo: Value = toml::from_str(&cargo_file).expect("Cargo.toml contains invalid TOML");
 

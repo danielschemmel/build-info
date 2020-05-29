@@ -10,11 +10,10 @@ use build_info_common::BuildInfo;
 mod indexed_string_value;
 use indexed_string_value::indexed_string_value;
 
-pub fn format(input: TokenStream) -> TokenStream {
+pub fn format(input: TokenStream, build_info: BuildInfo) -> TokenStream {
 	let format = parse_macro_input!(input as LitStr).value();
-	let buildinfo: BuildInfo = serde_json::from_str(&std::env::var("VERSIONATOR").unwrap()).unwrap();
 
-	let res = interpolate(format, &buildinfo);
+	let res = interpolate(format, &build_info);
 	#[allow(clippy::let_and_return)]
 	let output = quote!(#res);
 
@@ -22,7 +21,7 @@ pub fn format(input: TokenStream) -> TokenStream {
 	output.into()
 }
 
-fn interpolate(format: String, buildinfo: &BuildInfo) -> String {
+fn interpolate(format: String, build_info: &BuildInfo) -> String {
 	let mut chars = format.chars();
 	let mut res = String::new();
 	while let Some(c) = chars.next() {
@@ -33,7 +32,7 @@ fn interpolate(format: String, buildinfo: &BuildInfo) -> String {
 			if n == '{' {
 				res.push(c);
 			} else {
-				res.push_str(&interpolate_once(n, &mut chars, buildinfo))
+				res.push_str(&interpolate_once(n, &mut chars, build_info))
 			}
 		} else if c == '}' {
 			let n = chars
@@ -60,7 +59,7 @@ pub(crate) enum Index {
 
 const CLOSING_BRACE_EXPECTED: &str = "Format string has an opening brace without a matching closing brace";
 
-fn interpolate_once(mut c: char, chars: &mut Chars, buildinfo: &BuildInfo) -> String {
+fn interpolate_once(mut c: char, chars: &mut Chars, build_info: &BuildInfo) -> String {
 	let mut trace = VecDeque::new();
 	while c != '}' {
 		c = skip_ws(c, chars);
@@ -103,7 +102,7 @@ fn interpolate_once(mut c: char, chars: &mut Chars, buildinfo: &BuildInfo) -> St
 		}
 	}
 
-	indexed_string_value(buildinfo, trace)
+	indexed_string_value(build_info, trace)
 }
 
 fn parse_id(mut c: char, chars: &mut Chars) -> (char, String) {
