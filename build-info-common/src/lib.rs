@@ -8,37 +8,24 @@ For example, `build_info_common::BuildInfo` should be used as `build_info::Build
 
 #![forbid(unsafe_code)]
 
-pub use chrono::{DateTime, TimeZone, Utc};
 use derive_more::Display;
+
+pub use chrono::{DateTime, TimeZone, Utc};
 pub use semver::{Identifier, Version};
+
 #[cfg(feature = "enable-serde")]
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "enable-serde")]
+mod versioned_string;
+#[cfg(feature = "enable-serde")]
+pub use versioned_string::VersionedString;
+
+pub mod display;
+
+/// Gets the version of the `build-info-common` crate (this crate)
 pub fn crate_version() -> Version {
 	Version::parse(env!("CARGO_PKG_VERSION")).unwrap()
-}
-
-/// Used internally to ensure that `build-info` and `build-info-build` use the same version of `build-info-common`.
-#[cfg(feature = "enable-serde")]
-#[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
-pub struct VersionedString {
-	pub version: Version,
-	pub string: String,
-}
-
-#[cfg(feature = "enable-serde")]
-impl VersionedString {
-	pub fn build_info_common_versioned(string: String) -> Self {
-		Self {
-			version: crate_version(),
-			string,
-		}
-	}
-
-	pub fn check(&self) -> bool {
-		self.version == Version::parse(env!("CARGO_PKG_VERSION")).unwrap()
-	}
 }
 
 /// Information about the current build

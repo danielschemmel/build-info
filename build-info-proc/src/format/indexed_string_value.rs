@@ -19,16 +19,7 @@ pub(crate) trait IndexedStringValue {
 impl IndexedStringValue for BuildInfo {
 	fn indexed_string_value(&self, mut indeces: VecDeque<Index>) -> String {
 		if indeces.is_empty() {
-			let crate_info = indexed_string_value(&self.crate_info, VecDeque::new());
-
-			return match self.version_control {
-				Some(VersionControl::Git(ref git)) => format!(
-					"{} built from {}",
-					crate_info,
-					indexed_string_value(git, VecDeque::new())
-				),
-				None => crate_info,
-			};
+			return self.to_string();
 		}
 
 		let index = indeces.pop_front().unwrap();
@@ -45,7 +36,7 @@ impl IndexedStringValue for BuildInfo {
 impl IndexedStringValue for CrateInfo {
 	fn indexed_string_value(&self, mut indeces: VecDeque<Index>) -> String {
 		if indeces.is_empty() {
-			return format!("{} v{}", self.name, self.version);
+			return self.to_string();
 		}
 
 		let index = indeces.pop_front().unwrap();
@@ -61,7 +52,7 @@ impl IndexedStringValue for CrateInfo {
 impl IndexedStringValue for DateTime<Utc> {
 	fn indexed_string_value(&self, mut indeces: VecDeque<Index>) -> String {
 		if indeces.is_empty() {
-			return self.format("%Y-%m-%d %H:%M:%S%.fZ").to_string();
+			return self.format("%Y-%m-%d %H:%M:%SZ").to_string();
 		}
 
 		let index = indeces.pop_front().unwrap();
@@ -93,18 +84,7 @@ impl<T: IndexedStringValue> IndexedStringValue for Option<T> {
 impl IndexedStringValue for CompilerInfo {
 	fn indexed_string_value(&self, mut indeces: VecDeque<Index>) -> String {
 		if indeces.is_empty() {
-			let mut string = format!("rustc {}", self.version);
-
-			if let Some(ref commit_id) = self.commit_id {
-				let commit_id = &commit_id[0..9];
-				if let Some(ref commit_date) = self.commit_date {
-					format!(string, " ({} {})", commit_id, commit_date);
-				} else {
-					format!(string, " ({})", commit_id);
-				}
-			}
-
-			return string;
+			return self.to_string();
 		}
 
 		let index = indeces.pop_front().unwrap();
@@ -234,12 +214,7 @@ impl IndexedStringValue for VersionControl {
 impl IndexedStringValue for GitInfo {
 	fn indexed_string_value(&self, mut indeces: VecDeque<Index>) -> String {
 		if indeces.is_empty() {
-			let dirty = if self.dirty { "+" } else { "" };
-			if let Some(branch) = &self.branch {
-				return format!("{}{} ({})", &self.commit_id, dirty, branch);
-			} else {
-				return format!("{}{}", &self.commit_id, dirty);
-			}
+			return self.to_string();
 		}
 
 		let index = indeces.pop_front().unwrap();
