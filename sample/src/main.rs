@@ -12,5 +12,4 @@ fn main() {
 		"{}",
 		build_info::format!("{{{.crate_info.name} v{.crate_info.version} built with rustc version {.compiler.version} {.compiler.commit_id} at {.timestamp}}}")
 	);
-	println!("{}", build_info::format!("{.version_control?.tags}"));
 }
