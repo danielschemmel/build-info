@@ -23,6 +23,8 @@ The ´build-info-build` crate has the following features:
 - `git` (enabled by default): Enables git support. A git repository will only be detected if this feature is available.
 */
 
+#![forbid(unsafe_code)]
+
 use build_info_common::{BuildInfo, VersionedString};
 
 use std::path::Path;

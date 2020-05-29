@@ -25,6 +25,8 @@ The ´build-info` crate has the following features:
 - `nested` (disabled by default): Enables [`proc-macro-nested`](https://crates.io/crates/proc-macro-nested) for `build_info::format!`, which lets it be nested inside another proc-macro invocation in some cases.
 */
 
+#![forbid(unsafe_code)]
+
 use proc_macro_hack::proc_macro_hack;
 
 #[cfg(feature = "runtime")]

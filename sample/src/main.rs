@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 // Use the `build_info!` macro to generate a function `crate::build_info` that returns on object with the data that
 // is collected in the build script.
 // This macro supports visibility-specifiers, like `build_info!(pub fn how_this_crate_was_built)`.

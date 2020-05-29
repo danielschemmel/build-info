@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 use proc_macro::TokenStream;
 use proc_macro_error::{abort_call_site, emit_call_site_error, proc_macro_error};
 use proc_macro_hack::proc_macro_hack;

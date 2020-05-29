@@ -6,6 +6,8 @@ The types provided herein are reexported by `build-info` and should be used that
 For example, `build_info_common::BuildInfo` should be used as `build_info::BuildInfo` instead.
 */
 
+#![forbid(unsafe_code)]
+
 pub use chrono::{DateTime, TimeZone, Utc};
 use derive_more::Display;
 pub use semver::{Identifier, Version};
