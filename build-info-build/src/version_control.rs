@@ -3,10 +3,10 @@ use anyhow::{anyhow, Result};
 #[cfg(feature = "git")]
 use git2::{Repository, StatusOptions};
 
-use build_info_common::{GitInformation, VersionControl};
+use build_info_common::{GitInfo, VersionControl};
 
 #[cfg(feature = "git")]
-fn get_git_info() -> Result<GitInformation> {
+fn get_git_info() -> Result<GitInfo> {
 	let repo = Repository::discover(".")?;
 	println!("cargo:rerun-if-changed={}", repo.path().join("HEAD").to_str().unwrap());
 
@@ -33,7 +33,7 @@ fn get_git_info() -> Result<GitInformation> {
 	let changes = repo.statuses(Some(StatusOptions::new().include_ignored(false)))?;
 	let dirty = !changes.is_empty();
 
-	Ok(GitInformation {
+	Ok(GitInfo {
 		commit_hash,
 		dirty,
 		name: head.shorthand().map(|s| s.to_string()),
@@ -41,7 +41,7 @@ fn get_git_info() -> Result<GitInformation> {
 }
 
 #[cfg(not(feature = "git"))]
-fn get_git_info() -> Result<GitInformation> {
+fn get_git_info() -> Result<GitInfo> {
 	Err(anyhow!("Git support is disabled"))
 }
 

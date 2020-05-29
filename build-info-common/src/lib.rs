@@ -86,7 +86,7 @@ pub enum CompilerChannel {
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum VersionControl {
-	Git(GitInformation),
+	Git(GitInfo),
 }
 
 /**
@@ -97,7 +97,7 @@ currently checked out commit changes.
 */
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
-pub struct GitInformation {
+pub struct GitInfo {
 	/// Currently checked out git commit hash
 	pub commit_hash: String,
 

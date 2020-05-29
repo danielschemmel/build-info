@@ -3,7 +3,7 @@ use format_buf::format;
 use std::collections::VecDeque;
 
 use build_info_common::{
-	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, GitInformation, Identifier, Utc, Version,
+	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, GitInfo, Identifier, Utc, Version,
 	VersionControl,
 };
 
@@ -212,7 +212,7 @@ impl IndexedStringValue for VersionControl {
 	}
 }
 
-impl IndexedStringValue for GitInformation {
+impl IndexedStringValue for GitInfo {
 	fn indexed_string_value(&self, mut indeces: VecDeque<Index>) -> String {
 		if indeces.is_empty() {
 			let dirty = if self.dirty { "+" } else { "" };
@@ -228,7 +228,7 @@ impl IndexedStringValue for GitInformation {
 			Index::Field(ref id) if id == "commit_hash" => indexed_string_value(&self.commit_hash, indeces),
 			Index::Field(ref id) if id == "dirty" => indexed_string_value(&self.dirty, indeces),
 			Index::Field(ref id) if id == "name" => indexed_string_value(&self.name, indeces),
-			_ => panic!(format!("{:?} is not valid for build_info::GitInformation", index)),
+			_ => panic!(format!("{:?} is not valid for build_info::GitInfo", index)),
 		}
 	}
 }

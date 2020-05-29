@@ -3,7 +3,7 @@ use proc_macro_crate::crate_name;
 use quote::{quote, TokenStreamExt};
 
 use build_info_common::{
-	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, GitInformation, Utc, Version, VersionControl,
+	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, GitInfo, Utc, Version, VersionControl,
 };
 
 pub(crate) fn init_value<T: InitValue>(this: &T, tokens: &mut TokenStream) {
@@ -174,14 +174,14 @@ impl InitValue for VersionControl {
 	}
 }
 
-impl InitValue for GitInformation {
+impl InitValue for GitInfo {
 	fn init_value(&self, tokens: &mut TokenStream) {
 		let build_info = Ident::new(
 			&crate_name("build-info").expect("build-info must be a direct dependency"),
 			proc_macro2::Span::call_site(),
 		);
 
-		tokens.append_all(quote!(#build_info::GitInformation));
+		tokens.append_all(quote!(#build_info::GitInfo));
 		let mut initializer = TokenStream::new();
 
 		initializer.append_all(quote!(commit_hash:));
