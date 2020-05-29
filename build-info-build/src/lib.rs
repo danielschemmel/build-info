@@ -1,3 +1,28 @@
+/*!
+Begin by adding `build-info` as a `[dependency]` and `build-info-build` as a `[build-dependency]` to your [`Cargo.toml`](https://github.com/danielschemmel/build-info/tree/master/sample/Cargo.toml).
+Please make sure that both dependencies use the same version!
+
+If it does not already exist, add a [`build.rs`](https://github.com/danielschemmel/build-info/tree/master/sample/build.rs) to your project's root, where you call `build_info_build::build_script()`.
+This will collect build information at compile time.
+
+Then, either use the `build_info!` macro to add a function that returns version information at runtime:
+```rust
+build_info::build_info!(fn version);
+```
+or use `build_info::format!` to generate a string at compile time:
+```rust
+// sample output: "{sample v0.0.6 built with rustc version 1.43.1 8d69840ab92ea7f4d323420088dd8c9775f180cd at 2020-05-28 20:09:40.379213639Z}"
+build_info::format!("{{{.crate_info.name} v{.crate_info.version} built with rustc version {.compiler.version} {.compiler.commit_hash} at {.timestamp}}}")
+```
+
+You can also check out the [sample](https://github.com/danielschemmel/build-info/tree/master/sample/) project that shows both variants.
+
+# Features
+The ´build-info-build` crate has the following features:
+
+- `git` (enabled by default): Enables git support. A git repository will only be detected if this feature is available.
+*/
+
 use build_info_common::BuildInfo;
 
 use std::path::Path;

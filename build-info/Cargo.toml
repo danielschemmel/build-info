@@ -20,4 +20,4 @@ build-info-proc = { version = "=0.0.10", path = "../build-info-proc" }
 default = ["runtime"]
 nested = ["proc-macro-nested"]
 runtime = ["lazy_static", "build-info-common", "build-info-proc/runtime"]
-serde = ["build-info-common/enable-serde"]
+serde = ["runtime", "build-info-common/enable-serde"]

@@ -1,3 +1,11 @@
+/*!
+Common types used by the `build-info` and `build-info-build` crates.
+
+User code should not depend on this crate directly, but rather depend on `build-info` (as a `[dependency]`) and `build-info-build` (as a `[build-dependency]`).
+The types provided herein are reexported by `build-info` and should be used that way.
+For example, `build_info_common::BuildInfo` should be used as `build_info::BuildInfo` instead.
+*/
+
 pub use chrono::{DateTime, TimeZone, Utc};
 use derive_more::Display;
 pub use semver::{Identifier, Version};

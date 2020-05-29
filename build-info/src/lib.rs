@@ -16,6 +16,13 @@ build_info::format!("{{{.crate_info.name} v{.crate_info.version} built with rust
 ```
 
 You can also check out the [sample](https://github.com/danielschemmel/build-info/tree/master/sample/) project that shows both variants.
+
+# Features
+The ´build-info` crate has the following features:
+
+- `runtime` (enabled by default): Enables the use of `build_info::build_info!` and provides the prerequisite types.
+- `serde` (disabled by default): Adds serde support to the objects returned by `build_info::build_info!`. Implies the `runtime` feature.
+- `nested` (disabled by default): Enables [`proc-macro-nested`](https://crates.io/crates/proc-macro-nested) for `build_info::format!`, which lets it be nested inside another proc-macro invocation in some cases.
 */
 
 use proc_macro_hack::proc_macro_hack;
