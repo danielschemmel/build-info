@@ -41,10 +41,15 @@ fn deserialize_build_info() -> BuildInfo {
 	});
 	if !versioned.check() {
 		// TODO: This should really be a warning - but warnings are currently nightly-only...
-		emit_call_site_error!("BuildInfo data has an incompatible version!";
+		emit_call_site_error!("BuildInfo data has an different version!";
 			note = "The serialized data has version {}", versioned.version;
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
 		);
 	}
-	serde_json::from_str(&versioned.string).unwrap()
+	serde_json::from_str(&versioned.string).unwrap_or_else(|_| {
+		abort_call_site!("BuildInfo data cannot be deserialized!";
+			note = "The serialized data has version {}", versioned.version;
+			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
+		)
+	})
 }
