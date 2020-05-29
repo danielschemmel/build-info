@@ -77,7 +77,7 @@ pub fn build_script() {
 	let versioned = VersionedString::build_info_common_versioned(serde_json::to_string(&build_info).unwrap());
 
 	println!(
-		"cargo:rustc-env=VERSIONATOR={}",
+		"cargo:rustc-env=BUILD_INFO={}",
 		serde_json::to_string(&versioned).unwrap()
 	);
 }

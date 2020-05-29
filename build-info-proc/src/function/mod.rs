@@ -9,17 +9,17 @@ use build_info_common::BuildInfo;
 mod init_value;
 use init_value::init_value;
 
-struct VersionatorSyntax {
+struct FunctionSyntax {
 	visibility: Option<Visibility>,
 	id: Ident,
 }
 
-impl parse::Parse for VersionatorSyntax {
+impl parse::Parse for FunctionSyntax {
 	fn parse(input: parse::ParseStream) -> parse::Result<Self> {
 		let visibility: Option<Visibility> = input.parse().ok();
 		input.parse::<Token![fn]>()?;
 		let id: Ident = input.parse()?;
-		Ok(VersionatorSyntax { visibility, id })
+		Ok(FunctionSyntax { visibility, id })
 	}
 }
 
@@ -29,7 +29,7 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
 		proc_macro2::Span::call_site(),
 	);
 
-	let VersionatorSyntax { visibility, id } = parse_macro_input!(input as VersionatorSyntax);
+	let FunctionSyntax { visibility, id } = parse_macro_input!(input as FunctionSyntax);
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));
 
 	let mut tokens = proc_macro2::TokenStream::new();

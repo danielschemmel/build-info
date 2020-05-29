@@ -28,7 +28,7 @@ pub fn format(input: TokenStream) -> TokenStream {
 }
 
 fn deserialize_build_info() -> BuildInfo {
-	let data = std::env::var("VERSIONATOR").unwrap_or_else(|_| {
+	let data = std::env::var("BUILD_INFO").unwrap_or_else(|_| {
 		abort_call_site!("No BuildInfo data found!";
 			note = "Did you call build_info_build::build_script() in your build.rs?";
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
