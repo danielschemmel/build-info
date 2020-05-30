@@ -6,11 +6,11 @@ If it does not already exist, add a [`build.rs`](https://github.com/danielschemm
 This will collect build information at compile time.
 
 Then, either use the `build_info!` macro to add a function that returns version information at runtime:
-```rust
+```rust,ignore
 build_info::build_info!(fn version);
 ```
 or use `build_info::format!` to generate a string at compile time:
-```rust
+```rust,ignore
 // sample output: "{sample v0.0.13 built with rustc 1.45.0-nightly (4bd32c980 2020-05-29) at 2020-05-30 11:22:46Z}"
 build_info::format!("{{{.crate_info.name} v{.crate_info.version} built with {.compiler} at {.timestamp}}}")
 ```
