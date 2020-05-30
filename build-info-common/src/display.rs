@@ -1,9 +1,9 @@
 impl std::fmt::Display for crate::BuildInfo {
 	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		write!(f, "{}", self.crate_info)?;
+		write!(f, "{} {} build", self.crate_info, self.profile)?;
 
 		if let Some(crate::VersionControl::Git(ref git)) = self.version_control {
-			write!(f, " built from {}", git)?;
+			write!(f, " from {}", git)?;
 		}
 
 		Ok(())

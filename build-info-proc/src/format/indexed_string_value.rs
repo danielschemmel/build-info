@@ -25,6 +25,7 @@ impl IndexedStringValue for BuildInfo {
 		let index = indeces.pop_front().unwrap();
 		match index {
 			Index::Field(ref id) if id == "timestamp" => indexed_string_value(&self.timestamp, indeces),
+			Index::Field(ref id) if id == "profile" => indexed_string_value(&self.profile, indeces),
 			Index::Field(ref id) if id == "crate_info" => indexed_string_value(&self.crate_info, indeces),
 			Index::Field(ref id) if id == "compiler" => indexed_string_value(&self.compiler, indeces),
 			Index::Field(ref id) if id == "version_control" => indexed_string_value(&self.version_control, indeces),

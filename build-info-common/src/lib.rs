@@ -35,6 +35,9 @@ pub struct BuildInfo {
 	/// Updated whenever `build.rs` is rerun.
 	pub timestamp: DateTime<Utc>,
 
+	/// Cargo currently supports two different build types: `"Release"` and `"Debug"`
+	pub profile: String,
+
 	/// Information about the current crate
 	pub crate_info: CrateInfo,
 

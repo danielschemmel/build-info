@@ -64,6 +64,7 @@ pub fn build_script() {
 	// we also have to emit the customary triggers again, or we will only be rerun in that exact case.
 	rebuild_if_project_changes();
 
+	let profile = std::env::var("PROFILE").unwrap_or_else(|_| "UNKNOWN".to_string());
 	let crate_info = crate_info::read_manifest();
 	let compiler = compiler::get_info();
 	let version_control = version_control::get_info();
@@ -71,6 +72,7 @@ pub fn build_script() {
 	let timestamp = build_info_common::Utc::now();
 	let build_info = BuildInfo {
 		timestamp,
+		profile,
 		crate_info,
 		compiler,
 		version_control,

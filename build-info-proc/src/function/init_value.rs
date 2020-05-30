@@ -28,6 +28,10 @@ impl InitValue for BuildInfo {
 		init_value(&self.timestamp, &mut initializer);
 		initializer.append_all(quote!(,));
 
+		initializer.append_all(quote!(profile:));
+		init_value(&self.profile, &mut initializer);
+		initializer.append_all(quote!(,));
+
 		initializer.append_all(quote!(crate_info:));
 		init_value(&self.crate_info, &mut initializer);
 		initializer.append_all(quote!(,));
