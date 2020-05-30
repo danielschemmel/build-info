@@ -12,8 +12,8 @@ build_info::build_info!(fn version);
 ```
 or use `build_info::format!` to generate a string at compile time:
 ```rust
-// sample output: "{sample v0.0.6 built with rustc version 1.43.1 8d69840ab92ea7f4d323420088dd8c9775f180cd at 2020-05-28 20:09:40.379213639Z}"
-build_info::format!("{{{.crate_info.name} v{.crate_info.version} built with rustc version {.compiler.version} {.compiler.commit_id} at {.timestamp}}}")
+// sample output: "{sample v0.0.13 built with rustc 1.45.0-nightly (4bd32c980 2020-05-29) at 2020-05-30 11:22:46Z}"
+build_info::format!("{{{.crate_info.name} v{.crate_info.version} built with {.compiler} at {.timestamp}}}")
 ```
 
 The [sample](sample) project shows both variants.
