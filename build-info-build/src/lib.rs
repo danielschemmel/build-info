@@ -25,7 +25,7 @@ The ´build-info-build` crate has the following features:
 
 #![forbid(unsafe_code)]
 
-use build_info_common::{BuildInfo, VersionedString};
+use build_info_common::{BuildInfo, DateTime, Utc, VersionedString};
 
 use std::path::Path;
 
@@ -57,6 +57,20 @@ fn rebuild_if_project_changes() {
 	}
 }
 
+fn get_timestamp() -> DateTime<Utc> {
+	get_timestamp_internal(std::env::var("SOURCE_DATE_EPOCH").ok())
+}
+
+fn get_timestamp_internal(epoch: Option<String>) -> DateTime<Utc> {
+	// https://reproducible-builds.org/specs/source-date-epoch/
+	if let Some(epoch) = epoch {
+		let epoch: i64 = epoch.parse().expect("Could not parse SOURCE_DATE_EPOCH");
+		build_info_common::epoch_to_utc(epoch)
+	} else {
+		build_info_common::Utc::now()
+	}
+}
+
 /// Call this function in your `build.rs` script to generate the data consumed by the `build_info` crate.
 pub fn build_script() {
 	// Whenever any `cargo:rerun-if-changed` key is set, the default set is cleared.
@@ -69,7 +83,7 @@ pub fn build_script() {
 	let compiler = compiler::get_info();
 	let version_control = version_control::get_info();
 
-	let timestamp = build_info_common::Utc::now();
+	let timestamp = get_timestamp();
 	let build_info = BuildInfo {
 		timestamp,
 		profile,
@@ -84,4 +98,24 @@ pub fn build_script() {
 		"cargo:rustc-env=BUILD_INFO={}",
 		serde_json::to_string(&versioned).unwrap()
 	);
+}
+
+#[cfg(test)]
+mod test {
+	use super::*;
+
+	#[test]
+	fn get_current_timestamp() {
+		let past = build_info_common::epoch_to_utc(1591113000);
+		let now = get_timestamp_internal(None);
+		let future = build_info_common::epoch_to_utc(32503680000);
+		assert!(past < now);
+		assert!(now < future);
+	}
+
+	#[test]
+	fn get_fixed_timestamp() {
+		let epoch = 1591113000;
+		assert_eq!(get_timestamp_internal(Some(epoch.to_string())), build_info_common::epoch_to_utc(epoch));
+	}
 }
