@@ -25,12 +25,14 @@ The ´build-info-build` crate has the following features:
 
 #![forbid(unsafe_code)]
 
-use build_info_common::{BuildInfo, DateTime, Utc, VersionedString};
-
 use std::path::Path;
+
+use build_info_common::{BuildInfo, VersionedString};
+pub use build_info_common::{DateTime, Utc};
 
 mod compiler;
 mod crate_info;
+mod timestamp;
 mod version_control;
 
 /// Emits a `cargo:rerun-if-changed` line for each file of the target project.
@@ -57,65 +59,51 @@ fn rebuild_if_project_changes() {
 	}
 }
 
-fn get_timestamp() -> DateTime<Utc> {
-	get_timestamp_internal(std::env::var("SOURCE_DATE_EPOCH").ok())
-}
-
-fn get_timestamp_internal(epoch: Option<String>) -> DateTime<Utc> {
-	// https://reproducible-builds.org/specs/source-date-epoch/
-	if let Some(epoch) = epoch {
-		let epoch: i64 = epoch.parse().expect("Could not parse SOURCE_DATE_EPOCH");
-		build_info_common::epoch_to_utc(epoch)
-	} else {
-		build_info_common::Utc::now()
-	}
-}
-
 /// Call this function in your `build.rs` script to generate the data consumed by the `build_info` crate.
-pub fn build_script() {
-	// Whenever any `cargo:rerun-if-changed` key is set, the default set is cleared.
-	// Since we will need to emit such keys to trigger rebuilds when the vcs repository changes state,
-	// we also have to emit the customary triggers again, or we will only be rerun in that exact case.
-	rebuild_if_project_changes();
-
-	let profile = std::env::var("PROFILE").unwrap_or_else(|_| "UNKNOWN".to_string());
-	let crate_info = crate_info::read_manifest();
-	let compiler = compiler::get_info();
-	let version_control = version_control::get_info();
-
-	let timestamp = get_timestamp();
-	let build_info = BuildInfo {
-		timestamp,
-		profile,
-		crate_info,
-		compiler,
-		version_control,
-	};
-
-	let versioned = VersionedString::build_info_common_versioned(serde_json::to_string(&build_info).unwrap());
-
-	println!(
-		"cargo:rustc-env=BUILD_INFO={}",
-		serde_json::to_string(&versioned).unwrap()
-	);
+/// Additional customization options are available by manipulating the return type.
+/// The actual work is performed once the return type is dropped.
+pub fn build_script() -> BuildScriptOptions {
+	BuildScriptOptions::default()
 }
 
-#[cfg(test)]
-mod test {
-	use super::*;
+/// Type to store any (optional) options for the build script.
+pub struct BuildScriptOptions {
+	/// Use this as the build timestamp, if set.
+	timestamp: Option<DateTime<Utc>>,
+}
 
-	#[test]
-	fn get_current_timestamp() {
-		let past = build_info_common::epoch_to_utc(1591113000);
-		let now = get_timestamp_internal(None);
-		let future = build_info_common::epoch_to_utc(32503680000);
-		assert!(past < now);
-		assert!(now < future);
+impl Default for BuildScriptOptions {
+	fn default() -> Self {
+		Self { timestamp: None }
 	}
+}
 
-	#[test]
-	fn get_fixed_timestamp() {
-		let epoch = 1591113000;
-		assert_eq!(get_timestamp_internal(Some(epoch.to_string())), build_info_common::epoch_to_utc(epoch));
+impl Drop for BuildScriptOptions {
+	fn drop(&mut self) {
+		// Whenever any `cargo:rerun-if-changed` key is set, the default set is cleared.
+		// Since we will need to emit such keys to trigger rebuilds when the vcs repository changes state,
+		// we also have to emit the customary triggers again, or we will only be rerun in that exact case.
+		rebuild_if_project_changes();
+
+		let profile = std::env::var("PROFILE").unwrap_or_else(|_| "UNKNOWN".to_string());
+		let crate_info = crate_info::read_manifest();
+		let compiler = compiler::get_info();
+		let version_control = version_control::get_info();
+
+		let timestamp = self.timestamp.unwrap_or_else(|| timestamp::get_timestamp());
+		let build_info = BuildInfo {
+			timestamp,
+			profile,
+			crate_info,
+			compiler,
+			version_control,
+		};
+
+		let versioned = VersionedString::build_info_common_versioned(serde_json::to_string(&build_info).unwrap());
+
+		println!(
+			"cargo:rustc-env=BUILD_INFO={}",
+			serde_json::to_string(&versioned).unwrap()
+		);
 	}
 }

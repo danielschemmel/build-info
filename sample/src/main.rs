@@ -14,7 +14,7 @@ fn main() {
 		"{}",
 		build_info::format!("{{{.crate_info.name} v{.crate_info.version} built with {.compiler} at {.timestamp}}}")
 	);
-	
+
 	// Most types have a sensible default for formatting. Just printing the BuildInfo type directly is quick and easy:
 	println!("{}", build_info::format!("{}"));
 }
