@@ -1,8 +1,7 @@
 use proc_macro::TokenStream;
 use proc_macro_crate::crate_name;
 use quote::quote;
-use syn::parse;
-use syn::{parse_macro_input, Ident, Token, Visibility};
+use syn::{parse, parse_macro_input, Ident, Token, Visibility};
 
 use build_info_common::BuildInfo;
 

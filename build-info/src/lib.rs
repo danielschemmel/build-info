@@ -12,7 +12,7 @@ build_info::build_info!(fn version);
 or use `build_info::format!` to generate a string at compile time:
 ```rust,ignore
 // sample output: "{sample v0.0.13 built with rustc 1.45.0-nightly (4bd32c980 2020-05-29) at 2020-05-30 11:22:46Z}"
-build_info::format!("{{{.crate_info.name} v{.crate_info.version} built with {.compiler} at {.timestamp}}}")
+build_info::format!("{{{} v{} built with {} at {}}}", $.crate_info.name, $.crate_info.version, $.compiler, $.timestamp)
 ```
 
 You can also check out the [sample](https://github.com/danielschemmel/build-info/tree/master/sample/) project that shows both variants.
@@ -45,10 +45,12 @@ pub use build_info_proc::build_info;
 /**
 Generates a string at compile-time that includes build information.
 
-This function-like macro takes a single string-literal as its argument, on which it performs string interpolation with the current build information.
-To do so, pass the path to a member inside curly braces, as if indexing an object of type `BuildInfo`. For example, `build_info::format!("Built at {.timestamp}")` might return `"Built at 2020-05-28 20:09:40.379213639Z".`
+This function-like macro takes a single string-literal as its argument, on which it performs string interpolation with
+the current build information. To do so, you can use a subset of the normal format language, with the special
+"variable" `$` that denotes the `BuildInfo` object. For example, `build_info::format!("Built at {}", $.timestamp)`
+might return "Built at 2020-05-28 20:09:40.379213639Z".`
 
-Use `?` to unwrap `Option`s, the results are stringified automatically.
+You can use `?` to unwrap `Option`s and some additional types can be formatted this way (e.g., `Vec<T>`).
 
 Literal curly braces can be printed by doubling them up: `build_info::format!("{{}}") // yields "{}"`.
 */

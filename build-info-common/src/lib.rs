@@ -90,7 +90,7 @@ pub struct CompilerInfo {
 
 /// `rustc` distribution channel (some compiler features are only available on specific channels)
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
-#[derive(Display, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+#[derive(Display, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum CompilerChannel {
 	Dev,
 	Nightly,
@@ -103,6 +103,15 @@ pub enum CompilerChannel {
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum VersionControl {
 	Git(GitInfo),
+}
+
+impl VersionControl {
+	pub fn git(&self) -> Option<&GitInfo> {
+		match self {
+			VersionControl::Git(git) => Some(git),
+			// _ => None, // Pattern currently unreachable
+		}
+	}
 }
 
 /**

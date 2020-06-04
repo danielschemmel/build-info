@@ -1,130 +1,182 @@
+use anyhow::Result;
 use proc_macro::TokenStream;
+use proc_macro2::Span;
+use proc_macro_error::{abort, abort_call_site};
 use quote::quote;
-use syn::{parse_macro_input, LitStr};
+use syn::parse_macro_input;
 
 use std::str::Chars;
 
 use build_info_common::BuildInfo;
 
-mod indexed_string_value;
-use indexed_string_value::indexed_string_value;
+mod eval;
+use eval::Eval;
 
-pub fn format(input: TokenStream, build_info: BuildInfo) -> TokenStream {
-	let format = parse_macro_input!(input as LitStr).value();
+mod syntax;
 
-	let res = interpolate(format, &build_info);
-	#[allow(clippy::let_and_return)]
-	let output = quote!(#res);
+mod types;
+use types::Type;
+
+mod value;
+use value::{FormatSpecifier, Value};
+
+pub fn format(input: TokenStream, _build_info: BuildInfo) -> TokenStream {
+	let syntax = parse_macro_input!(input as syntax::Syntax);
+	let values: Result<Vec<Box<dyn Value>>> = syntax.args.iter().map(|v| v.eval()).collect();
+	let values = values.unwrap_or_else(|err| abort_call_site!(err.to_string()));
+
+	let str = if values.is_empty() {
+		super::deserialize_build_info().to_string()
+	} else {
+		let format = values[0].as_any().downcast_ref::<String>().unwrap_or_else(
+			|| abort_call_site!("Could not interpret first argument as a string"; note = "It is {:#?}", &*values[0];),
+		);
+		let args: Vec<&dyn Value> = values[1..].iter().map(|arg| &**arg).collect();
+		interpolate(format, &args[..], Span::call_site())
+	};
+	let output = quote!(#str);
 
 	// println!("{}", output.to_string());
 	output.into()
 }
 
-fn interpolate(format: String, build_info: &BuildInfo) -> String {
-	let mut chars = format.chars();
+const CLOSING_BRACE_EXPECTED: &str = "Invalid format string: unmatched `{` found";
+const CLOSING_BRACE_NOTE: &str = "If you intended to print `{`, you can escape it using `{{`.";
+
+fn interpolate(format: &str, args: &[&dyn Value], span: Span) -> String {
 	let mut res = String::new();
+	let mut implicit_position = 0usize;
+	let mut argument_used = Vec::new();
+	argument_used.resize(args.len(), false);
+
+	let mut chars = format.chars();
 	while let Some(c) = chars.next() {
 		if c == '{' {
 			let n = chars
 				.next()
-				.expect("Format string has an opening brace without a matching closing brace");
+				.unwrap_or_else(|| abort!(span, CLOSING_BRACE_EXPECTED; note = CLOSING_BRACE_NOTE;));
 			if n == '{' {
 				res.push(c);
 			} else {
-				res.push_str(&interpolate_once(n, &mut chars, build_info))
+				if args.is_empty() {
+					abort_call_site!(
+						"Format string expects more arguments than were given.";
+						note = "Ran out of arguments after {:#?}", res;
+					);
+				}
+				interpolate_once(
+					&mut res,
+					n,
+					&mut chars,
+					args,
+					&mut argument_used,
+					&mut implicit_position,
+					span,
+				);
 			}
 		} else if c == '}' {
-			let n = chars
-				.next()
-				.expect("Format string has an closing brace without a matching opening brace");
-			if n == '}' {
+			let n = chars.next();
+			if n == Some('}') {
 				res.push(c);
 			} else {
-				panic!("Format string has an closing brace without a matching opening brace")
+				abort!(
+					span, "Invalid format string: unmatched `}` found";
+					note = "If you intended to print `}`, you can escape it using `}}`.";
+				)
 			}
 		} else {
 			res.push(c);
 		}
 	}
+
 	res
 }
 
-#[derive(Debug)]
-pub(crate) enum Index {
-	Unwrap,
-	Field(String),
-	Function(String, Vec<String>),
-}
+fn interpolate_once(
+	buffer: &mut String,
+	mut c: char,
+	chars: &mut Chars,
+	args: &[&dyn Value],
+	argument_used: &mut [bool],
+	implicit_position: &mut usize,
+	span: Span,
+) {
+	let mut explicit_position = None;
+	if c.is_ascii_digit() {
+		let mut acc = 0;
+		while {
+			acc = acc * 10 + c.to_digit(10).unwrap() as usize;
+			c = chars
+				.next()
+				.unwrap_or_else(|| abort!(span, CLOSING_BRACE_EXPECTED; note = CLOSING_BRACE_NOTE;));
+			c.is_ascii_digit()
+		} {}
+		explicit_position = Some(acc);
+	} else if c.is_alphabetic() {
+		abort!(
+			span,
+			"Keyword arguments are currently not supported in build_info::format"
+		);
+	}
 
-const CLOSING_BRACE_EXPECTED: &str = "Format string has an opening brace without a matching closing brace";
+	let arg = if let Some(pos) = explicit_position {
+		let arg = args.get(pos).unwrap_or_else(|| {
+			abort!(span,
+				"Invalid reference to positional argument {} ({} arguments were given)", pos, args.len();
+				note = "positional arguments are zero-based";
+			)
+		});
+		argument_used[pos] = true;
+		arg
+	} else {
+		let arg = args.get(*implicit_position).unwrap_or_else(|| {
+			abort!(
+				span,
+				"Invalid implicit reference to positional argument {} ({} arguments were given)",
+				*implicit_position,
+				args.len()
+			)
+		});
+		argument_used[*implicit_position] = true;
+		*implicit_position += 1;
+		arg
+	};
 
-fn interpolate_once(mut c: char, chars: &mut Chars, build_info: &BuildInfo) -> String {
-	let mut trace = Vec::new();
-	while c != '}' {
-		c = skip_ws(c, chars);
+	let mut debug = false;
+	let mut alternate = false;
+	if c == ':' {
+		c = chars
+			.next()
+			.unwrap_or_else(|| abort!(span, CLOSING_BRACE_EXPECTED; note = CLOSING_BRACE_NOTE;));
+		if c == '#' {
+			alternate = true;
+			c = chars
+				.next()
+				.unwrap_or_else(|| abort!(span, CLOSING_BRACE_EXPECTED; note = CLOSING_BRACE_NOTE;));
+		}
 		if c == '?' {
-			trace.push(Index::Unwrap);
-			c = chars.next().expect(CLOSING_BRACE_EXPECTED);
-		} else if c == '.' {
-			c = chars.next().expect(CLOSING_BRACE_EXPECTED);
-			c = skip_ws(c, chars);
-
-			let (n, id) = parse_id(c, chars);
-			c = n;
-
-			c = skip_ws(c, chars);
-
-			if c == '(' {
-				c = chars.next().expect(CLOSING_BRACE_EXPECTED);
-				let args = Vec::new();
-				loop {
-					c = skip_ws(c, chars);
-					if c == ')' {
-						c = chars.next().expect(CLOSING_BRACE_EXPECTED);
-						break;
-					} else {
-						panic!(format!(
-							"Unexpected character found inside function call arguments while parsing format string: {:?}",
-							c
-						));
-					}
-				}
-				trace.push(Index::Function(id, args));
-			} else {
-				trace.push(Index::Field(id));
-			}
-		} else {
-			panic!(format!(
-				"Unexpected character found while parsing format string: {:?}",
-				c
-			));
+			debug = true;
+			c = chars
+				.next()
+				.unwrap_or_else(|| abort!(span, CLOSING_BRACE_EXPECTED; note = CLOSING_BRACE_NOTE;));
 		}
 	}
 
-	indexed_string_value(build_info, &trace)
-}
-
-fn parse_id(mut c: char, chars: &mut Chars) -> (char, String) {
-	if !(c.is_alphabetic() || c == '_') {
-		panic!(format!(
-			"Unexpected character found while parsing identifier in format string: {:?}",
-			c
-		));
+	if c == '}' {
+		if debug {
+			if alternate {
+				arg.format(buffer, FormatSpecifier::DebugAlt);
+			} else {
+				arg.format(buffer, FormatSpecifier::Debug);
+			}
+		} else {
+			debug_assert_eq!(alternate, false);
+			arg.format(buffer, FormatSpecifier::Default);
+		}
+	} else {
+		abort!(span,
+			"Unexpected character {:?} in format specifier.", c;
+			note = CLOSING_BRACE_NOTE;
+		);
 	}
-
-	let mut id = String::new();
-	while {
-		id.push(c);
-		c = chars.next().expect(CLOSING_BRACE_EXPECTED);
-		c.is_alphanumeric() || c == '_'
-	} {}
-
-	(c, id)
-}
-
-fn skip_ws(mut c: char, chars: &mut Chars) -> char {
-	while c.is_ascii_whitespace() {
-		c = chars.next().expect(CLOSING_BRACE_EXPECTED);
-	}
-	c
 }

@@ -12,9 +12,12 @@ fn main() {
 	// ... or format it directly to a single `&'static str` at compile time
 	println!(
 		"{}",
-		build_info::format!("{{{.crate_info.name} v{.crate_info.version} built with {.compiler} at {.timestamp}}}")
+		build_info::format!("{{{} v{} built with {} at {}}}", $.crate_info.name, $.crate_info.version, $.compiler, $.timestamp)
 	);
 
 	// Most types have a sensible default for formatting. Just printing the BuildInfo type directly is quick and easy:
-	println!("{}", build_info::format!("{}"));
+	println!("{}", build_info::format!("{}", $));
+
+	// In fact, there is even a shorter shortcut to that:
+	println!("{}", build_info::format!());
 }
