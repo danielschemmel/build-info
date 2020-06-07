@@ -221,6 +221,8 @@ impl IndexedStringValue for GitInfo {
 		let index = indices.pop_front().unwrap();
 		match index {
 			Index::Field(ref id) if id == "commit_id" => indexed_string_value(&self.commit_id, indices),
+			Index::Field(ref id) if id == "commit_short_id" => indexed_string_value(&self.commit_short_id, indices),
+			Index::Field(ref id) if id == "commit_date" => indexed_string_value(&self.commit_date, indices),
 			Index::Field(ref id) if id == "dirty" => indexed_string_value(&self.dirty, indices),
 			Index::Field(ref id) if id == "branch" => indexed_string_value(&self.branch, indices),
 			Index::Field(ref id) if id == "tags" => indexed_string_value(&self.tags, indices),

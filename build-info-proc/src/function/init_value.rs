@@ -192,6 +192,14 @@ impl InitValue for GitInfo {
 		init_value(&self.commit_id, &mut initializer);
 		initializer.append_all(quote!(,));
 
+		initializer.append_all(quote!(commit_short_id:));
+		init_value(&self.commit_short_id, &mut initializer);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(commit_date:));
+		init_value(&self.commit_date, &mut initializer);
+		initializer.append_all(quote!(,));
+
 		initializer.append_all(quote!(dirty:));
 		init_value(&self.dirty, &mut initializer);
 		initializer.append_all(quote!(,));

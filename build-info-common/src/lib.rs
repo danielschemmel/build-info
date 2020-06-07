@@ -124,6 +124,12 @@ pub struct GitInfo {
 	/// Currently checked out git commit hash
 	pub commit_id: String,
 
+	/// Currently checked out short git commit hash
+	pub commit_short_id: Option<String>,
+
+	/// Currently checked out commit date
+	pub commit_date: String,
+
 	/// `true` iff the repository had uncommitted changes when building the project.
 	pub dirty: bool,
 
