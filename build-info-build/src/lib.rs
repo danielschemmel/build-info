@@ -27,8 +27,8 @@ The ´build-info-build` crate has the following features:
 
 use std::path::Path;
 
+use build_info_common::chrono::{DateTime, Utc};
 use build_info_common::{BuildInfo, VersionedString};
-pub use build_info_common::{DateTime, Utc};
 
 mod compiler;
 mod crate_info;

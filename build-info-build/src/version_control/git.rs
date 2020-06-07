@@ -1,6 +1,7 @@
 use anyhow::{anyhow, Result};
 
-use build_info_common::{epoch_to_utc, GitInfo};
+use build_info_common::chrono::{TimeZone, Utc};
+use build_info_common::GitInfo;
 
 use git2::{Oid, Repository, StatusOptions};
 
@@ -29,7 +30,7 @@ pub(crate) fn get_info() -> Result<GitInfo> {
 	let commit = head.peel_to_commit()?;
 	let commit_id = commit.id();
 	let commit_short_id = commit.as_object().short_id()?.as_str().unwrap().to_string();
-	let commit_timestamp = epoch_to_utc(commit.time().seconds());
+	let commit_timestamp = Utc.timestamp(commit.time().seconds(), 0);
 
 	let changes = repository.statuses(Some(StatusOptions::new().include_ignored(false)))?;
 	let dirty = !changes.is_empty();

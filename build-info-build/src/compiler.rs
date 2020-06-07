@@ -1,6 +1,8 @@
 use rustc_version::{version_meta, Channel};
 
-use build_info_common::{CompilerChannel, CompilerInfo, NaiveDate, Version};
+use build_info_common::chrono::NaiveDate;
+use build_info_common::semver::Version;
+use build_info_common::{CompilerChannel, CompilerInfo};
 
 pub(crate) fn get_info() -> CompilerInfo {
 	let rustc_version = version_meta().unwrap();
@@ -16,7 +18,9 @@ pub(crate) fn get_info() -> CompilerInfo {
 		Channel::Dev => CompilerChannel::Dev,
 	};
 
-	let commit_date = rustc_version.commit_date.and_then(|date| NaiveDate::parse_from_str(&date, "%Y-%m-%d").ok());
+	let commit_date = rustc_version
+		.commit_date
+		.and_then(|date| NaiveDate::parse_from_str(&date, "%Y-%m-%d").ok());
 
 	CompilerInfo {
 		version,

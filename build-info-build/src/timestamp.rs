@@ -1,4 +1,4 @@
-use crate::{DateTime, Utc};
+use build_info_common::chrono::{DateTime, TimeZone, Utc};
 
 impl crate::BuildScriptOptions {
 	/// Set the build timestamp by hand.
@@ -17,7 +17,7 @@ impl crate::BuildScriptOptions {
 	/// variable [`SOURCE_DATE_EPOCH`](https://reproducible-builds.org/specs/source-date-epoch/) instead, which does not
 	/// require any setup.
 	pub fn build_timestamp_as_nanos(mut self, nanos: i64) -> Self {
-		self.timestamp = Some(build_info_common::nanos_to_utc(nanos));
+		self.timestamp = Some(Utc.timestamp_nanos(nanos));
 		self
 	}
 }
@@ -30,9 +30,9 @@ fn get_timestamp_internal(epoch: Option<String>) -> DateTime<Utc> {
 	// https://reproducible-builds.org/specs/source-date-epoch/
 	if let Some(epoch) = epoch {
 		let epoch: i64 = epoch.parse().expect("Could not parse SOURCE_DATE_EPOCH");
-		build_info_common::epoch_to_utc(epoch)
+		Utc.timestamp(epoch, 0)
 	} else {
-		build_info_common::Utc::now()
+		Utc::now()
 	}
 }
 
@@ -42,9 +42,9 @@ mod test {
 
 	#[test]
 	fn get_current_timestamp() {
-		let past = build_info_common::epoch_to_utc(1591113000);
+		let past = Utc.timestamp(1591113000, 0);
 		let now = get_timestamp_internal(None);
-		let future = build_info_common::epoch_to_utc(32503680000);
+		let future = Utc.timestamp(32503680000, 0);
 		assert!(past < now);
 		assert!(now < future);
 	}
@@ -52,9 +52,6 @@ mod test {
 	#[test]
 	fn get_fixed_timestamp() {
 		let epoch = 1591113000;
-		assert_eq!(
-			get_timestamp_internal(Some(epoch.to_string())),
-			build_info_common::epoch_to_utc(epoch)
-		);
+		assert_eq!(get_timestamp_internal(Some(epoch.to_string())), Utc.timestamp(epoch, 0));
 	}
 }

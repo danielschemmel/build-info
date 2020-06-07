@@ -10,8 +10,11 @@ For example, `build_info_common::BuildInfo` should be used as `build_info::Build
 
 use derive_more::Display;
 
-pub use chrono::{Datelike, DateTime, NaiveDate, TimeZone, Utc};
-pub use semver::{Identifier, Version};
+pub use chrono;
+use chrono::{DateTime, NaiveDate, Utc};
+
+pub use semver;
+use semver::Version;
 
 #[cfg(feature = "enable-serde")]
 use serde::{Deserialize, Serialize};
@@ -46,16 +49,6 @@ pub struct BuildInfo {
 
 	/// `Some` if the project is inside a check-out of a supported version control system.
 	pub version_control: Option<VersionControl>,
-}
-
-/// Convert a UNIX timestamp in nanoseconds to DateTime<Utc>
-pub fn nanos_to_utc(nanos: i64) -> DateTime<Utc> {
-	Utc.timestamp_nanos(nanos)
-}
-
-/// Convert a UNIX timestamp in seconds to DateTime<Utc>
-pub fn epoch_to_utc(secs: i64) -> DateTime<Utc> {
-	Utc.timestamp(secs, 0)
 }
 
 /// Information about the current crate (i.e., the crate for which build information has been generated)

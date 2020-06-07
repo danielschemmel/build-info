@@ -2,9 +2,9 @@ use proc_macro2::{Delimiter, Group, Ident, TokenStream};
 use proc_macro_crate::crate_name;
 use quote::{quote, TokenStreamExt};
 
-use build_info_common::{
-	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, Datelike, GitInfo, NaiveDate, Utc, Version, VersionControl,
-};
+use build_info_common::chrono::{DateTime, Datelike, NaiveDate, Utc};
+use build_info_common::semver::Version;
+use build_info_common::{BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, VersionControl};
 
 pub(crate) fn init_value<T: InitValue>(this: &T, tokens: &mut TokenStream) {
 	this.init_value(tokens)
@@ -224,7 +224,7 @@ impl InitValue for Version {
 		);
 
 		let version_string = self.to_string();
-		tokens.append_all(quote!(#build_info::Version::parse(#version_string).unwrap()));
+		tokens.append_all(quote!(#build_info::semver::Version::parse(#version_string).unwrap()));
 	}
 }
 
@@ -236,7 +236,7 @@ impl InitValue for DateTime<Utc> {
 		);
 
 		let nanos = self.timestamp_nanos();
-		tokens.append_all(quote!(#build_info::nanos_to_utc(#nanos)));
+		tokens.append_all(quote!(#build_info::chrono::TimeZone::timestamp_nanos(&#build_info::chrono::Utc, #nanos)));
 	}
 }
 
@@ -250,7 +250,7 @@ impl InitValue for NaiveDate {
 		let year = self.year();
 		let month = self.month();
 		let day = self.day();
-		tokens.append_all(quote!(#build_info::NaiveDate::from_ymd(#year, #month, #day)));
+		tokens.append_all(quote!(#build_info::chrono::NaiveDate::from_ymd(#year, #month, #day)));
 	}
 }
 

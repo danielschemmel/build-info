@@ -2,9 +2,9 @@ use format_buf::format;
 
 use std::collections::VecDeque;
 
-use build_info_common::{
-	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, GitInfo, Identifier, NaiveDate, Utc, Version, VersionControl,
-};
+use build_info_common::chrono::{DateTime, NaiveDate, Utc};
+use build_info_common::semver::{Identifier, Version};
+use build_info_common::{BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, VersionControl};
 
 use super::Index;
 

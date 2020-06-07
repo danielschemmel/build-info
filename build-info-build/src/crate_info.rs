@@ -1,4 +1,5 @@
-use build_info_common::{CrateInfo, Version};
+use build_info_common::semver::Version;
+use build_info_common::CrateInfo;
 use toml::Value;
 
 pub(crate) fn read_manifest() -> CrateInfo {
