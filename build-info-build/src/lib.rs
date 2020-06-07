@@ -90,7 +90,7 @@ impl Drop for BuildScriptOptions {
 		let compiler = compiler::get_info();
 		let version_control = version_control::get_info();
 
-		let timestamp = self.timestamp.unwrap_or_else(|| timestamp::get_timestamp());
+		let timestamp = self.timestamp.unwrap_or_else(timestamp::get_timestamp);
 		let build_info = BuildInfo {
 			timestamp,
 			profile,
