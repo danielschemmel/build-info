@@ -28,7 +28,7 @@ pub(crate) fn get_info() -> Result<GitInfo> {
 	}
 	let commit = head.peel_to_commit()?;
 	let commit_id = commit.id();
-	let commit_short_id = commit.as_object().short_id()?.as_str().map(|s| s.to_string());
+	let commit_short_id = commit.as_object().short_id()?.as_str().unwrap().to_string();
 	let commit_timestamp = epoch_to_utc(commit.time().seconds());
 
 	let changes = repository.statuses(Some(StatusOptions::new().include_ignored(false)))?;

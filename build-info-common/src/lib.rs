@@ -128,7 +128,7 @@ pub struct GitInfo {
 	///
 	/// The length of this string depends on the effective value of the git configuration variable `core.abbrev`, and is
 	/// extended to the minimum length required for the id to be unique (at the time it was computed).
-	pub commit_short_id: Option<String>,
+	pub commit_short_id: String,
 
 	/// Timestamp of the currently checked out commit
 	pub commit_timestamp: DateTime<Utc>,
