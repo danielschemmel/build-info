@@ -1,6 +1,6 @@
 use rustc_version::{version_meta, Channel};
 
-use build_info_common::{CompilerChannel, CompilerInfo, Version};
+use build_info_common::{CompilerChannel, CompilerInfo, NaiveDate, Version};
 
 pub(crate) fn get_info() -> CompilerInfo {
 	let rustc_version = version_meta().unwrap();
@@ -16,10 +16,12 @@ pub(crate) fn get_info() -> CompilerInfo {
 		Channel::Dev => CompilerChannel::Dev,
 	};
 
+	let commit_date = rustc_version.commit_date.and_then(|date| NaiveDate::parse_from_str(&date, "%Y-%m-%d").ok());
+
 	CompilerInfo {
 		version,
 		commit_id: rustc_version.commit_hash,
-		commit_date: rustc_version.commit_date,
+		commit_date,
 		channel,
 		host_triple: rustc_version.host,
 		target_triple: std::env::var("TARGET").unwrap_or_else(|_| "UNKNOWN".to_string()),

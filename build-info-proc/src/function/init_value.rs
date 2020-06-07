@@ -3,7 +3,7 @@ use proc_macro_crate::crate_name;
 use quote::{quote, TokenStreamExt};
 
 use build_info_common::{
-	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, GitInfo, Utc, Version, VersionControl,
+	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, Datelike, GitInfo, NaiveDate, Utc, Version, VersionControl,
 };
 
 pub(crate) fn init_value<T: InitValue>(this: &T, tokens: &mut TokenStream) {
@@ -237,6 +237,20 @@ impl InitValue for DateTime<Utc> {
 
 		let nanos = self.timestamp_nanos();
 		tokens.append_all(quote!(#build_info::nanos_to_utc(#nanos)));
+	}
+}
+
+impl InitValue for NaiveDate {
+	fn init_value(&self, tokens: &mut TokenStream) {
+		let build_info = Ident::new(
+			&crate_name("build-info").expect("build-info must be a direct dependency"),
+			proc_macro2::Span::call_site(),
+		);
+
+		let year = self.year();
+		let month = self.month();
+		let day = self.day();
+		tokens.append_all(quote!(#build_info::NaiveDate::from_ymd(#year, #month, #day)));
 	}
 }
 

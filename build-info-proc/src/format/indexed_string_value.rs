@@ -3,7 +3,7 @@ use format_buf::format;
 use std::collections::VecDeque;
 
 use build_info_common::{
-	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, GitInfo, Identifier, Utc, Version, VersionControl,
+	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, DateTime, GitInfo, Identifier, NaiveDate, Utc, Version, VersionControl,
 };
 
 use super::Index;
@@ -58,6 +58,17 @@ impl IndexedStringValue for DateTime<Utc> {
 
 		let index = indices.pop_front().unwrap();
 		panic!(format!("{:?} is not valid for DateTime<Utc>", index));
+	}
+}
+
+impl IndexedStringValue for NaiveDate {
+	fn indexed_string_value(&self, mut indices: VecDeque<Index>) -> String {
+		if indices.is_empty() {
+			return self.format("%Y-%m-%d").to_string();
+		}
+
+		let index = indices.pop_front().unwrap();
+		panic!(format!("{:?} is not valid for NaiveDate", index));
 	}
 }
 

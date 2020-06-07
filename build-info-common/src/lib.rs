@@ -10,7 +10,7 @@ For example, `build_info_common::BuildInfo` should be used as `build_info::Build
 
 use derive_more::Display;
 
-pub use chrono::{DateTime, TimeZone, Utc};
+pub use chrono::{Datelike, DateTime, NaiveDate, TimeZone, Utc};
 pub use semver::{Identifier, Version};
 
 #[cfg(feature = "enable-serde")]
@@ -83,7 +83,7 @@ pub struct CompilerInfo {
 	pub commit_id: Option<String>,
 
 	/// Date on which `rustc` was built
-	pub commit_date: Option<String>,
+	pub commit_date: Option<NaiveDate>,
 
 	/// Channel which was configured for this version of `rustc`
 	pub channel: CompilerChannel,
