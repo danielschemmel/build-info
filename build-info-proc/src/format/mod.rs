@@ -2,7 +2,6 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, LitStr};
 
-use std::collections::VecDeque;
 use std::str::Chars;
 
 use build_info_common::BuildInfo;
@@ -60,11 +59,11 @@ pub(crate) enum Index {
 const CLOSING_BRACE_EXPECTED: &str = "Format string has an opening brace without a matching closing brace";
 
 fn interpolate_once(mut c: char, chars: &mut Chars, build_info: &BuildInfo) -> String {
-	let mut trace = VecDeque::new();
+	let mut trace = Vec::new();
 	while c != '}' {
 		c = skip_ws(c, chars);
 		if c == '?' {
-			trace.push_back(Index::Unwrap);
+			trace.push(Index::Unwrap);
 			c = chars.next().expect(CLOSING_BRACE_EXPECTED);
 		} else if c == '.' {
 			c = chars.next().expect(CLOSING_BRACE_EXPECTED);
@@ -90,9 +89,9 @@ fn interpolate_once(mut c: char, chars: &mut Chars, build_info: &BuildInfo) -> S
 						));
 					}
 				}
-				trace.push_back(Index::Function(id, args));
+				trace.push(Index::Function(id, args));
 			} else {
-				trace.push_back(Index::Field(id));
+				trace.push(Index::Field(id));
 			}
 		} else {
 			panic!(format!(
@@ -102,7 +101,7 @@ fn interpolate_once(mut c: char, chars: &mut Chars, build_info: &BuildInfo) -> S
 		}
 	}
 
-	indexed_string_value(build_info, trace)
+	indexed_string_value(build_info, &trace)
 }
 
 fn parse_id(mut c: char, chars: &mut Chars) -> (char, String) {
