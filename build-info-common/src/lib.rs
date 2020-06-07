@@ -121,14 +121,17 @@ currently checked out commit changes.
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct GitInfo {
-	/// Currently checked out git commit hash
+	/// Full commit hash for the currently checked out commit
 	pub commit_id: String,
 
-	/// Currently checked out short git commit hash
+	/// Short commit hash for the currently checked out commit
+	///
+	/// The length of this string depends on the effective value of the git configuration variable `core.abbrev`, and is
+	/// extended to the minimum length required for the id to be unique (at the time it was computed).
 	pub commit_short_id: Option<String>,
 
-	/// Currently checked out commit date
-	pub commit_date: String,
+	/// Timestamp of the currently checked out commit
+	pub commit_timestamp: DateTime<Utc>,
 
 	/// `true` iff the repository had uncommitted changes when building the project.
 	pub dirty: bool,

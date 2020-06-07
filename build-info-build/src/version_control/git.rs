@@ -29,7 +29,7 @@ pub(crate) fn get_info() -> Result<GitInfo> {
 	let commit = head.peel_to_commit()?;
 	let commit_id = commit.id();
 	let commit_short_id = commit.as_object().short_id()?.as_str().map(|s| s.to_string());
-	let commit_date = epoch_to_utc(commit.time().seconds()).date().format("%F").to_string();
+	let commit_timestamp = epoch_to_utc(commit.time().seconds());
 
 	let changes = repository.statuses(Some(StatusOptions::new().include_ignored(false)))?;
 	let dirty = !changes.is_empty();
@@ -39,7 +39,7 @@ pub(crate) fn get_info() -> Result<GitInfo> {
 	Ok(GitInfo {
 		commit_id: commit_id.to_string(),
 		commit_short_id,
-		commit_date,
+		commit_timestamp,
 		dirty,
 		branch: if head.is_branch() {
 			head.shorthand().map(|s| s.to_string())
