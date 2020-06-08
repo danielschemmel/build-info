@@ -24,7 +24,7 @@ fn as_field_name<'a>(args: &[&'a dyn Value]) -> &'a str {
 		.expect("The field name must be a string when accessing a field.")
 }
 
-fn as_index<'a>(args: &[&dyn Value]) -> usize {
+fn as_index(args: &[&dyn Value]) -> usize {
 	assert!(
 		args.len() == 1,
 		"Accessing a field must have exactly one operand (the field name)"
@@ -193,7 +193,7 @@ impl Value for String {
 
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
 		match spec {
-			FormatSpecifier::Default => format!(buffer, "{}", self),
+			FormatSpecifier::Default => *buffer += self,
 			FormatSpecifier::Debug => format!(buffer, "{:?}", self),
 			FormatSpecifier::DebugAlt => format!(buffer, "{:#?}", self),
 		}
@@ -411,7 +411,7 @@ impl Value for VersionControl {
 		match func {
 			"git" => {
 				as_arguments_0(args)?;
-				Ok(Box::new(self.git().map(|git| git.clone())))
+				Ok(Box::new(self.git().cloned()))
 			}
 			"to_string" => {
 				as_arguments_0(args)?;
