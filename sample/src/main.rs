@@ -18,6 +18,9 @@ fn main() {
 	// Most types have a sensible default for formatting. Just printing the BuildInfo type directly is quick and easy:
 	println!("{}", build_info::format!("{}", $));
 
-	// In fact, there is even a shorter shortcut to that:
+	// In fact, there is even a shorter shortcut:
 	println!("{}", build_info::format!());
+
+	// Your milage *will* vary, but you can attempt to "do stuff" inside `format!`
+	println!("{}", build_info::format!("Copyright 2020-{}", $.timestamp.format("%Y")));
 }

@@ -5,11 +5,15 @@ use std::any::Any;
 
 use build_info_common::chrono::NaiveDate;
 
-use super::super::{as_arguments_0, FormatSpecifier, Type, Value};
+use super::super::{as_arguments_0, as_arguments_1, FormatSpecifier, Type, Value};
 
 impl Value for NaiveDate {
 	fn call(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
 		match func {
+			"format" => {
+				let (format_string,) = as_arguments_1::<String>(args)?;
+				Ok(Box::new(self.format(&format_string).to_string()))
+			}
 			"to_string" => {
 				as_arguments_0(args)?;
 				Ok(Box::new(self.format("%Y-%m-%d").to_string()))
