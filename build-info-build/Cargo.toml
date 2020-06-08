@@ -1,6 +1,6 @@
 [package]
 name = "build-info-build"
-version = "0.0.16"
+version = "0.0.17-alpha.0"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 edition = "2018"
 publish = ["crates-io"]
@@ -17,7 +17,7 @@ rustc_version = "0.2"
 serde_json = "1"
 toml = "0.5"
 
-build-info-common = { version = "=0.0.16", path = "../build-info-common", features = ["enable-serde"] }
+build-info-common = { version = "=0.0.17-alpha.0", path = "../build-info-common", features = ["enable-serde"] }
 
 [features]
 default = ["git"]
