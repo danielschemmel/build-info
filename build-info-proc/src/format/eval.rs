@@ -2,7 +2,7 @@ use anyhow::Result;
 use num_bigint::BigInt;
 
 use super::syntax::{AtomicExpr, Expr, Suffix};
-use super::Value;
+use super::{Value, OP_TUPLE_INDEX, OP_FIELD_ACCESS, OP_ARRAY_INDEX};
 
 pub(crate) trait Eval {
 	fn eval(&self) -> Result<Box<dyn Value>>;
@@ -29,15 +29,15 @@ impl Eval for Expr {
 					value = value.call("?", &[])?;
 				}
 				Suffix::Field(name) => {
-					value = value.call("!field", &[name])?;
+					value = value.call(OP_FIELD_ACCESS, &[name])?;
 				}
 				Suffix::TupleIndex(index) => {
 					let index: BigInt = (*index).into();
-					value = value.call("!tuple_index", &[&index])?;
+					value = value.call(OP_TUPLE_INDEX, &[&index])?;
 				}
 				Suffix::ArrayIndex(expr) => {
 					let index = expr.eval()?;
-					value = value.call("::std::ops::Index::index", &[&*index])?;
+					value = value.call(OP_ARRAY_INDEX, &[&*index])?;
 				}
 				Suffix::FunctionCall(name, args) => {
 					let args = args

@@ -4,12 +4,12 @@ use num_bigint::BigInt;
 
 use std::any::Any;
 
-use super::{as_arguments_0, as_index, FormatSpecifier, Type, Value};
+use super::{as_arguments_0, as_index, FormatSpecifier, Type, Value, OP_ARRAY_INDEX};
 
 impl<T: 'static + Value + Clone> Value for Vec<T> {
 	fn call(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
 		match func {
-			"::std::ops::Index::index" => Ok(Box::new(self[as_index(args)].clone())),
+			OP_ARRAY_INDEX => Ok(Box::new(self[as_index(args)].clone())),
 			"len" => {
 				as_arguments_0(args)?;
 				Ok(Box::new(BigInt::from(self.len())))

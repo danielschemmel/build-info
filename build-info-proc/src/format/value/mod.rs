@@ -27,7 +27,7 @@ mod version_control;
 pub(crate) trait Value: Debug {
 	fn call_base(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
 		match func {
-			"!field" => {
+			OP_FIELD_ACCESS => {
 				let field = as_field_name(args);
 				Err(anyhow!(
 					"The field {} does not exist for objects of type {}",
@@ -35,8 +35,8 @@ pub(crate) trait Value: Debug {
 					self.get_type()
 				))
 			}
-			"!tuple_index" => Err(anyhow!("Type {} cannot be tuple-indexed", self.get_type())),
-			"::std::ops::Index::index" => Err(anyhow!("Type {} cannot be indexed", self.get_type())),
+			OP_TUPLE_INDEX => Err(anyhow!("Type {} cannot be tuple-indexed", self.get_type())),
+			OP_ARRAY_INDEX => Err(anyhow!("Type {} cannot be indexed", self.get_type())),
 			_ => Err(anyhow!(
 				"Function {} cannot be called with arguments {:#?} on objects of type {}",
 				func,
@@ -63,6 +63,10 @@ pub(crate) enum FormatSpecifier {
 	Debug,
 	DebugAlt,
 }
+
+pub(crate) const OP_FIELD_ACCESS: &str = "!field";
+pub(crate) const OP_TUPLE_INDEX: &str = "!tuple_index";
+pub(crate) const OP_ARRAY_INDEX: &str = "!array_index";
 
 fn as_field_name<'a>(args: &[&'a dyn Value]) -> &'a str {
 	assert!(

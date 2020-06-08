@@ -6,12 +6,12 @@ use std::any::Any;
 
 use build_info_common::semver::Version;
 
-use super::super::{as_arguments_0, as_field_name, FormatSpecifier, Type, Value};
+use super::super::{as_arguments_0, as_field_name, FormatSpecifier, Type, Value, OP_FIELD_ACCESS};
 
 impl Value for Version {
 	fn call(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
 		match func {
-			"!field" => match as_field_name(args) {
+			OP_FIELD_ACCESS => match as_field_name(args) {
 				"major" => Ok(Box::new(BigInt::from(self.major))),
 				"minor" => Ok(Box::new(BigInt::from(self.minor))),
 				"patch" => Ok(Box::new(BigInt::from(self.patch))),

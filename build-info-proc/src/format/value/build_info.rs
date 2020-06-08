@@ -5,12 +5,12 @@ use std::any::Any;
 
 use build_info_common::BuildInfo;
 
-use super::{as_arguments_0, as_field_name, FormatSpecifier, Type, Value};
+use super::{as_arguments_0, as_field_name, FormatSpecifier, Type, Value, OP_FIELD_ACCESS};
 
 impl Value for BuildInfo {
 	fn call(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
 		match func {
-			"!field" => match as_field_name(args) {
+			OP_FIELD_ACCESS => match as_field_name(args) {
 				"timestamp" => Ok(Box::new(self.timestamp)),
 				"profile" => Ok(Box::new(self.profile.clone())),
 				"crate_info" => Ok(Box::new(self.crate_info.clone())),

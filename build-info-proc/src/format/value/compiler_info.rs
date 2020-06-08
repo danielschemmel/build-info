@@ -5,12 +5,12 @@ use std::any::Any;
 
 use build_info_common::CompilerInfo;
 
-use super::{as_arguments_0, as_field_name, FormatSpecifier, Type, Value};
+use super::{as_arguments_0, as_field_name, FormatSpecifier, Type, Value, OP_FIELD_ACCESS};
 
 impl Value for CompilerInfo {
 	fn call(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
 		match func {
-			"!field" => match as_field_name(args) {
+			OP_FIELD_ACCESS => match as_field_name(args) {
 				"version" => Ok(Box::new(self.version.clone())),
 				"commit_id" => Ok(Box::new(self.commit_id.clone())),
 				"commit_date" => Ok(Box::new(self.commit_date)),
