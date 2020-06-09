@@ -1,6 +1,6 @@
 use num_bigint::BigInt;
 use proc_macro2::Span;
-use syn::{bracketed, parenthesized, parse, Ident, LitInt, LitStr, Token};
+use syn::{bracketed, parenthesized, parse, Ident, LitBool, LitChar, LitInt, LitStr, Token};
 
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
@@ -56,7 +56,9 @@ pub(crate) struct Expr {
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub(crate) enum AtomicExpr {
 	BuildInfo(Meta),
+	LitBool(bool, Meta),
 	LitInt(BigInt, Meta),
+	LitChar(char, Meta),
 	LitStr(String, Meta),
 	Parenthesized(Box<Expr>, Meta),
 }
@@ -116,6 +118,12 @@ impl parse::Parse for AtomicExpr {
 				Box::new(expr.parse::<Expr>()?),
 				Meta { span: expr.span() },
 			))
+		} else if lookahead.peek(LitBool) {
+			let lit_bool = input.parse::<LitBool>()?;
+			Ok(AtomicExpr::LitBool(lit_bool.value, Meta { span: lit_bool.span }))
+		} else if lookahead.peek(LitChar) {
+			let lit_char = input.parse::<LitChar>()?;
+			Ok(AtomicExpr::LitChar(lit_char.value(), Meta { span: lit_char.span() }))
 		} else if lookahead.peek(LitInt) {
 			let lit_int = input.parse::<LitInt>()?;
 			if lit_int.suffix() != "" {

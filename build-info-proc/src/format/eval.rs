@@ -11,6 +11,8 @@ pub(crate) trait Eval {
 impl Eval for AtomicExpr {
 	fn eval(&self) -> Result<Box<dyn Value>> {
 		match self {
+			AtomicExpr::LitBool(value, _) => Ok(Box::new(*value)),
+			AtomicExpr::LitChar(value, _) => Ok(Box::new(*value)),
 			AtomicExpr::LitInt(value, _) => Ok(Box::new(value.clone())),
 			AtomicExpr::LitStr(value, _) => Ok(Box::new(value.clone())),
 			AtomicExpr::BuildInfo(_) => Ok(Box::new(crate::deserialize_build_info())),

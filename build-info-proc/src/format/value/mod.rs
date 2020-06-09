@@ -9,6 +9,7 @@ use std::fmt::Debug;
 use super::Type;
 
 mod bool;
+mod char;
 mod int;
 mod option;
 mod string;
