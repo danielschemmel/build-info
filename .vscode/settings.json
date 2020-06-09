@@ -3,6 +3,7 @@
 		"Deque",
 		"chrono",
 		"clippy",
+		"concat",
 		"eval",
 		"hasher",
 		"nanos",

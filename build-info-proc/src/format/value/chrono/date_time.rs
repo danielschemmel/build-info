@@ -8,7 +8,7 @@ use build_info_common::chrono::{DateTime, Utc};
 use super::super::{as_arguments_0, as_arguments_1, FormatSpecifier, Type, Value};
 
 impl Value for DateTime<Utc> {
-	fn call(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
 		match func {
 			"format" => {
 				let (format_string,) = as_arguments_1::<String>(args)?;

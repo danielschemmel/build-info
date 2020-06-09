@@ -23,4 +23,7 @@ fn main() {
 
 	// Your milage *will* vary, but you can attempt to "do stuff" inside `format!`
 	println!("{}", build_info::format!("Copyright 2020-{}", $.timestamp.format("%Y")));
+
+	// Some macros can also be called inside `format!`
+	println!("{}", build_info::format!(concat!("We are using a RUSTC_WRAPPER: ", "{}"), env!("RUSTC_WRAPPER").is_some()));
 }

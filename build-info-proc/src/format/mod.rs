@@ -31,8 +31,7 @@ pub fn format(input: TokenStream, _build_info: BuildInfo) -> TokenStream {
 		let format = values[0].as_any().downcast_ref::<String>().unwrap_or_else(
 			|| abort_call_site!("Could not interpret first argument as a string"; note = "It is {:#?}", &*values[0];),
 		);
-		let args: Vec<&dyn Value> = values[1..].iter().map(|arg| &**arg).collect();
-		interpolate(format, &args[..], Span::call_site())
+		interpolate(format, &values[1..], Span::call_site())
 	};
 	let output = quote!(#str);
 
@@ -43,7 +42,7 @@ pub fn format(input: TokenStream, _build_info: BuildInfo) -> TokenStream {
 const CLOSING_BRACE_EXPECTED: &str = "Invalid format string: unmatched `{` found";
 const CLOSING_BRACE_NOTE: &str = "If you intended to print `{`, you can escape it using `{{`.";
 
-fn interpolate(format: &str, args: &[&dyn Value], span: Span) -> String {
+fn interpolate(format: &str, args: &[Box<dyn Value>], span: Span) -> String {
 	let mut res = String::with_capacity(format.len());
 	let mut implicit_position = 0usize;
 	let mut argument_used = Vec::new();
@@ -99,7 +98,7 @@ fn interpolate_once(
 	buffer: &mut String,
 	mut c: char,
 	chars: &mut Chars,
-	args: &[&dyn Value],
+	args: &[Box<dyn Value>],
 	argument_used: &mut [bool],
 	implicit_position: &mut usize,
 	span: Span,

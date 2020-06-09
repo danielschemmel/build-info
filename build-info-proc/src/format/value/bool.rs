@@ -6,7 +6,7 @@ use std::any::Any;
 use super::{as_arguments_0, FormatSpecifier, Type, Value};
 
 impl Value for bool {
-	fn call(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
 		match func {
 			"to_string" => {
 				as_arguments_0(args)?;

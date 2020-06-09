@@ -6,8 +6,16 @@ use std::any::Any;
 use super::{as_arguments_0, as_arguments_1, FormatSpecifier, Type, Value};
 
 impl<T: 'static + Value + Clone> Value for Option<T> {
-	fn call(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
 		match func {
+			"is_none" => {
+				as_arguments_0(args)?;
+				Ok(Box::new(self.is_none()))
+			}
+			"is_some" => {
+				as_arguments_0(args)?;
+				Ok(Box::new(self.is_some()))
+			}
 			"expect" => {
 				let (message,) = as_arguments_1::<String>(args)?;
 				self

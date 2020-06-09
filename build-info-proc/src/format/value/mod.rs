@@ -25,8 +25,14 @@ mod crate_info;
 mod git_info;
 mod version_control;
 
+mod functions;
+pub(crate) use functions::call_function;
+
+mod macros;
+pub(crate) use macros::call_macro;
+
 pub(crate) trait Value: Debug {
-	fn call_base(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
+	fn call_base(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
 		match func {
 			OP_FIELD_ACCESS => {
 				let field = as_field_name(args);
@@ -47,7 +53,7 @@ pub(crate) trait Value: Debug {
 		}
 	}
 
-	fn call(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
 		self.call_base(func, args)
 	}
 
@@ -69,7 +75,7 @@ pub(crate) const OP_FIELD_ACCESS: &str = "!field";
 pub(crate) const OP_TUPLE_INDEX: &str = "!tuple_index";
 pub(crate) const OP_ARRAY_INDEX: &str = "!array_index";
 
-fn as_field_name<'a>(args: &[&'a dyn Value]) -> &'a str {
+fn as_field_name<'a>(args: &'a [Box<dyn Value>]) -> &'a str {
 	assert!(
 		args.len() == 1,
 		"Accessing a field must have exactly one operand (the field name)"
@@ -81,7 +87,7 @@ fn as_field_name<'a>(args: &[&'a dyn Value]) -> &'a str {
 		.expect("The field name must be a string when accessing a field.")
 }
 
-fn as_index(args: &[&dyn Value]) -> usize {
+fn as_index(args: &[Box<dyn Value>]) -> usize {
 	assert!(
 		args.len() == 1,
 		"Accessing a field must have exactly one operand (the field name)"
@@ -95,7 +101,7 @@ fn as_index(args: &[&dyn Value]) -> usize {
 		.expect("The array index does not fit into the type usize.")
 }
 
-fn as_arguments_0(args: &[&dyn Value]) -> Result<()> {
+fn as_arguments_0(args: &[Box<dyn Value>]) -> Result<()> {
 	if args.is_empty() {
 		Ok(())
 	} else {
@@ -103,8 +109,7 @@ fn as_arguments_0(args: &[&dyn Value]) -> Result<()> {
 	}
 }
 
-#[allow(dead_code)]
-fn as_arguments_1<'a, T1: 'static>(args: &[&'a dyn Value]) -> Result<(&'a T1,)> {
+fn as_arguments_1<'a, T1: 'static>(args: &'a [Box<dyn Value>]) -> Result<(&'a T1,)> {
 	if args.len() != 1 {
 		return Err(anyhow!("Wrong number of arguments (should be 1)"));
 	}
@@ -116,7 +121,7 @@ fn as_arguments_1<'a, T1: 'static>(args: &[&'a dyn Value]) -> Result<(&'a T1,)> 
 }
 
 #[allow(dead_code)]
-fn as_arguments_2<'a, T1: 'static, T2: 'static>(args: &[&'a dyn Value]) -> Result<(&'a T1, &'a T2)> {
+fn as_arguments_2<'a, T1: 'static, T2: 'static>(args: &'a [Box<dyn Value>]) -> Result<(&'a T1, &'a T2)> {
 	if args.len() != 2 {
 		return Err(anyhow!("Wrong number of arguments (should be 1)"));
 	}

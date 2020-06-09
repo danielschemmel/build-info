@@ -9,7 +9,7 @@ use build_info_common::semver::Version;
 use super::super::{as_arguments_0, as_field_name, FormatSpecifier, Type, Value, OP_FIELD_ACCESS};
 
 impl Value for Version {
-	fn call(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
 		match func {
 			OP_FIELD_ACCESS => match as_field_name(args) {
 				"major" => Ok(Box::new(BigInt::from(self.major))),

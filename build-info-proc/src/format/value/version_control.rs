@@ -8,7 +8,7 @@ use build_info_common::VersionControl;
 use super::{as_arguments_0, FormatSpecifier, Type, Value};
 
 impl Value for VersionControl {
-	fn call(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
 		match func {
 			"git" => {
 				as_arguments_0(args)?;

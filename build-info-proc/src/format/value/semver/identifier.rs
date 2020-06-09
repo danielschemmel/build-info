@@ -8,7 +8,7 @@ use build_info_common::semver::Identifier;
 use super::super::{as_arguments_0, FormatSpecifier, Type, Value};
 
 impl Value for Identifier {
-	fn call(&self, func: &str, args: &[&dyn Value]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
 		match func {
 			"to_string" => {
 				as_arguments_0(args)?;
