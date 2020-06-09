@@ -1,6 +1,6 @@
 use num_bigint::BigInt;
 use proc_macro2::Span;
-use syn::{bracketed, parenthesized, parse, Ident, LitBool, LitChar, LitInt, LitStr, Token};
+use syn::{braced, bracketed, parenthesized, parse, Ident, LitBool, LitChar, LitInt, LitStr, Token};
 
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
@@ -61,6 +61,8 @@ pub(crate) enum AtomicExpr {
 	LitChar(char, Meta),
 	LitStr(String, Meta),
 	Parenthesized(Box<Expr>, Meta),
+	FunctionCall(String, Vec<Expr>, Meta),
+	MacroCall(String, Vec<Expr>, Meta),
 }
 
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
@@ -139,8 +141,38 @@ impl parse::Parse for AtomicExpr {
 		} else if lookahead.peek(LitStr) {
 			let lit_str = input.parse::<LitStr>()?;
 			Ok(AtomicExpr::LitStr(lit_str.value(), Meta { span: lit_str.span() }))
+		} else if lookahead.peek(Ident) {
+			let id = input.parse::<Ident>()?;
+
+			let lookahead = input.lookahead1();
+			if lookahead.peek(syn::token::Paren) {
+				let arguments;
+				parenthesized!(arguments in input);
+				let (arguments, span) = (parse_arguments(&arguments)?, arguments.span());
+				Ok(AtomicExpr::FunctionCall(id.to_string(), arguments, Meta { span }))
+			} else if lookahead.peek(Token![!]) {
+				input.parse::<Token![!]>()?;
+				let lookahead = input.lookahead1();
+				let (arguments, span) = if lookahead.peek(syn::token::Paren) {
+					let arguments;
+					parenthesized!(arguments in input);
+					(parse_arguments(&arguments)?, arguments.span())
+				} else if lookahead.peek(syn::token::Brace) {
+					let arguments;
+					braced!(arguments in input);
+					(parse_arguments(&arguments)?, arguments.span())
+				} else if lookahead.peek(syn::token::Bracket) {
+					let arguments;
+					bracketed!(arguments in input);
+					(parse_arguments(&arguments)?, arguments.span())
+				} else {
+					return Err(lookahead.error());
+				};
+				Ok(AtomicExpr::MacroCall(id.to_string(), arguments, Meta { span }))
+			} else {
+				Err(lookahead.error())
+			}
 		} else {
-			println!("{}", input);
 			Err(lookahead.error())
 		}
 	}

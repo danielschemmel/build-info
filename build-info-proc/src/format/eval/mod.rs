@@ -4,6 +4,9 @@ use num_bigint::BigInt;
 use super::syntax::{AtomicExpr, Expr, Suffix};
 use super::{Value, OP_ARRAY_INDEX, OP_FIELD_ACCESS, OP_TUPLE_INDEX};
 
+mod functions;
+mod macros;
+
 pub(crate) trait Eval {
 	fn eval(&self) -> Result<Box<dyn Value>>;
 }
@@ -17,6 +20,14 @@ impl Eval for AtomicExpr {
 			AtomicExpr::LitStr(value, _) => Ok(Box::new(value.clone())),
 			AtomicExpr::BuildInfo(_) => Ok(Box::new(crate::deserialize_build_info())),
 			AtomicExpr::Parenthesized(expr, _) => expr.eval(),
+			AtomicExpr::FunctionCall(name, args, meta) => {
+				let args: Result<Vec<Box<dyn Value>>> = args.iter().map(|expr| expr.eval()).collect();
+				functions::call_function(name, &args?, meta.span)
+			}
+			AtomicExpr::MacroCall(name, args, meta) => {
+				let args: Result<Vec<Box<dyn Value>>> = args.iter().map(|expr| expr.eval()).collect();
+				macros::call_macro(name, &args?, meta.span)
+			}
 		}
 	}
 }

@@ -19,6 +19,6 @@ build-info-proc = { version = "=0.0.17-alpha.0", path = "../build-info-proc" }
 
 [features]
 default = ["runtime"]
-nested = ["proc-macro-nested"]
+nested = ["proc-macro-nested", "build-info-proc/nested"]
 runtime = ["lazy_static", "build-info-common", "build-info-proc/runtime"]
 serde = ["runtime", "build-info-common/enable-serde"]

@@ -31,4 +31,5 @@ build-info-common = { version = "=0.0.17-alpha.0", path = "../build-info-common"
 
 [features]
 default = []
+nested = []
 runtime = []
