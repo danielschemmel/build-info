@@ -15,6 +15,10 @@ impl<T: 'static + Value + Clone> Value for Vec<T> {
 				let (index,) = as_arguments_1::<BigInt>(args)?;
 				Ok(Box::new(index.to_usize().and_then(|index| self.get(index).cloned())))
 			}
+			"is_empty" => {
+				as_arguments_0(args)?;
+				Ok(Box::new(self.is_empty()))
+			}
 			"len" => {
 				as_arguments_0(args)?;
 				Ok(Box::new(BigInt::from(self.len())))
