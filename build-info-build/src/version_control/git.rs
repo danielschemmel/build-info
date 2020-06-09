@@ -51,14 +51,23 @@ pub(crate) fn get_info() -> Result<GitInfo> {
 	})
 }
 
+const TAGS_PREFIX: &str = "refs/tags/";
+
 fn tags(repository: &Repository, commit_id: &Oid) -> Result<Vec<String>> {
-	repository
-		.references()?
-		.map(|r| r.map_err(|e| e.into()))
-		.filter(|r| r.as_ref().map(|r| r.is_tag()).unwrap_or(true)) // keep all errors around
-		.map(|r| r.and_then(|r| r.peel_to_commit().map(|c| (r, c)).map_err(|e| e.into())))
-		.filter(|t| t.as_ref().map(|(_r, c)| c.id() == *commit_id).unwrap_or(true)) // keep all errors around
-		.map(|t| t.map(|(r, _c)| r.name().map(|name| name.to_string())))
-		.map(|o| o.and_then(|name| name.ok_or_else(|| anyhow!("Encountered unnamed tag"))))
-		.collect()
+	let mut result = Vec::new();
+	for reference in repository.references()? {
+		let reference = reference?;
+		if reference.is_tag() {
+			let referenced_commit = reference.peel_to_commit()?;
+			if referenced_commit.id() == *commit_id {
+				let name = reference.name().ok_or_else(|| anyhow!("Encountered a tag without a UTF-8 compatible name"))?;
+				if name.starts_with(TAGS_PREFIX) {
+					result.push(name[TAGS_PREFIX.len()..].to_string());
+				} else {
+					return Err(anyhow!("Encountered tag that does not begin with {:?}: {:?}", TAGS_PREFIX, name));
+				}
+			}
+		}
+	}
+	Ok(result)
 }

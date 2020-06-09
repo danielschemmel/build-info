@@ -141,6 +141,6 @@ pub struct GitInfo {
 	/// Names the branch that is currently checked out, if any
 	pub branch: Option<String>,
 
-	/// All tags that point to the current commit (e.g., `["refs/tags/v0.0.10", "refs/tags/sample@v0.0.10"]`)
+	/// All tags that point to the current commit (e.g., `["v0.0.10", "sample@v0.0.10"]`)
 	pub tags: Vec<String>,
 }
