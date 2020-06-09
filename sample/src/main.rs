@@ -25,5 +25,11 @@ fn main() {
 	println!("{}", build_info::format!("Copyright 2020-{}", $.timestamp.format("%Y")));
 
 	// Some macros can also be called inside `format!`
-	println!("{}", build_info::format!(concat!("We are using a RUSTC_WRAPPER: ", "{}"), env!("RUSTC_WRAPPER").is_some()));
+	println!(
+		"{}",
+		build_info::format!(
+			concat!("We are using a RUSTC_WRAPPER: ", "{}"),
+			option_env!("RUSTC_WRAPPER").is_some()
+		)
+	);
 }
