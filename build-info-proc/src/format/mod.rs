@@ -1,7 +1,7 @@
 use anyhow::Result;
 use proc_macro::TokenStream;
 use proc_macro2::Span;
-use proc_macro_error::{abort, abort_call_site};
+use proc_macro_error::{abort, abort_call_site, emit_error};
 use quote::quote;
 use syn::parse_macro_input;
 
@@ -44,7 +44,7 @@ const CLOSING_BRACE_EXPECTED: &str = "Invalid format string: unmatched `{` found
 const CLOSING_BRACE_NOTE: &str = "If you intended to print `{`, you can escape it using `{{`.";
 
 fn interpolate(format: &str, args: &[&dyn Value], span: Span) -> String {
-	let mut res = String::new();
+	let mut res = String::with_capacity(format.len());
 	let mut implicit_position = 0usize;
 	let mut argument_used = Vec::new();
 	argument_used.resize(args.len(), false);
@@ -58,12 +58,6 @@ fn interpolate(format: &str, args: &[&dyn Value], span: Span) -> String {
 			if n == '{' {
 				res.push(c);
 			} else {
-				if args.is_empty() {
-					abort_call_site!(
-						"Format string expects more arguments than were given.";
-						note = "Ran out of arguments after {:#?}", res;
-					);
-				}
 				interpolate_once(
 					&mut res,
 					n,
@@ -86,6 +80,15 @@ fn interpolate(format: &str, args: &[&dyn Value], span: Span) -> String {
 			}
 		} else {
 			res.push(c);
+		}
+	}
+
+	for (i, used) in argument_used.iter().enumerate() {
+		if !used {
+			emit_error!(span,
+				"Parameter {} is not used in format string.", i;
+				note = "Positional arguments are zero-based";
+			);
 		}
 	}
 
@@ -123,18 +126,18 @@ fn interpolate_once(
 		let arg = args.get(pos).unwrap_or_else(|| {
 			abort!(span,
 				"Invalid reference to positional argument {} ({} arguments were given)", pos, args.len();
-				note = "positional arguments are zero-based";
+				note = "Positional arguments are zero-based";
 			)
 		});
 		argument_used[pos] = true;
 		arg
 	} else {
 		let arg = args.get(*implicit_position).unwrap_or_else(|| {
-			abort!(
-				span,
+			abort!(span,
 				"Invalid implicit reference to positional argument {} ({} arguments were given)",
 				*implicit_position,
-				args.len()
+				args.len();
+				note = "Positional arguments are zero-based";
 			)
 		});
 		argument_used[*implicit_position] = true;
