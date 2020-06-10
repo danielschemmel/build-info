@@ -4,6 +4,7 @@
 		"chrono",
 		"clippy",
 		"concat",
+		"deps",
 		"eval",
 		"hasher",
 		"nanos",

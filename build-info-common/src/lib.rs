@@ -66,6 +66,12 @@ pub struct CrateInfo {
 
 	/// The authors, as defined in `Cargo.toml`.
 	pub authors: Vec<String>,
+
+	/// The license string, as defined in `Cargo.toml`.
+	pub license: Option<String>,
+
+	/// Dependencies of this crate
+	pub dependencies: Vec<CrateInfo>,
 }
 
 /// `rustc` version and configuration

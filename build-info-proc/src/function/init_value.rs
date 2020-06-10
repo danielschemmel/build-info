@@ -74,6 +74,14 @@ impl InitValue for CrateInfo {
 		init_value(&self.authors, &mut initializer);
 		initializer.append_all(quote!(,));
 
+		initializer.append_all(quote!(license:));
+		init_value(&self.license, &mut initializer);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(dependencies:));
+		init_value(&self.dependencies, &mut initializer);
+		initializer.append_all(quote!(,));
+
 		tokens.append(Group::new(Delimiter::Brace, initializer));
 	}
 }

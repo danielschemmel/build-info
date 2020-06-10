@@ -14,6 +14,8 @@ impl Value for CrateInfo {
 				"name" => Ok(Box::new(self.name.clone())),
 				"version" => Ok(Box::new(self.version.clone())),
 				"authors" => Ok(Box::new(self.authors.clone())),
+				"license" => Ok(Box::new(self.license.clone())),
+				"dependencies" => Ok(Box::new(self.dependencies.clone())),
 				_ => self.call_base(func, args),
 			},
 			"to_string" => {
