@@ -42,6 +42,8 @@ fn deserialize_build_info() -> BuildInfo {
 		)
 	});
 
+	// println!("Serialized data is {} bytes long.", data.len());
+
 	let versioned: VersionedString = serde_json::from_str(&data).unwrap_or_else(|err| {
 		abort_call_site!("Could not deserialize BuildInfo data at all!";
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();

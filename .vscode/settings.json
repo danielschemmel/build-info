@@ -5,6 +5,7 @@
 		"chrono",
 		"clippy",
 		"concat",
+		"datelike",
 		"deps",
 		"eval",
 		"flate",
