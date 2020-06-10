@@ -1,9 +1,9 @@
 [workspace]
-
 members = [
-	"sample",
 	"build-info",
 	"build-info-build",
 	"build-info-common",
 	"build-info-proc",
+	"dependency-tree",
+	"sample",
 ]

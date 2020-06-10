@@ -22,6 +22,9 @@ pub struct BuildScriptOptions {
 
 	/// Use this as the build timestamp, if set.
 	timestamp: Option<DateTime<Utc>>,
+
+	/// Enable dependency collection
+	collect_dependencies: bool,
 }
 static BUILD_SCRIPT_RAN: AtomicBool = AtomicBool::new(false);
 
@@ -43,7 +46,7 @@ impl BuildScriptOptions {
 			.expect("Expected environment variable `OPT_LEVEL` to be set to a number by cargo");
 
 		let compiler = compiler::get_info();
-		let crate_info = crate_info::read_manifest(&compiler.target_triple);
+		let crate_info = crate_info::read_manifest(&compiler.target_triple, self.collect_dependencies);
 		let version_control = version_control::get_info();
 
 		let timestamp = self.timestamp.unwrap_or_else(timestamp::get_timestamp);
@@ -92,6 +95,7 @@ impl Default for BuildScriptOptions {
 		Self {
 			consumed: false,
 			timestamp: None,
+			collect_dependencies: false,
 		}
 	}
 }

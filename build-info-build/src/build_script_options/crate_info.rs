@@ -7,7 +7,18 @@ use cargo_metadata::*;
 use std::collections::hash_map::{Entry, HashMap};
 use std::path::Path;
 
-pub(crate) fn read_manifest(target_platform: &str) -> CrateInfo {
+impl crate::BuildScriptOptions {
+	/// Enables and disables dependency collection.
+	///
+	/// Dependency data is fairly large, which may cause problems, mainly by crashing the build process. If the project
+	/// compiles successfully with dependency collection enabled, you are probably fine.
+	pub fn collect_dependencies(mut self, collect_dependencies: bool) -> Self {
+		self.collect_dependencies = collect_dependencies;
+		self
+	}
+}
+
+pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -> CrateInfo {
 	let mut args = vec![
 		"--filter-platform".to_string(),
 		target_platform.to_string(),
@@ -67,7 +78,7 @@ pub(crate) fn read_manifest(target_platform: &str) -> CrateInfo {
 		.other_options(args)
 		.exec()
 		.unwrap();
-	let root = make_crate_info(&meta);
+	let root = make_crate_info(&meta, collect_dependencies);
 
 	assert_eq!(root.name, std::env::var("CARGO_PKG_NAME").unwrap()); // sanity check...
 	assert_eq!(root.version.to_string(), std::env::var("CARGO_PKG_VERSION").unwrap()); // sanity check...
@@ -76,15 +87,15 @@ pub(crate) fn read_manifest(target_platform: &str) -> CrateInfo {
 	root
 }
 
-fn make_crate_info(meta: &Metadata) -> CrateInfo {
+fn make_crate_info(meta: &Metadata, collect_dependencies: bool) -> CrateInfo {
 	let resolve = meta.resolve.as_ref().unwrap();
 	let root_id = resolve.root.as_ref().unwrap();
 	let dependencies: HashMap<&PackageId, &Node> = resolve.nodes.iter().map(|node| (&node.id, node)).collect();
 
-	to_crate_info(dependencies[&root_id], &dependencies, meta)
+	to_crate_info(dependencies[&root_id], &dependencies, meta, collect_dependencies)
 }
 
-fn to_crate_info(node: &Node, dependencies: &HashMap<&PackageId, &Node>, meta: &Metadata) -> CrateInfo {
+fn to_crate_info(node: &Node, dependencies: &HashMap<&PackageId, &Node>, meta: &Metadata, collect_dependencies: bool) -> CrateInfo {
 	let pkg = &meta[&node.id];
 	let name = pkg.name.clone();
 	let version = Version::parse(&pkg.version.to_string()).unwrap();
@@ -92,11 +103,11 @@ fn to_crate_info(node: &Node, dependencies: &HashMap<&PackageId, &Node>, meta: &
 	let license = pkg.license.clone();
 	let available_features = pkg.features.iter().map(|(key, _value)| key.clone()).collect();
 	let enabled_features = node.features.clone();
-	let dependencies = if cfg!(feature = "dependencies") {
+	let dependencies = if collect_dependencies {
 		node
 			.deps
 			.iter()
-			.map(|dep| to_crate_info(dependencies[&dep.pkg], dependencies, meta))
+			.map(|dep| to_crate_info(dependencies[&dep.pkg], dependencies, meta, collect_dependencies))
 			.collect()
 	} else {
 		Vec::new()

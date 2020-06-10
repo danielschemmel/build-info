@@ -26,5 +26,4 @@ build-info-common = { version = "=0.0.19", path = "../build-info-common", featur
 
 [features]
 default = ["git"]
-dependencies = []
 git = ["git2"]
