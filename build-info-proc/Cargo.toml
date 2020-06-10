@@ -28,6 +28,9 @@ syn = "1"
 
 build-info-common = { version = "=0.0.18", path = "../build-info-common", features = ["enable-serde"] }
 
+[dev-dependencies]
+pretty_assertions = "0.6"
+
 [features]
 default = []
 nested = []

@@ -1,6 +1,8 @@
 use core::sync::atomic::{AtomicBool, Ordering};
 use std::path::Path;
 
+use pretty_assertions::assert_eq;
+
 use build_info_common::VersionedString;
 
 use super::chrono::{DateTime, Utc};

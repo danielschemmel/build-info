@@ -40,6 +40,8 @@ fn get_timestamp_internal(epoch: Option<String>) -> DateTime<Utc> {
 mod test {
 	use super::*;
 
+	use pretty_assertions::assert_eq;
+
 	#[test]
 	fn get_current_timestamp() {
 		let past = Utc.timestamp(1591113000, 0);

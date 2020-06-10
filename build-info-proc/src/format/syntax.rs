@@ -228,6 +228,8 @@ impl parse::Parse for Expr {
 #[cfg(test)]
 mod test {
 	use super::*;
+
+	use pretty_assertions::assert_eq;
 	use quote::quote;
 
 	#[test]

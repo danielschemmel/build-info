@@ -1,45 +1,27 @@
+use pretty_assertions::assert_eq;
+
 use build_info_common::semver::Version;
 use build_info_common::CrateInfo;
-use toml::Value;
 
-use std::path::PathBuf;
+use std::path::Path;
 
 pub(crate) fn read_manifest() -> CrateInfo {
-	let manifest_dir: PathBuf = std::env::var_os("CARGO_MANIFEST_DIR").unwrap().into();
-	let cargo_file = std::fs::read_to_string(manifest_dir.join("Cargo.toml")).expect("Could not open Cargo.toml");
-	let cargo: Value = toml::from_str(&cargo_file).expect("Cargo.toml contains invalid TOML");
+	let meta = cargo_metadata::MetadataCommand::new()
+		.cargo_path(std::env::var_os("CARGO").unwrap())
+		.manifest_path(Path::new(&std::env::var_os("CARGO_MANIFEST_DIR").unwrap()).join("Cargo.toml"))
+		.exec()
+		.unwrap();
+	let dependencies = meta.resolve.as_ref().unwrap();
+	let root = &meta[&dependencies.root.as_ref().unwrap()];
 
-	let pkg = cargo
-		.get("package")
-		.expect("Could not find \"package\" table in Cargo.toml");
+	let name = root.name.clone();
+	assert_eq!(name, std::env::var("CARGO_PKG_NAME").unwrap()); // sanity check...
 
-	let name = pkg
-		.get("name")
-		.expect("Could not find \"name\" field in Cargo.toml's [package] table")
-		.as_str()
-		.expect("Cargo.toml's package.name is not a string")
-		.to_string();
+	let version = Version::parse(&root.version.to_string()).unwrap();
+	assert_eq!(version.to_string(), std::env::var("CARGO_PKG_VERSION").unwrap()); // sanity check...
 
-	let version_string = pkg
-		.get("version")
-		.expect("Could not find \"version\" field in Cargo.toml's [package] table")
-		.as_str()
-		.expect("Cargo.toml's package.version is not a string")
-		.to_string();
-	let version = Version::parse(&version_string).unwrap();
-
-	let authors: Vec<String> = pkg
-		.get("authors")
-		.expect("Could not find \"authors\" field in Cargo.toml's [package] table")
-		.as_array()
-		.expect("Cargo.toml's package.authors is not an array")
-		.iter()
-		.map(|s| {
-			s.as_str()
-				.expect("Cargo.toml's package.authors is not an array of strings")
-				.to_string()
-		})
-		.collect();
+	let authors = root.authors.clone();
+	assert_eq!(authors.join(":"), std::env::var("CARGO_PKG_AUTHORS").unwrap()); // sanity check...
 
 	CrateInfo { name, version, authors }
 }
