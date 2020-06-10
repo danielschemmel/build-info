@@ -32,6 +32,10 @@ impl InitValue for BuildInfo {
 		init_value(&self.profile, &mut initializer);
 		initializer.append_all(quote!(,));
 
+		initializer.append_all(quote!(optimization_level:));
+		init_value(&self.optimization_level, &mut initializer);
+		initializer.append_all(quote!(,));
+
 		initializer.append_all(quote!(crate_info:));
 		init_value(&self.crate_info, &mut initializer);
 		initializer.append_all(quote!(,));
@@ -255,6 +259,12 @@ impl InitValue for NaiveDate {
 }
 
 impl InitValue for bool {
+	fn init_value(&self, tokens: &mut TokenStream) {
+		tokens.append_all(quote!(#self));
+	}
+}
+
+impl InitValue for u8 {
 	fn init_value(&self, tokens: &mut TokenStream) {
 		tokens.append_all(quote!(#self));
 	}

@@ -3,8 +3,8 @@ use std::path::Path;
 
 use build_info_common::VersionedString;
 
-use super::BuildInfo;
 use super::chrono::{DateTime, Utc};
+use super::BuildInfo;
 
 mod compiler;
 mod crate_info;
@@ -33,6 +33,11 @@ impl BuildScriptOptions {
 		rebuild_if_project_changes();
 
 		let profile = std::env::var("PROFILE").unwrap_or_else(|_| "UNKNOWN".to_string());
+		let optimization_level = std::env::var("OPT_LEVEL")
+			.expect("Expected environment variable `OPT_LEVEL` to be set by cargo")
+			.parse()
+			.expect("Expected environment variable `OPT_LEVEL` to be set to a number by cargo");
+
 		let crate_info = crate_info::read_manifest();
 		let compiler = compiler::get_info();
 		let version_control = version_control::get_info();
@@ -41,6 +46,7 @@ impl BuildScriptOptions {
 		let build_info = BuildInfo {
 			timestamp,
 			profile,
+			optimization_level,
 			crate_info,
 			compiler,
 			version_control,

@@ -2,8 +2,11 @@ use build_info_common::semver::Version;
 use build_info_common::CrateInfo;
 use toml::Value;
 
+use std::path::PathBuf;
+
 pub(crate) fn read_manifest() -> CrateInfo {
-	let cargo_file = std::fs::read_to_string("Cargo.toml").expect("Could not open Cargo.toml");
+	let manifest_dir: PathBuf = std::env::var_os("CARGO_MANIFEST_DIR").unwrap().into();
+	let cargo_file = std::fs::read_to_string(manifest_dir.join("Cargo.toml")).expect("Could not open Cargo.toml");
 	let cargo: Value = toml::from_str(&cargo_file).expect("Cargo.toml contains invalid TOML");
 
 	let pkg = cargo

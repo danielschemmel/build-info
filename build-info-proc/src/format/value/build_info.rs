@@ -1,5 +1,6 @@
 use anyhow::Result;
 use format_buf::format;
+use num_bigint::BigInt;
 
 use std::any::Any;
 
@@ -13,6 +14,7 @@ impl Value for BuildInfo {
 			OP_FIELD_ACCESS => match as_field_name(args) {
 				"timestamp" => Ok(Box::new(self.timestamp)),
 				"profile" => Ok(Box::new(self.profile.clone())),
+				"optimization_level" => Ok(Box::new(BigInt::from(self.optimization_level))),
 				"crate_info" => Ok(Box::new(self.crate_info.clone())),
 				"compiler" => Ok(Box::new(self.compiler.clone())),
 				"version_control" => Ok(Box::new(self.version_control.clone())),

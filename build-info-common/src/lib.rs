@@ -41,6 +41,9 @@ pub struct BuildInfo {
 	/// Cargo currently supports two different build types: `"Release"` and `"Debug"`
 	pub profile: String,
 
+	/// The optimization level can be set in `Cargo.toml` for each profile
+	pub optimization_level: u8,
+
 	/// Information about the current crate
 	pub crate_info: CrateInfo,
 
