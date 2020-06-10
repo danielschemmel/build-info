@@ -60,11 +60,17 @@ fn tags(repository: &Repository, commit_id: &Oid) -> Result<Vec<String>> {
 		if reference.is_tag() {
 			let referenced_commit = reference.peel_to_commit()?;
 			if referenced_commit.id() == *commit_id {
-				let name = reference.name().ok_or_else(|| anyhow!("Encountered a tag without a UTF-8 compatible name"))?;
+				let name = reference
+					.name()
+					.ok_or_else(|| anyhow!("Encountered a tag without a UTF-8 compatible name"))?;
 				if name.starts_with(TAGS_PREFIX) {
 					result.push(name[TAGS_PREFIX.len()..].to_string());
 				} else {
-					return Err(anyhow!("Encountered tag that does not begin with {:?}: {:?}", TAGS_PREFIX, name));
+					return Err(anyhow!(
+						"Encountered tag that does not begin with {:?}: {:?}",
+						TAGS_PREFIX,
+						name
+					));
 				}
 			}
 		}
