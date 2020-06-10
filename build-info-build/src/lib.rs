@@ -20,6 +20,7 @@ You can also check out the [sample](https://github.com/danielschemmel/build-info
 # Features
 The ´build-info-build` crate has the following features:
 
+- `dependencies` (enabled by default): (Recursively) collects all dependencies inside `$.crate_info.dependencies`.
 - `git` (enabled by default): Enables git support. A git repository will only be detected if this feature is available.
 */
 

@@ -1,7 +1,9 @@
+use base64::write::EncoderWriter as Base64Encoder;
+use pretty_assertions::assert_eq;
+use xz2::write::XzEncoder;
+
 use core::sync::atomic::{AtomicBool, Ordering};
 use std::path::Path;
-
-use pretty_assertions::assert_eq;
 
 use build_info_common::VersionedString;
 
@@ -40,8 +42,8 @@ impl BuildScriptOptions {
 			.parse()
 			.expect("Expected environment variable `OPT_LEVEL` to be set to a number by cargo");
 
-		let crate_info = crate_info::read_manifest();
 		let compiler = compiler::get_info();
+		let crate_info = crate_info::read_manifest(&compiler.target_triple);
 		let version_control = version_control::get_info();
 
 		let timestamp = self.timestamp.unwrap_or_else(timestamp::get_timestamp);
@@ -54,12 +56,17 @@ impl BuildScriptOptions {
 			version_control,
 		};
 
-		let versioned = VersionedString::build_info_common_versioned(serde_json::to_string(&build_info).unwrap());
+		let mut bytes = Vec::new();
+		let string_safe = Base64Encoder::new(&mut bytes, base64::STANDARD_NO_PAD);
+		let mut compressed = XzEncoder::new(string_safe, 9);
+		bincode::serialize_into(&mut compressed, &build_info).unwrap();
+		compressed.finish().unwrap().finish().unwrap();
 
-		println!(
-			"cargo:rustc-env=BUILD_INFO={}",
-			serde_json::to_string(&versioned).unwrap()
-		);
+		let string = String::from_utf8(bytes).unwrap();
+		let versioned = VersionedString::build_info_common_versioned(string);
+		let serialized = serde_json::to_string(&versioned).unwrap();
+
+		println!("cargo:rustc-env=BUILD_INFO={}", serialized);
 
 		build_info
 	}

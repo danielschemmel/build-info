@@ -70,6 +70,12 @@ pub struct CrateInfo {
 	/// The license string, as defined in `Cargo.toml`.
 	pub license: Option<String>,
 
+	/// The features of this crate that are currently enabled in this configuration.
+	pub enabled_features: Vec<String>,
+
+	/// All features that are available from this crate.
+	pub available_features: Vec<String>,
+
 	/// Dependencies of this crate
 	pub dependencies: Vec<CrateInfo>,
 }

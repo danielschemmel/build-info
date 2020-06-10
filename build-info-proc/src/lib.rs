@@ -1,8 +1,12 @@
 #![forbid(unsafe_code)]
 
+use base64::read::DecoderReader as Base64Decoder;
 use proc_macro::TokenStream;
 use proc_macro_error::{abort_call_site, emit_call_site_error, proc_macro_error};
 use proc_macro_hack::proc_macro_hack;
+use xz2::read::XzDecoder;
+
+use std::io::Cursor;
 
 use build_info_common::{BuildInfo, VersionedString};
 
@@ -30,17 +34,21 @@ pub fn format(input: TokenStream) -> TokenStream {
 }
 
 fn deserialize_build_info() -> BuildInfo {
-	let data = std::env::var("BUILD_INFO").unwrap_or_else(|_| {
+	let data = std::env::var("BUILD_INFO").unwrap_or_else(|err| {
 		abort_call_site!("No BuildInfo data found!";
 			note = "Did you call build_info_build::build_script() in your build.rs?";
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
+			note = "Caused by: {}", err;
 		)
 	});
-	let versioned: VersionedString = serde_json::from_str(&data).unwrap_or_else(|_| {
+
+	let versioned: VersionedString = serde_json::from_str(&data).unwrap_or_else(|err| {
 		abort_call_site!("Could not deserialize BuildInfo data at all!";
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
+			note = "Caused by: {}", err;
 		)
 	});
+
 	if !versioned.check() {
 		// TODO: This should really be a warning - but warnings are currently nightly-only...
 		emit_call_site_error!("BuildInfo data has an different version!";
@@ -48,10 +56,15 @@ fn deserialize_build_info() -> BuildInfo {
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
 		);
 	}
-	serde_json::from_str(&versioned.string).unwrap_or_else(|_| {
+
+	let mut cursor = Cursor::new(versioned.string.as_bytes());
+	let string_safe = Base64Decoder::new(&mut cursor, base64::STANDARD_NO_PAD);
+	let decoder = XzDecoder::new(string_safe);
+	bincode::deserialize_from(decoder).unwrap_or_else(|err| {
 		abort_call_site!("BuildInfo data cannot be deserialized!";
 			note = "The serialized data has version {}", versioned.version;
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
+			note = "Underlying cause: {}", err;
 		)
 	})
 }

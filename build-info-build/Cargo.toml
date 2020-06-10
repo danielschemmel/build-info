@@ -11,6 +11,8 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 anyhow = "1"
+base64 = "0.12"
+bincode = "1"
 cargo_metadata = "0.10"
 lazy_static = "1"
 git2 = { version = "0.13", default-features = false, optional = true }
@@ -18,9 +20,11 @@ glob = "0.3"
 pretty_assertions = "0.6"
 rustc_version = "0.2"
 serde_json = "1"
+xz2 = "0.1"
 
 build-info-common = { version = "=0.0.18", path = "../build-info-common", features = ["enable-serde"] }
 
 [features]
-default = ["git"]
+default = ["dependencies", "git"]
+dependencies = []
 git = ["git2"]

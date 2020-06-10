@@ -78,6 +78,14 @@ impl InitValue for CrateInfo {
 		init_value(&self.license, &mut initializer);
 		initializer.append_all(quote!(,));
 
+		initializer.append_all(quote!(enabled_features:));
+		init_value(&self.enabled_features, &mut initializer);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(available_features:));
+		init_value(&self.available_features, &mut initializer);
+		initializer.append_all(quote!(,));
+
 		initializer.append_all(quote!(dependencies:));
 		init_value(&self.dependencies, &mut initializer);
 		initializer.append_all(quote!(,));

@@ -15,6 +15,8 @@ impl Value for CrateInfo {
 				"version" => Ok(Box::new(self.version.clone())),
 				"authors" => Ok(Box::new(self.authors.clone())),
 				"license" => Ok(Box::new(self.license.clone())),
+				"enabled_features" => Ok(Box::new(self.enabled_features.clone())),
+				"available_features" => Ok(Box::new(self.available_features.clone())),
 				"dependencies" => Ok(Box::new(self.dependencies.clone())),
 				_ => self.call_base(func, args),
 			},

@@ -1,11 +1,13 @@
 {
 	"cSpell.words": [
 		"Deque",
+		"bincode",
 		"chrono",
 		"clippy",
 		"concat",
 		"deps",
 		"eval",
+		"flate",
 		"hasher",
 		"nanos",
 		"paren",

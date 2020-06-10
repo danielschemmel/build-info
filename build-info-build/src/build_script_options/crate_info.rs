@@ -7,10 +7,11 @@ use cargo_metadata::*;
 use std::collections::HashMap;
 use std::path::Path;
 
-pub(crate) fn read_manifest() -> CrateInfo {
+pub(crate) fn read_manifest(target_platform: &str) -> CrateInfo {
 	let meta = MetadataCommand::new()
 		.cargo_path(std::env::var_os("CARGO").unwrap())
 		.manifest_path(Path::new(&std::env::var_os("CARGO_MANIFEST_DIR").unwrap()).join("Cargo.toml"))
+		.other_options(vec!["--filter-platform".to_string(), target_platform.to_string()])
 		.exec()
 		.unwrap();
 	let root = make_crate_info(&meta);
@@ -36,17 +37,25 @@ fn to_crate_info(node: &Node, dependencies: &HashMap<&PackageId, &Node>, meta: &
 	let version = Version::parse(&pkg.version.to_string()).unwrap();
 	let authors = pkg.authors.clone();
 	let license = pkg.license.clone();
-	let dependencies = node
-		.deps
-		.iter()
-		.map(|dep| to_crate_info(dependencies[&dep.pkg], dependencies, meta))
-		.collect();
+	let available_features = pkg.features.iter().map(|(key, _value)| key.clone()).collect();
+	let enabled_features = node.features.clone();
+	let dependencies = if cfg!(feature = "dependencies") {
+		node
+			.deps
+			.iter()
+			.map(|dep| to_crate_info(dependencies[&dep.pkg], dependencies, meta))
+			.collect()
+	} else {
+		Vec::new()
+	};
 
 	CrateInfo {
 		name,
 		version,
 		authors,
 		license,
+		enabled_features,
+		available_features,
 		dependencies,
 	}
 }
