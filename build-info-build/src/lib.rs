@@ -18,8 +18,12 @@ The ´build-info-build` crate has the following features:
 #![forbid(unsafe_code)]
 
 pub use build_info_common::{
-	chrono, semver, BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, VersionControl,
+	semver, BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, VersionControl,
 };
+
+// By reusing the `chrono` crate from `build-info-build` instead of from `build-info-common`, we do not rely on the
+// crates merged into one. This crate will fail to compile if the versions have an incompatible API.
+pub use chrono;
 
 mod build_script_options;
 pub use build_script_options::BuildScriptOptions;
