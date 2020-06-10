@@ -25,6 +25,6 @@ xz2 = "0.1"
 build-info-common = { version = "=0.0.18", path = "../build-info-common", features = ["enable-serde"] }
 
 [features]
-default = ["dependencies", "git"]
+default = ["git"]
 dependencies = []
 git = ["git2"]

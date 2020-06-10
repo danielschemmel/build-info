@@ -76,7 +76,8 @@ pub struct CrateInfo {
 	/// All features that are available from this crate.
 	pub available_features: Vec<String>,
 
-	/// Dependencies of this crate
+	/// Dependencies of this crate.
+	/// Will only be filled with data if `build-info-build` has the `dependencies` feature enabled.
 	pub dependencies: Vec<CrateInfo>,
 }
 
