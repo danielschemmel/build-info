@@ -25,7 +25,6 @@ proc-macro-error = "1"
 quote = "1"
 serde_json = "1"
 syn = "1"
-thiserror = "1"
 
 build-info-common = { version = "=0.0.17", path = "../build-info-common", features = ["enable-serde"] }
 
