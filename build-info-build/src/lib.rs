@@ -21,7 +21,7 @@ You can also check out the [sample](https://github.com/danielschemmel/build-info
 The ´build-info-build` crate has the following features:
 
 - `dependencies` (disabled by default): (Recursively) collects all dependencies inside `$.crate_info.dependencies`.
-	Enabling this feature may cause the serialized build data to become large enough to cause problems for cargo. Try it! 
+	Enabling this feature may cause the serialized build data to become large enough to cause problems for cargo. Try it!
 - `git` (enabled by default): Enables git support. A git repository will only be detected if this feature is available.
 */
 

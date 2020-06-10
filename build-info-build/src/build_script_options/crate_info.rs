@@ -4,14 +4,67 @@ use build_info_common::semver::Version;
 use build_info_common::CrateInfo;
 use cargo_metadata::*;
 
-use std::collections::HashMap;
+use std::collections::hash_map::{Entry, HashMap};
 use std::path::Path;
 
 pub(crate) fn read_manifest(target_platform: &str) -> CrateInfo {
+	let mut args = vec![
+		"--filter-platform".to_string(),
+		target_platform.to_string(),
+	];
+
+	// Cargo does not provide a proper list of enabled features, so we collect metadata once to find all possible
+	// features, convert them to the equivalent `CARGO_FEATURE_` representation, check for collisions, and then rerun
+	// the command with the appropriate feature flags selected.
+	//
+	// We still expect this to fail for dependency flags that are enabled by hand (e.g.,
+	// `cargo run --features=serde/derive`), but so far there is no workaround for that.
+
 	let meta = MetadataCommand::new()
 		.cargo_path(std::env::var_os("CARGO").unwrap())
 		.manifest_path(Path::new(&std::env::var_os("CARGO_MANIFEST_DIR").unwrap()).join("Cargo.toml"))
-		.other_options(vec!["--filter-platform".to_string(), target_platform.to_string()])
+		.features(CargoOpt::NoDefaultFeatures)
+		.other_options(args.clone())
+		.exec()
+		.unwrap();
+
+	let root = &meta[&meta.resolve.as_ref().unwrap().root.as_ref().unwrap()];
+	let mut map = HashMap::new();
+	for feature in root.features.keys() {
+		if !feature.is_ascii() {
+			panic!("The feature {:?} contains non-ascii characters.", feature);
+		}
+		let env_var = format!("CARGO_FEATURE_{}", feature.to_ascii_uppercase().replace("-", "_"));
+		if std::env::var_os(&env_var).is_some() {
+			match map.entry(env_var) {
+				Entry::Vacant(entry) => {
+					entry.insert(feature);
+				}
+				Entry::Occupied(entry) => panic!(
+					"The features {:?} and {:?} have the same representation as cargo feature flags ({:?})",
+					feature,
+					entry.get(),
+					entry.key()
+				),
+			}
+		}
+	}
+
+	let mut feature_list = String::new();
+	for feature in map.values() {
+		if !feature_list.is_empty() {
+			feature_list += ",";
+		}
+		feature_list += feature;
+	}
+	args.push("--features".to_string());
+	args.push(feature_list);
+
+	let meta = MetadataCommand::new()
+		.cargo_path(std::env::var_os("CARGO").unwrap())
+		.manifest_path(Path::new(&std::env::var_os("CARGO_MANIFEST_DIR").unwrap()).join("Cargo.toml"))
+		.features(CargoOpt::NoDefaultFeatures)
+		.other_options(args)
 		.exec()
 		.unwrap();
 	let root = make_crate_info(&meta);
