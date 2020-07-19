@@ -1,51 +1,45 @@
 use proc_macro2::{Delimiter, Group, Ident, TokenStream};
-use proc_macro_crate::crate_name;
-use quote::{quote, TokenStreamExt};
+use quote::{quote, quote_spanned, TokenStreamExt};
 
 use build_info_common::chrono::{DateTime, Datelike, NaiveDate, Utc};
 use build_info_common::semver::Version;
 use build_info_common::{BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, VersionControl};
 
-pub(crate) fn init_value<T: InitValue>(this: &T, tokens: &mut TokenStream) {
-	this.init_value(tokens)
+pub(crate) fn init_value<T: InitValue>(this: &T, tokens: &mut TokenStream, definition_crate: &Ident) {
+	this.init_value(tokens, definition_crate)
 }
 
 pub(crate) trait InitValue {
-	fn init_value(&self, tokens: &mut TokenStream);
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident);
 }
 
 impl InitValue for BuildInfo {
-	fn init_value(&self, tokens: &mut TokenStream) {
-		let build_info = Ident::new(
-			&crate_name("build-info").expect("build-info must be a direct dependency"),
-			proc_macro2::Span::call_site(),
-		);
-
-		tokens.append_all(quote!(#build_info::BuildInfo));
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
+		tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::BuildInfo));
 		let mut initializer = TokenStream::new();
 
 		initializer.append_all(quote!(timestamp:));
-		init_value(&self.timestamp, &mut initializer);
+		init_value(&self.timestamp, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(profile:));
-		init_value(&self.profile, &mut initializer);
+		init_value(&self.profile, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(optimization_level:));
-		init_value(&self.optimization_level, &mut initializer);
+		init_value(&self.optimization_level, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(crate_info:));
-		init_value(&self.crate_info, &mut initializer);
+		init_value(&self.crate_info, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(compiler:));
-		init_value(&self.compiler, &mut initializer);
+		init_value(&self.compiler, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(version_control: ));
-		init_value(&self.version_control, &mut initializer);
+		init_value(&self.version_control, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		tokens.append(Group::new(Delimiter::Brace, initializer));
@@ -53,41 +47,36 @@ impl InitValue for BuildInfo {
 }
 
 impl InitValue for CrateInfo {
-	fn init_value(&self, tokens: &mut TokenStream) {
-		let build_info = Ident::new(
-			&crate_name("build-info").expect("build-info must be a direct dependency"),
-			proc_macro2::Span::call_site(),
-		);
-
-		tokens.append_all(quote!(#build_info::CrateInfo));
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
+		tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::CrateInfo));
 		let mut initializer = TokenStream::new();
 
 		initializer.append_all(quote!(name:));
-		init_value(&self.name, &mut initializer);
+		init_value(&self.name, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(version:));
-		init_value(&self.version, &mut initializer);
+		init_value(&self.version, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(authors:));
-		init_value(&self.authors, &mut initializer);
+		init_value(&self.authors, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(license:));
-		init_value(&self.license, &mut initializer);
+		init_value(&self.license, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(enabled_features:));
-		init_value(&self.enabled_features, &mut initializer);
+		init_value(&self.enabled_features, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(available_features:));
-		init_value(&self.available_features, &mut initializer);
+		init_value(&self.available_features, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(dependencies:));
-		init_value(&self.dependencies, &mut initializer);
+		init_value(&self.dependencies, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		tokens.append(Group::new(Delimiter::Brace, initializer));
@@ -95,37 +84,32 @@ impl InitValue for CrateInfo {
 }
 
 impl InitValue for CompilerInfo {
-	fn init_value(&self, tokens: &mut TokenStream) {
-		let build_info = Ident::new(
-			&crate_name("build-info").expect("build-info must be a direct dependency"),
-			proc_macro2::Span::call_site(),
-		);
-
-		tokens.append_all(quote!(#build_info::CompilerInfo));
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
+		tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::CompilerInfo));
 		let mut initializer = TokenStream::new();
 
 		initializer.append_all(quote!(version:));
-		init_value(&self.version, &mut initializer);
+		init_value(&self.version, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(commit_id:));
-		init_value(&self.commit_id, &mut initializer);
+		init_value(&self.commit_id, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(commit_date:));
-		init_value(&self.commit_date, &mut initializer);
+		init_value(&self.commit_date, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(channel:));
-		init_value(&self.channel, &mut initializer);
+		init_value(&self.channel, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(host_triple:));
-		init_value(&self.host_triple, &mut initializer);
+		init_value(&self.host_triple, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(target_triple:));
-		init_value(&self.target_triple, &mut initializer);
+		init_value(&self.target_triple, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		tokens.append(Group::new(Delimiter::Brace, initializer));
@@ -133,27 +117,28 @@ impl InitValue for CompilerInfo {
 }
 
 impl InitValue for CompilerChannel {
-	fn init_value(&self, tokens: &mut TokenStream) {
-		let build_info = Ident::new(
-			&crate_name("build-info").expect("build-info must be a direct dependency"),
-			proc_macro2::Span::call_site(),
-		);
-
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
 		match self {
-			CompilerChannel::Dev => tokens.append_all(quote!(#build_info::CompilerChannel::Dev)),
-			CompilerChannel::Nightly => tokens.append_all(quote!(#build_info::CompilerChannel::Nightly)),
-			CompilerChannel::Beta => tokens.append_all(quote!(#build_info::CompilerChannel::Beta)),
-			CompilerChannel::Stable => tokens.append_all(quote!(#build_info::CompilerChannel::Stable)),
+			CompilerChannel::Dev => tokens
+				.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::CompilerChannel::Dev)),
+			CompilerChannel::Nightly => tokens.append_all(
+				quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::CompilerChannel::Nightly),
+			),
+			CompilerChannel::Beta => tokens
+				.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::CompilerChannel::Beta)),
+			CompilerChannel::Stable => tokens.append_all(
+				quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::CompilerChannel::Stable),
+			),
 		};
 	}
 }
 
 impl<T: InitValue> InitValue for Option<T> {
-	fn init_value(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
 		if let Some(value) = self {
-			tokens.append_all(quote!(Some));
+			tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => Some));
 			let mut initializer = TokenStream::new();
-			init_value(value, &mut initializer);
+			init_value(value, &mut initializer, definition_crate);
 			tokens.append(Group::new(Delimiter::Parenthesis, initializer));
 		} else {
 			tokens.append_all(quote!(None));
@@ -162,7 +147,7 @@ impl<T: InitValue> InitValue for Option<T> {
 }
 
 impl<T: InitValue> InitValue for Vec<T> {
-	fn init_value(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
 		tokens.append_all(quote!(vec!));
 		let mut initializer = TokenStream::new();
 
@@ -173,7 +158,7 @@ impl<T: InitValue> InitValue for Vec<T> {
 			} else {
 				initializer.append_all(quote!(,));
 			}
-			init_value(element, &mut initializer);
+			init_value(element, &mut initializer, definition_crate);
 		}
 
 		tokens.append(Group::new(Delimiter::Bracket, initializer));
@@ -181,17 +166,13 @@ impl<T: InitValue> InitValue for Vec<T> {
 }
 
 impl InitValue for VersionControl {
-	fn init_value(&self, tokens: &mut TokenStream) {
-		let build_info = Ident::new(
-			&crate_name("build-info").expect("build-info must be a direct dependency"),
-			proc_macro2::Span::call_site(),
-		);
-
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
 		match self {
 			VersionControl::Git(data) => {
-				tokens.append_all(quote!(#build_info::VersionControl::Git));
+				tokens
+					.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::VersionControl::Git));
 				let mut initializer = TokenStream::new();
-				init_value(data, &mut initializer);
+				init_value(data, &mut initializer, definition_crate);
 				tokens.append(Group::new(Delimiter::Parenthesis, initializer));
 			}
 		}
@@ -199,37 +180,32 @@ impl InitValue for VersionControl {
 }
 
 impl InitValue for GitInfo {
-	fn init_value(&self, tokens: &mut TokenStream) {
-		let build_info = Ident::new(
-			&crate_name("build-info").expect("build-info must be a direct dependency"),
-			proc_macro2::Span::call_site(),
-		);
-
-		tokens.append_all(quote!(#build_info::GitInfo));
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
+		tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::GitInfo));
 		let mut initializer = TokenStream::new();
 
 		initializer.append_all(quote!(commit_id:));
-		init_value(&self.commit_id, &mut initializer);
+		init_value(&self.commit_id, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(commit_short_id:));
-		init_value(&self.commit_short_id, &mut initializer);
+		init_value(&self.commit_short_id, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(commit_timestamp:));
-		init_value(&self.commit_timestamp, &mut initializer);
+		init_value(&self.commit_timestamp, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(dirty:));
-		init_value(&self.dirty, &mut initializer);
+		init_value(&self.dirty, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(branch:));
-		init_value(&self.branch, &mut initializer);
+		init_value(&self.branch, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(tags:));
-		init_value(&self.tags, &mut initializer);
+		init_value(&self.tags, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		tokens.append(Group::new(Delimiter::Brace, initializer));
@@ -237,69 +213,60 @@ impl InitValue for GitInfo {
 }
 
 impl InitValue for Version {
-	fn init_value(&self, tokens: &mut TokenStream) {
-		let build_info = Ident::new(
-			&crate_name("build-info").expect("build-info must be a direct dependency"),
-			proc_macro2::Span::call_site(),
-		);
-
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
 		let version_string = self.to_string();
-		tokens.append_all(quote!(#build_info::semver::Version::parse(#version_string).unwrap()));
+		tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() =>
+			#definition_crate::semver::Version::parse(#version_string).unwrap()
+		));
 	}
 }
 
 impl InitValue for DateTime<Utc> {
-	fn init_value(&self, tokens: &mut TokenStream) {
-		let build_info = Ident::new(
-			&crate_name("build-info").expect("build-info must be a direct dependency"),
-			proc_macro2::Span::call_site(),
-		);
-
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
 		let nanos = self.timestamp_nanos();
-		tokens.append_all(quote!(#build_info::chrono::TimeZone::timestamp_nanos(&#build_info::chrono::Utc, #nanos)));
+		tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() =>
+			#definition_crate::chrono::TimeZone::timestamp_nanos(&#definition_crate::chrono::Utc, #nanos)
+		));
 	}
 }
 
 impl InitValue for NaiveDate {
-	fn init_value(&self, tokens: &mut TokenStream) {
-		let build_info = Ident::new(
-			&crate_name("build-info").expect("build-info must be a direct dependency"),
-			proc_macro2::Span::call_site(),
-		);
-
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
 		let year = self.year();
 		let month = self.month();
 		let day = self.day();
-		tokens.append_all(quote!(#build_info::chrono::NaiveDate::from_ymd(#year, #month, #day)));
+		tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() =>
+			#definition_crate::chrono::NaiveDate::from_ymd(#year, #month, #day)
+		));
 	}
 }
 
 impl InitValue for bool {
-	fn init_value(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream, _definition_crate: &Ident) {
 		tokens.append_all(quote!(#self));
 	}
 }
 
 impl InitValue for u8 {
-	fn init_value(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream, _definition_crate: &Ident) {
 		tokens.append_all(quote!(#self));
 	}
 }
 
 impl InitValue for u64 {
-	fn init_value(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream, _definition_crate: &Ident) {
 		tokens.append_all(quote!(#self));
 	}
 }
 
 impl InitValue for String {
-	fn init_value(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream, _definition_crate: &Ident) {
 		tokens.append_all(quote!(#self.to_string()));
 	}
 }
 
 impl InitValue for str {
-	fn init_value(&self, tokens: &mut TokenStream) {
+	fn init_value(&self, tokens: &mut TokenStream, _definition_crate: &Ident) {
 		tokens.append_all(quote!(#self));
 	}
 }
