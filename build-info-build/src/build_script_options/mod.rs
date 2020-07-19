@@ -30,7 +30,7 @@ static BUILD_SCRIPT_RAN: AtomicBool = AtomicBool::new(false);
 
 impl BuildScriptOptions {
 	/// WARNING: Should only be called once!
-	fn to_build_info(&mut self) -> BuildInfo {
+	fn drop_to_build_info(&mut self) -> BuildInfo {
 		assert_eq!(self.consumed, false);
 		self.consumed = true;
 
@@ -77,7 +77,7 @@ impl BuildScriptOptions {
 	/// Consumes the `BuildScriptOptions` and returns a `BuildInfo` object. Use this function if you wish to inspect the
 	/// generated build information in `build.rs`.
 	pub fn build(mut self) -> BuildInfo {
-		self.to_build_info()
+		self.drop_to_build_info()
 	}
 }
 
@@ -103,7 +103,7 @@ impl Default for BuildScriptOptions {
 impl Drop for BuildScriptOptions {
 	fn drop(&mut self) {
 		if !self.consumed {
-			let _build_info = self.to_build_info();
+			let _build_info = self.drop_to_build_info();
 		}
 	}
 }

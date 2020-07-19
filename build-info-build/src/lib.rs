@@ -2,11 +2,9 @@
 This crate is used to collect build info for consumption by the `build-info` crate.
 
 ```rust,no_run
-fn main() {
-	// Calling `build_info_build::build_script` collects all data and makes it available to `build_info::build_info!`
-	// and `build_info::format!` in the main program.
-	build_info_build::build_script();
-}
+// Calling `build_info_build::build_script` collects all data and makes it available to `build_info::build_info!`
+// and `build_info::format!` in the main program.
+build_info_build::build_script();
 ```
 
 # Features
@@ -17,9 +15,9 @@ The ´build-info-build` crate has the following features:
 
 #![forbid(unsafe_code)]
 
-pub use build_info_common::{
-	semver, BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, VersionControl,
-};
+#![allow(clippy::tabs_in_doc_comments)]
+
+pub use build_info_common::{semver, BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, VersionControl};
 
 // By reusing the `chrono` crate from `build-info-build` instead of from `build-info-common`, we do not rely on the
 // crates merged into one. This crate will fail to compile if the versions have an incompatible API.

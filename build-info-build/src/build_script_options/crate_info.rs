@@ -19,10 +19,7 @@ impl crate::BuildScriptOptions {
 }
 
 pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -> CrateInfo {
-	let mut args = vec![
-		"--filter-platform".to_string(),
-		target_platform.to_string(),
-	];
+	let mut args = vec!["--filter-platform".to_string(), target_platform.to_string()];
 
 	// Cargo does not provide a proper list of enabled features, so we collect metadata once to find all possible
 	// features, convert them to the equivalent `CARGO_FEATURE_` representation, check for collisions, and then rerun
@@ -95,7 +92,12 @@ fn make_crate_info(meta: &Metadata, collect_dependencies: bool) -> CrateInfo {
 	to_crate_info(dependencies[&root_id], &dependencies, meta, collect_dependencies)
 }
 
-fn to_crate_info(node: &Node, dependencies: &HashMap<&PackageId, &Node>, meta: &Metadata, collect_dependencies: bool) -> CrateInfo {
+fn to_crate_info(
+	node: &Node,
+	dependencies: &HashMap<&PackageId, &Node>,
+	meta: &Metadata,
+	collect_dependencies: bool,
+) -> CrateInfo {
 	let pkg = &meta[&node.id];
 	let name = pkg.name.clone();
 	let version = Version::parse(&pkg.version.to_string()).unwrap();
