@@ -2,7 +2,7 @@ build_info::build_info!(fn version);
 
 fn print_crate_info(ci: &build_info::CrateInfo, self_indent: &str, nest_indent: &str) {
 	println!(
-		"{}{} v{} {}",
+		"{}{} v{} [{}]",
 		self_indent,
 		ci.name,
 		ci.version,
