@@ -3,6 +3,7 @@ name = "build-info-proc"
 version = "0.0.19"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 edition = "2018"
+rust = "1.45" # mixed hygiene
 publish = ["crates-io"]
 repository = "https://github.com/danielschemmel/build-info/"
 description = "Part of the build-info crate: This crate provides the proc-macros."
