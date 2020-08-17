@@ -44,6 +44,11 @@ pub use build_info_proc as proc;
 #[cfg(feature = "runtime")]
 pub use lazy_static::lazy_static;
 
+/**
+Generates a function that returns a reference to the `BuildInfo` structure for the crate.
+
+Usage: `build_info!(fn build_info_function);`
+*/
 #[cfg(feature = "runtime")]
 #[macro_export]
 macro_rules! build_info {
