@@ -22,7 +22,7 @@ pub(crate) fn call_macro(name: &str, args: &[Box<dyn Value>], span: Span) -> Res
 			abort_if_dirty();
 			Ok(Box::new(result))
 		}
-		"env " => {
+		"env" => {
 			let (name,) = as_arguments_1::<String>(args)?;
 			let value = std::env::var(name).unwrap_or_else(|_| abort!(span, "Environment variable `{}` not defined.", name));
 			Ok(Box::new(value))
