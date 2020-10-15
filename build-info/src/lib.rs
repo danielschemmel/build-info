@@ -1,8 +1,8 @@
 /*!
-Begin by adding `build-info` as a `[dependency]` and `build-info-build` as a `[build-dependency]` to your [`Cargo.toml`](https://github.com/danielschemmel/build-info/tree/master/sample/Cargo.toml).
+Begin by adding `build-info` as a `[dependency]` and `build-info-build` as a `[build-dependency]` to your [`Cargo.toml`](https://github.com/danielschemmel/build-info/tree/main/sample/Cargo.toml).
 Please make sure that both dependencies use the same version!
 
-If it does not already exist, add a [`build.rs`](https://github.com/danielschemmel/build-info/tree/master/sample/build.rs) to your project's root, where you call `build_info_build::build_script()`.
+If it does not already exist, add a [`build.rs`](https://github.com/danielschemmel/build-info/tree/main/sample/build.rs) to your project's root, where you call `build_info_build::build_script()`.
 This will collect build information at compile time.
 
 Then, either use the `build_info!` macro to add a function that returns version information at runtime:
@@ -15,7 +15,7 @@ or use `build_info::format!` to generate a string at compile time:
 build_info::format!("{{{} v{} built with {} at {}}}", $.crate_info.name, $.crate_info.version, $.compiler, $.timestamp)
 ```
 
-You can also check out the [sample](https://github.com/danielschemmel/build-info/tree/master/sample/) project that shows both variants.
+You can also check out the [sample](https://github.com/danielschemmel/build-info/tree/main/sample/) project that shows both variants.
 
 # Features
 The ´build-info` crate has the following features:
