@@ -15,7 +15,7 @@ proc-macro = true
 
 [dependencies]
 anyhow = "1"
-base64 = "0.12"
+base64 = "0.13"
 bincode = "1"
 chrono = { version = "0.4" }
 format-buf = "1"
