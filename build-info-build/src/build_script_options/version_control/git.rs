@@ -63,15 +63,10 @@ fn tags(repository: &Repository, commit_id: &Oid) -> Result<Vec<String>> {
 				let name = reference
 					.name()
 					.ok_or_else(|| anyhow!("Encountered a tag without a UTF-8 compatible name"))?;
-				if name.starts_with(TAGS_PREFIX) {
-					result.push(name[TAGS_PREFIX.len()..].to_string());
-				} else {
-					return Err(anyhow!(
-						"Encountered tag that does not begin with {:?}: {:?}",
-						TAGS_PREFIX,
-						name
-					));
-				}
+				let short_name = name
+					.strip_prefix(TAGS_PREFIX)
+					.ok_or_else(|| anyhow!("Encountered tag that does not begin with {:?}: {:?}", TAGS_PREFIX, name))?;
+				result.push(short_name.to_string());
 			}
 		}
 	}
