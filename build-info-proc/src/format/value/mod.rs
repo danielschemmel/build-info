@@ -75,7 +75,7 @@ pub(crate) const OP_FIELD_ACCESS: &str = "!field";
 pub(crate) const OP_TUPLE_INDEX: &str = "!tuple_index";
 pub(crate) const OP_ARRAY_INDEX: &str = "!array_index";
 
-fn as_field_name<'a>(args: &'a [Box<dyn Value>]) -> &'a str {
+fn as_field_name(args: &[Box<dyn Value>]) -> &str {
 	assert!(
 		args.len() == 1,
 		"Accessing a field must have exactly one operand (the field name)"
