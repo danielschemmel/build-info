@@ -89,7 +89,7 @@ impl From<BuildScriptOptions> for BuildInfo {
 
 impl Default for BuildScriptOptions {
 	fn default() -> Self {
-		let build_script_ran = BUILD_SCRIPT_RAN.compare_and_swap(false, true, Ordering::Relaxed);
+		let build_script_ran = BUILD_SCRIPT_RAN.swap(true, Ordering::Relaxed);
 		assert_eq!(build_script_ran, false, "The build script may only be run once.");
 
 		Self {
