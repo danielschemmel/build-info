@@ -18,7 +18,7 @@ chrono = { version = "0.4", default_features = true }
 lazy_static = "1"
 git2 = { version = "0.13", default-features = false, optional = true }
 glob = "0.3"
-pretty_assertions = "0.6"
+pretty_assertions = "0.7"
 rustc_version = "0.3"
 serde_json = "1"
 xz2 = "0.1"

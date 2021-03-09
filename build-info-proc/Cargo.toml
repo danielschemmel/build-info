@@ -32,7 +32,7 @@ xz2 = "0.1"
 build-info-common = { version = "=0.0.21", path = "../build-info-common", features = ["enable-serde"] }
 
 [dev-dependencies]
-pretty_assertions = "0.6"
+pretty_assertions = "0.7"
 
 [features]
 default = []
