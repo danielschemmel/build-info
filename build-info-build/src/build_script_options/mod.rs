@@ -128,6 +128,6 @@ fn rebuild_if_project_changes() {
 	.unwrap()
 	.map(|source| source.unwrap())
 	{
-		println!("cargo:rerun-if-changed={}", source.to_string_lossy());
+		println!("cargo:rerun-if-changed={}", source.to_str().unwrap());
 	}
 }
