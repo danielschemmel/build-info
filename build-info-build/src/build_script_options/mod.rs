@@ -3,7 +3,7 @@ use pretty_assertions::assert_eq;
 use xz2::write::XzEncoder;
 
 use core::sync::atomic::{AtomicBool, Ordering};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use build_info_common::VersionedString;
 
@@ -14,6 +14,11 @@ mod compiler;
 mod crate_info;
 mod timestamp;
 mod version_control;
+
+lazy_static::lazy_static! {
+	static ref CARGO_TOML: PathBuf = Path::new(&std::env::var_os("CARGO_MANIFEST_DIR").unwrap())
+		.join("Cargo.toml");
+}
 
 /// Type to store any (optional) options for the build script.
 pub struct BuildScriptOptions {
@@ -34,11 +39,6 @@ impl BuildScriptOptions {
 		assert_eq!(self.consumed, false);
 		self.consumed = true;
 
-		// Whenever any `cargo:rerun-if-changed` key is set, the default set is cleared.
-		// Since we will need to emit such keys to trigger rebuilds when the vcs repository changes state,
-		// we also have to emit the customary triggers again, or we will only be rerun in that exact case.
-		rebuild_if_project_changes();
-
 		let profile = std::env::var("PROFILE").unwrap_or_else(|_| "UNKNOWN".to_string());
 		let optimization_level = std::env::var("OPT_LEVEL")
 			.expect("Expected environment variable `OPT_LEVEL` to be set by cargo")
@@ -46,7 +46,10 @@ impl BuildScriptOptions {
 			.expect("Expected environment variable `OPT_LEVEL` to be set to a number by cargo");
 
 		let compiler = compiler::get_info();
-		let crate_info = crate_info::read_manifest(&compiler.target_triple, self.collect_dependencies);
+		let crate_info::Manifest {
+			crate_info,
+			workspace_root,
+		} = crate_info::read_manifest(&compiler.target_triple, self.collect_dependencies);
 		let version_control = version_control::get_info();
 
 		let timestamp = self.timestamp.unwrap_or_else(timestamp::get_timestamp);
@@ -70,6 +73,11 @@ impl BuildScriptOptions {
 		let serialized = serde_json::to_string(&versioned).unwrap();
 
 		println!("cargo:rustc-env=BUILD_INFO={}", serialized);
+
+		// Whenever any `cargo:rerun-if-changed` key is set, the default set is cleared.
+		// Since we will need to emit such keys to trigger rebuilds when the vcs repository changes state,
+		// we also have to emit the customary triggers again, or we will only be rerun in that exact case.
+		rebuild_if_project_changes(&workspace_root);
 
 		build_info
 	}
@@ -108,14 +116,17 @@ impl Drop for BuildScriptOptions {
 	}
 }
 
-/// Emits a `cargo:rerun-if-changed` line for each file of the target project.
-fn rebuild_if_project_changes() {
-	println!("cargo:rerun-if-changed=Cargo.toml");
-	if Path::new("Cargo.lock").is_file() {
-		println!("cargo:rerun-if-changed=Cargo.lock");
-	} else if Path::new("../Cargo.lock").is_file() {
-		println!("cargo:rerun-if-changed=../Cargo.lock");
-	}
+/// Emits a `cargo:rerun-if-changed` line for each file in the target project.
+/// By default, the following files are included:
+/// - `Cargo.toml`
+/// - `$workspace_root/Cargo.lock`
+/// - Any file that ends in `.rs`
+fn rebuild_if_project_changes(workspace_root: &str) {
+	println!("cargo:rerun-if-changed={}", CARGO_TOML.to_str().unwrap());
+	println!(
+		"cargo:rerun-if-changed={}",
+		Path::new(workspace_root).join("Cargo.lock").to_str().unwrap()
+	);
 
 	for source in glob::glob_with(
 		"**/*.rs",

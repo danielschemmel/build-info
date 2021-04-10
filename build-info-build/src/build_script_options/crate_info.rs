@@ -5,7 +5,6 @@ use build_info_common::CrateInfo;
 use cargo_metadata::*;
 
 use std::collections::hash_map::{Entry, HashMap};
-use std::path::Path;
 
 impl crate::BuildScriptOptions {
 	/// Enables and disables dependency collection.
@@ -18,7 +17,12 @@ impl crate::BuildScriptOptions {
 	}
 }
 
-pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -> CrateInfo {
+pub(crate) struct Manifest {
+	pub crate_info: CrateInfo,
+	pub workspace_root: String,
+}
+
+pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -> Manifest {
 	let mut args = vec!["--filter-platform".to_string(), target_platform.to_string()];
 
 	// Cargo does not provide a proper list of enabled features, so we collect metadata once to find all possible
@@ -30,7 +34,7 @@ pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -
 
 	let meta = MetadataCommand::new()
 		.cargo_path(std::env::var_os("CARGO").unwrap())
-		.manifest_path(Path::new(&std::env::var_os("CARGO_MANIFEST_DIR").unwrap()).join("Cargo.toml"))
+		.manifest_path(&*super::CARGO_TOML)
 		.features(CargoOpt::NoDefaultFeatures)
 		.other_options(args.clone())
 		.exec()
@@ -70,18 +74,27 @@ pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -
 
 	let meta = MetadataCommand::new()
 		.cargo_path(std::env::var_os("CARGO").unwrap())
-		.manifest_path(Path::new(&std::env::var_os("CARGO_MANIFEST_DIR").unwrap()).join("Cargo.toml"))
+		.manifest_path(&*super::CARGO_TOML)
 		.features(CargoOpt::NoDefaultFeatures)
 		.other_options(args)
 		.exec()
 		.unwrap();
-	let root = make_crate_info(&meta, collect_dependencies);
+	let crate_info = make_crate_info(&meta, collect_dependencies);
 
-	assert_eq!(root.name, std::env::var("CARGO_PKG_NAME").unwrap()); // sanity check...
-	assert_eq!(root.version.to_string(), std::env::var("CARGO_PKG_VERSION").unwrap()); // sanity check...
-	assert_eq!(root.authors.join(":"), std::env::var("CARGO_PKG_AUTHORS").unwrap()); // sanity check...
+	assert_eq!(crate_info.name, std::env::var("CARGO_PKG_NAME").unwrap()); // sanity check...
+	assert_eq!(
+		crate_info.version.to_string(),
+		std::env::var("CARGO_PKG_VERSION").unwrap()
+	); // sanity check...
+	assert_eq!(
+		crate_info.authors.join(":"),
+		std::env::var("CARGO_PKG_AUTHORS").unwrap()
+	); // sanity check...
 
-	root
+	Manifest {
+		crate_info,
+		workspace_root: meta.workspace_root.into(),
+	}
 }
 
 fn make_crate_info(meta: &Metadata, collect_dependencies: bool) -> CrateInfo {
