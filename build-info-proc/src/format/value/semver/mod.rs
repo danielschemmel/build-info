@@ -1,2 +1,1 @@
-mod identifier;
 mod version;

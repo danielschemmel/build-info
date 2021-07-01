@@ -15,8 +15,8 @@ impl Value for Version {
 				"major" => Ok(Box::new(BigInt::from(self.major))),
 				"minor" => Ok(Box::new(BigInt::from(self.minor))),
 				"patch" => Ok(Box::new(BigInt::from(self.patch))),
-				"pre" => Ok(Box::new(self.pre.clone())),
-				"build" => Ok(Box::new(self.build.clone())),
+				"pre" => Ok(Box::new(self.pre.to_string())),
+				"build" => Ok(Box::new(self.build.to_string())),
 				_ => self.call_base(func, args),
 			},
 			"to_string" => {
