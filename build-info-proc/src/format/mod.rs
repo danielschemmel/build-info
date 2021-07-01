@@ -172,7 +172,7 @@ fn interpolate_once(
 				arg.format(buffer, FormatSpecifier::Debug);
 			}
 		} else {
-			debug_assert_eq!(alternate, false);
+			debug_assert!(!alternate);
 			arg.format(buffer, FormatSpecifier::Default);
 		}
 	} else {
