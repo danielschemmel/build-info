@@ -52,12 +52,13 @@ impl<T: 'static + Value + Clone> Value for Vec<T> {
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
 		match spec {
 			FormatSpecifier::Default => {
+				let needs_oxford_comma = self.len() >= 3;
 				for (i, value) in self.iter().enumerate() {
 					if i > 0 {
 						if i < self.len() - 1 {
 							*buffer += ", ";
 						} else {
-							*buffer += " and ";
+							*buffer += if needs_oxford_comma { ", and " } else { " and " };
 						}
 					}
 					value.format(buffer, spec);
