@@ -12,7 +12,7 @@ impl Value for NaiveDate {
 		match func {
 			"format" => {
 				let (format_string,) = as_arguments_1::<String>(args)?;
-				Ok(Box::new(self.format(&format_string).to_string()))
+				Ok(Box::new(self.format(format_string).to_string()))
 			}
 			"to_string" => {
 				as_arguments_0(args)?;

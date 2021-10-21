@@ -40,7 +40,7 @@ pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -
 		.exec()
 		.unwrap();
 
-	let root = &meta[&meta.resolve.as_ref().unwrap().root.as_ref().unwrap()];
+	let root = &meta[meta.resolve.as_ref().unwrap().root.as_ref().unwrap()];
 	let mut map = HashMap::new();
 	for feature in root.features.keys() {
 		if !feature.is_ascii() {

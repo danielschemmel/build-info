@@ -106,6 +106,7 @@ fn interpolate_once(
 	let mut explicit_position = None;
 	if c.is_ascii_digit() {
 		let mut acc = 0;
+		#[allow(clippy::blocks_in_if_conditions)]
 		while {
 			acc = acc * 10 + c.to_digit(10).unwrap() as usize;
 			c = chars

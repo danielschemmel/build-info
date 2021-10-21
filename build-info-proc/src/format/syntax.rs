@@ -76,7 +76,7 @@ pub(crate) enum Suffix {
 
 impl parse::Parse for Syntax {
 	fn parse(input: parse::ParseStream) -> parse::Result<Self> {
-		let args = parse_arguments(&input)?;
+		let args = parse_arguments(input)?;
 
 		Ok(Self { args })
 	}
