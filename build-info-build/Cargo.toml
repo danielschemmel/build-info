@@ -2,7 +2,7 @@
 name = "build-info-build"
 version = "0.0.24"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
-edition = "2018"
+edition = "2021"
 publish = ["crates-io"]
 repository = "https://github.com/danielschemmel/build-info/"
 description = "Provides the data consumed by the build-info crate. Use as a build-dependency."

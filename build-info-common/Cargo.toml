@@ -2,7 +2,7 @@
 name = "build-info-common"
 version = "0.0.24"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
-edition = "2018"
+edition = "2021"
 publish = ["crates-io"]
 repository = "https://github.com/danielschemmel/build-info/"
 description = "Part of the build-info and build-info-build crates: This crate provides the types that are serialized by build-info-build and used by build-info."

@@ -2,8 +2,7 @@
 name = "build-info"
 version = "0.0.24"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
-edition = "2018"
-rust = "1.45" # build-info-proc dependency
+edition = "2021"
 publish = ["crates-io"]
 repository = "https://github.com/danielschemmel/build-info/"
 description = "Collects build-information of your Rust crate."
