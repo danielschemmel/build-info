@@ -1,5 +1,4 @@
 use base64::write::EncoderWriter as Base64Encoder;
-use pretty_assertions::assert_eq;
 use xz2::write::XzEncoder;
 
 use core::sync::atomic::{AtomicBool, Ordering};
@@ -36,7 +35,7 @@ static BUILD_SCRIPT_RAN: AtomicBool = AtomicBool::new(false);
 impl BuildScriptOptions {
 	/// WARNING: Should only be called once!
 	fn drop_to_build_info(&mut self) -> BuildInfo {
-		assert_eq!(self.consumed, false);
+		assert!(!self.consumed);
 		self.consumed = true;
 
 		let profile = std::env::var("PROFILE").unwrap_or_else(|_| "UNKNOWN".to_string());
@@ -98,7 +97,7 @@ impl From<BuildScriptOptions> for BuildInfo {
 impl Default for BuildScriptOptions {
 	fn default() -> Self {
 		let build_script_ran = BUILD_SCRIPT_RAN.swap(true, Ordering::Relaxed);
-		assert_eq!(build_script_ran, false, "The build script may only be run once.");
+		assert!(!build_script_ran, "The build script may only be run once.");
 
 		Self {
 			consumed: false,

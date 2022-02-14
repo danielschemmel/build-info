@@ -1,5 +1,4 @@
 use anyhow::{anyhow, Result};
-use format_buf::format;
 use num_bigint::BigInt;
 use num_traits::ToPrimitive;
 
