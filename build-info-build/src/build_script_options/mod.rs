@@ -4,7 +4,7 @@ use xz2::write::XzEncoder;
 use core::sync::atomic::{AtomicBool, Ordering};
 use std::path::{Path, PathBuf};
 
-use build_info_common::VersionedString;
+use build_info_common::{OptimizationLevel, VersionedString};
 
 use super::chrono::{DateTime, Utc};
 use super::BuildInfo;
@@ -39,10 +39,18 @@ impl BuildScriptOptions {
 		self.consumed = true;
 
 		let profile = std::env::var("PROFILE").unwrap_or_else(|_| "UNKNOWN".to_string());
-		let optimization_level = std::env::var("OPT_LEVEL")
+		let optimization_level = match std::env::var("OPT_LEVEL")
 			.expect("Expected environment variable `OPT_LEVEL` to be set by cargo")
-			.parse()
-			.expect("Expected environment variable `OPT_LEVEL` to be set to a number by cargo");
+			.as_str()
+		{
+			"0" => OptimizationLevel::O0,
+			"1" => OptimizationLevel::O1,
+			"2" => OptimizationLevel::O2,
+			"3" => OptimizationLevel::O3,
+			"s" => OptimizationLevel::Os,
+			"z" => OptimizationLevel::Oz,
+			level => panic!("Unknown optimization level {level:?}"),
+		};
 
 		let compiler = compiler::get_info();
 		let crate_info::Manifest {

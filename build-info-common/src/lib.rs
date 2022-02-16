@@ -42,7 +42,7 @@ pub struct BuildInfo {
 	pub profile: String,
 
 	/// The optimization level can be set in `Cargo.toml` for each profile
-	pub optimization_level: u8,
+	pub optimization_level: OptimizationLevel,
 
 	/// Information about the current crate
 	pub crate_info: CrateInfo,
@@ -52,6 +52,18 @@ pub struct BuildInfo {
 
 	/// `Some` if the project is inside a check-out of a supported version control system.
 	pub version_control: Option<VersionControl>,
+}
+
+/// The various possible optimization levels
+#[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub enum OptimizationLevel {
+	O0,
+	O1,
+	O2,
+	O3,
+	Os,
+	Oz,
 }
 
 /// Information about the current crate (i.e., the crate for which build information has been generated)

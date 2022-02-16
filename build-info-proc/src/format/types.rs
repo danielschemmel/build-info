@@ -8,6 +8,7 @@ pub(crate) enum Type {
 	String,
 
 	BuildInfo,
+	OptimizationLevel,
 	CrateInfo,
 	CompilerInfo,
 	CompilerChannel,
@@ -31,6 +32,7 @@ impl fmt::Display for Type {
 			Type::String => write!(f, "string"),
 
 			Type::BuildInfo => write!(f, "build_info::BuildInfo"),
+			Type::OptimizationLevel => write!(f, "build_info::OptimizationLevel"),
 			Type::CrateInfo => write!(f, "build_info::CrateInfo"),
 			Type::CompilerInfo => write!(f, "build_info::CompilerInfo"),
 			Type::CompilerChannel => write!(f, "build_info::CompilerChannel"),

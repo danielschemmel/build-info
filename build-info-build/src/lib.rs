@@ -16,7 +16,9 @@ The ´build-info-build` crate has the following features:
 #![forbid(unsafe_code)]
 #![allow(clippy::tabs_in_doc_comments)]
 
-pub use build_info_common::{semver, BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, VersionControl};
+pub use build_info_common::{
+	semver, BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, OptimizationLevel, VersionControl,
+};
 
 // By reusing the `chrono` crate from `build-info-build` instead of from `build-info-common`, we do not rely on the
 // crates merged into one. This crate will fail to compile if the versions have an incompatible API.

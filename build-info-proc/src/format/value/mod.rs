@@ -22,6 +22,7 @@ mod compiler_channel;
 mod compiler_info;
 mod crate_info;
 mod git_info;
+mod optimization_level;
 mod version_control;
 
 mod functions;

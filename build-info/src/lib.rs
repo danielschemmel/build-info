@@ -31,7 +31,7 @@ use proc_macro_hack::proc_macro_hack;
 
 #[cfg(feature = "runtime")]
 pub use build_info_common::{
-	chrono, semver, BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, VersionControl,
+	chrono, semver, BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, OptimizationLevel, VersionControl,
 };
 
 /// This crate defines macro_rules that pass `$crate` (i.e., this crate) to the proc-macros doing the actual work

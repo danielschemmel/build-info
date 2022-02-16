@@ -10,6 +10,19 @@ impl std::fmt::Display for crate::BuildInfo {
 	}
 }
 
+impl std::fmt::Display for crate::OptimizationLevel {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		match self {
+			Self::O0 => write!(f, "0"),
+			Self::O1 => write!(f, "1"),
+			Self::O2 => write!(f, "2"),
+			Self::O3 => write!(f, "3"),
+			Self::Os => write!(f, "s"),
+			Self::Oz => write!(f, "z"),
+		}
+	}
+}
+
 impl std::fmt::Display for crate::CrateInfo {
 	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
 		write!(f, "{} v{}", self.name, self.version)

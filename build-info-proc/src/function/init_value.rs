@@ -3,7 +3,9 @@ use quote::{quote, quote_spanned, TokenStreamExt};
 
 use build_info_common::chrono::{DateTime, Datelike, NaiveDate, Utc};
 use build_info_common::semver::Version;
-use build_info_common::{BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, VersionControl};
+use build_info_common::{
+	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, OptimizationLevel, VersionControl,
+};
 
 pub(crate) fn init_value<T: InitValue>(this: &T, tokens: &mut TokenStream, definition_crate: &Ident) {
 	this.init_value(tokens, definition_crate)
@@ -43,6 +45,25 @@ impl InitValue for BuildInfo {
 		initializer.append_all(quote!(,));
 
 		tokens.append(Group::new(Delimiter::Brace, initializer));
+	}
+}
+
+impl InitValue for OptimizationLevel {
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
+		match self {
+			OptimizationLevel::O0 => tokens
+				.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::OptimizationLevel::O0)),
+			OptimizationLevel::O1 => tokens
+				.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::OptimizationLevel::O1)),
+			OptimizationLevel::O2 => tokens
+				.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::OptimizationLevel::O2)),
+			OptimizationLevel::O3 => tokens
+				.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::OptimizationLevel::O3)),
+			OptimizationLevel::Os => tokens
+				.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::OptimizationLevel::Os)),
+			OptimizationLevel::Oz => tokens
+				.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::OptimizationLevel::Oz)),
+		};
 	}
 }
 
