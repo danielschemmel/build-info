@@ -42,7 +42,7 @@ impl<T: 'static + Value + Clone> Value for Vec<T> {
 	}
 
 	fn get_type(&self) -> Type {
-		Type::Option
+		Type::Vec
 	}
 
 	fn as_any(&self) -> &dyn Any {
