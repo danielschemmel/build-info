@@ -46,7 +46,7 @@ pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -
 		if !feature.is_ascii() {
 			panic!("The feature {:?} contains non-ascii characters.", feature);
 		}
-		let env_var = format!("CARGO_FEATURE_{}", feature.to_ascii_uppercase().replace("-", "_"));
+		let env_var = format!("CARGO_FEATURE_{}", feature.to_ascii_uppercase().replace('-', "_"));
 		if std::env::var_os(&env_var).is_some() {
 			match map.entry(env_var) {
 				Entry::Vacant(entry) => {
