@@ -62,3 +62,42 @@ impl<T: 'static + Value + Clone> Value for Option<T> {
 		}
 	}
 }
+
+#[cfg(test)]
+mod test {
+	use super::*;
+	use pretty_assertions::assert_eq;
+
+	#[test]
+	fn format_default() {
+		let mut buff = String::new();
+		Value::format(&Some(true), &mut buff, FormatSpecifier::Default);
+		assert_eq!(buff, "true");
+
+		buff.clear();
+		Value::format(&None as &Option<bool>, &mut buff, FormatSpecifier::Default);
+		assert_eq!(buff, "None");
+	}
+
+	#[test]
+	fn format_debug() {
+		let mut buff = String::new();
+		Value::format(&Some(true), &mut buff, FormatSpecifier::Debug);
+		assert_eq!(buff, "Some(true)");
+
+		buff.clear();
+		Value::format(&None as &Option<bool>, &mut buff, FormatSpecifier::Debug);
+		assert_eq!(buff, "None");
+	}
+
+	#[test]
+	fn format_debug_alt() {
+		let mut buff = String::new();
+		Value::format(&Some(true), &mut buff, FormatSpecifier::DebugAlt);
+		assert_eq!(buff, "Some(\n    true,\n)");
+
+		buff.clear();
+		Value::format(&None as &Option<bool>, &mut buff, FormatSpecifier::DebugAlt);
+		assert_eq!(buff, "None");
+	}
+}

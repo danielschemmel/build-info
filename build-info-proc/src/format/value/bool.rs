@@ -32,3 +32,42 @@ impl Value for bool {
 		}
 	}
 }
+
+#[cfg(test)]
+mod test {
+	use super::*;
+	use pretty_assertions::assert_eq;
+
+	#[test]
+	fn format_default() {
+		let mut buff = String::new();
+		Value::format(&true, &mut buff, FormatSpecifier::Default);
+		assert_eq!(buff, "true");
+
+		buff.clear();
+		Value::format(&false, &mut buff, FormatSpecifier::Default);
+		assert_eq!(buff, "false");
+	}
+
+	#[test]
+	fn format_debug() {
+		let mut buff = String::new();
+		Value::format(&true, &mut buff, FormatSpecifier::Debug);
+		assert_eq!(buff, "true");
+
+		buff.clear();
+		Value::format(&false, &mut buff, FormatSpecifier::Debug);
+		assert_eq!(buff, "false");
+	}
+
+	#[test]
+	fn format_debug_alt() {
+		let mut buff = String::new();
+		Value::format(&true, &mut buff, FormatSpecifier::DebugAlt);
+		assert_eq!(buff, "true");
+
+		buff.clear();
+		Value::format(&false, &mut buff, FormatSpecifier::DebugAlt);
+		assert_eq!(buff, "false");
+	}
+}

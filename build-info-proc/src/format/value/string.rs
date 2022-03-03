@@ -61,3 +61,42 @@ impl Value for String {
 		}
 	}
 }
+
+#[cfg(test)]
+mod test {
+	use super::*;
+	use pretty_assertions::assert_eq;
+
+	#[test]
+	fn format_default() {
+		let mut buff = String::new();
+		Value::format(&"abc".to_string(), &mut buff, FormatSpecifier::Default);
+		assert_eq!(buff, "abc");
+
+		buff.clear();
+		Value::format(&"\0!".to_string(), &mut buff, FormatSpecifier::Default);
+		assert_eq!(buff, "\0!");
+	}
+
+	#[test]
+	fn format_debug() {
+		let mut buff = String::new();
+		Value::format(&"abc".to_string(), &mut buff, FormatSpecifier::Debug);
+		assert_eq!(buff, "\"abc\"");
+
+		buff.clear();
+		Value::format(&"\0!".to_string(), &mut buff, FormatSpecifier::Debug);
+		assert_eq!(buff, "\"\\u{0}!\"");
+	}
+
+	#[test]
+	fn format_debug_alt() {
+		let mut buff = String::new();
+		Value::format(&"abc".to_string(), &mut buff, FormatSpecifier::DebugAlt);
+		assert_eq!(buff, "\"abc\"");
+
+		buff.clear();
+		Value::format(&"\0!".to_string(), &mut buff, FormatSpecifier::DebugAlt);
+		assert_eq!(buff, "\"\\u{0}!\"");
+	}
+}
