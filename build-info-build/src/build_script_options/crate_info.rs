@@ -44,7 +44,7 @@ pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -
 	let mut map = HashMap::new();
 	for feature in root.features.keys() {
 		if !feature.is_ascii() {
-			panic!("The feature {:?} contains non-ascii characters.", feature);
+			panic!("The feature {feature:?} contains non-ascii characters.");
 		}
 		let env_var = format!("CARGO_FEATURE_{}", feature.to_ascii_uppercase().replace('-', "_"));
 		if std::env::var_os(&env_var).is_some() {

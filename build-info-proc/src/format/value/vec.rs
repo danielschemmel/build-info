@@ -63,8 +63,8 @@ impl<T: 'static + Value + Clone> Value for Vec<T> {
 					value.format(buffer, spec);
 				}
 			}
-			FormatSpecifier::Debug => format!(buffer, "{:?}", self),
-			FormatSpecifier::DebugAlt => format!(buffer, "{:#?}", self),
+			FormatSpecifier::Debug => format!(buffer, "{self:?}"),
+			FormatSpecifier::DebugAlt => format!(buffer, "{self:#?}"),
 		}
 	}
 }

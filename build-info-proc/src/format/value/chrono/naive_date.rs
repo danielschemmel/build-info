@@ -32,9 +32,9 @@ impl Value for NaiveDate {
 
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
 		match spec {
-			FormatSpecifier::Default => format!(buffer, "{}", self),
-			FormatSpecifier::Debug => format!(buffer, "{:?}", self),
-			FormatSpecifier::DebugAlt => format!(buffer, "{:#?}", self),
+			FormatSpecifier::Default => format!(buffer, "{self}"),
+			FormatSpecifier::Debug => format!(buffer, "{self:?}"),
+			FormatSpecifier::DebugAlt => format!(buffer, "{self:#?}"),
 		}
 	}
 }

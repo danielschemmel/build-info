@@ -57,8 +57,8 @@ impl<T: 'static + Value + Clone> Value for Option<T> {
 				Some(value) => value.format(buffer, spec),
 				None => *buffer += "None",
 			},
-			FormatSpecifier::Debug => format!(buffer, "{:?}", self),
-			FormatSpecifier::DebugAlt => format!(buffer, "{:#?}", self),
+			FormatSpecifier::Debug => format!(buffer, "{self:?}"),
+			FormatSpecifier::DebugAlt => format!(buffer, "{self:#?}"),
 		}
 	}
 }

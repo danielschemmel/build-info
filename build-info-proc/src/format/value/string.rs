@@ -56,8 +56,8 @@ impl Value for String {
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
 		match spec {
 			FormatSpecifier::Default => *buffer += self,
-			FormatSpecifier::Debug => format!(buffer, "{:?}", self),
-			FormatSpecifier::DebugAlt => format!(buffer, "{:#?}", self),
+			FormatSpecifier::Debug => format!(buffer, "{self:?}"),
+			FormatSpecifier::DebugAlt => format!(buffer, "{self:#?}"),
 		}
 	}
 }
