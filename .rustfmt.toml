@@ -14,3 +14,5 @@ newline_style = "Unix"
 
 # imports_granularity = "Crate"
 # group_imports = "StdExternalCrate"
+
+use_field_init_shorthand = true
