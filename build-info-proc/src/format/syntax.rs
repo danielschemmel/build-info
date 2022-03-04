@@ -265,10 +265,10 @@ mod test {
 	use quote::quote;
 
 	#[test]
-	fn no_format() {
+	fn no_format() -> anyhow::Result<()> {
 		let format = "This is a $test".to_string();
 		let ast = quote! {#format};
-		let result = syn::parse2::<Syntax>(ast).unwrap();
+		let result = syn::parse2::<Syntax>(ast)?;
 		assert_eq!(
 			result,
 			Syntax {
@@ -281,13 +281,15 @@ mod test {
 				)],
 			}
 		);
+
+		Ok(())
 	}
 
 	#[test]
-	fn format_self() {
+	fn format_self() -> anyhow::Result<()> {
 		let format = "{}".to_string();
 		let ast = quote! {#format, $};
-		let result = syn::parse2::<Syntax>(ast).unwrap();
+		let result = syn::parse2::<Syntax>(ast)?;
 		assert_eq!(
 			result,
 			Syntax {
@@ -309,13 +311,15 @@ mod test {
 				]
 			}
 		);
+
+		OK(())
 	}
 
 	#[test]
-	fn format_suffixes() {
+	fn format_suffixes() -> anyhow::Result<()> {
 		let format = "{}".to_string();
 		let ast = quote! {#format, $.foo().7[0x0_C].foo};
-		let result = syn::parse2::<Syntax>(ast).unwrap();
+		let result = syn::parse2::<Syntax>(ast)?;
 		assert_eq!(
 			result,
 			Syntax {
@@ -345,6 +349,8 @@ mod test {
 				],
 			}
 		);
+
+		Ok(())
 	}
 
 	#[test]
