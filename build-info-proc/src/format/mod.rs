@@ -22,7 +22,7 @@ use value::{FormatSpecifier, Value, OP_ARRAY_INDEX, OP_FIELD_ACCESS, OP_TUPLE_IN
 
 pub fn format(input: TokenStream, _build_info: BuildInfo) -> TokenStream {
 	let syntax = parse_macro_input!(input as syntax::Syntax);
-	let values: Result<Vec<(Option<String>, Box<dyn Value>)>> = syntax
+	let values: Result<Vec<_>> = syntax
 		.args
 		.iter()
 		.map(|(name, expr)| Ok((name.as_ref().map(|id| id.to_string()), expr.eval()?)))
