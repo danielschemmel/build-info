@@ -1,6 +1,6 @@
 [package]
 name = "build-info-common"
-version = "0.0.25"
+version = "0.0.26"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 edition = "2021"
 publish = ["crates-io"]
