@@ -22,7 +22,10 @@ impl Eval for AtomicExpr {
 				super::value::call_function(name, &args?, meta.span)
 			}
 			AtomicExpr::MacroCall(name, args, meta) => {
-				let args: Result<Vec<Box<dyn Value>>> = args.iter().map(|expr| expr.eval()).collect();
+				let args: Result<Vec<(Option<String>, Box<dyn Value>)>> = args
+					.iter()
+					.map(|(name, expr)| Ok((name.as_ref().map(|id| id.to_string()), expr.eval()?)))
+					.collect();
 				super::value::call_macro(name, &args?, meta.span)
 			}
 		}

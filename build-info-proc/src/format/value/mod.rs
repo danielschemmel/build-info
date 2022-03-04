@@ -109,7 +109,7 @@ fn as_arguments_0(args: &[Box<dyn Value>]) -> Result<()> {
 	}
 }
 
-fn as_arguments_1<'a, T1: 'static>(args: &'a [Box<dyn Value>]) -> Result<(&'a T1,)> {
+fn as_simple_arguments_1<'a, T1: 'static>(args: &'a [Box<dyn Value>]) -> Result<(&'a T1,)> {
 	if args.len() != 1 {
 		return Err(anyhow!("Wrong number of arguments (should be 1)"));
 	}
@@ -120,20 +120,20 @@ fn as_arguments_1<'a, T1: 'static>(args: &'a [Box<dyn Value>]) -> Result<(&'a T1
 		.ok_or_else(|| anyhow!("Argument #1 should have type {}", type_name::<T1>()))?,))
 }
 
-#[allow(dead_code)]
-fn as_arguments_2<'a, T1: 'static, T2: 'static>(args: &'a [Box<dyn Value>]) -> Result<(&'a T1, &'a T2)> {
-	if args.len() != 2 {
+fn as_named_arguments_1<'a, T1: 'static>(args: &'a [(Option<String>, Box<dyn Value>)]) -> Result<(&'a T1,)> {
+	if args.len() != 1 {
 		return Err(anyhow!("Wrong number of arguments (should be 1)"));
 	}
 
-	Ok((
-		args[0]
-			.as_any()
-			.downcast_ref::<T1>()
-			.ok_or_else(|| anyhow!("Argument #1 should have type {}", type_name::<T1>()))?,
-		args[1]
-			.as_any()
-			.downcast_ref::<T2>()
-			.ok_or_else(|| anyhow!("Argument #2 should have type {}", type_name::<T1>()))?,
-	))
+	if args[0].0.is_some() {
+		return Err(anyhow!(
+			"Expected a single positional argument, found a named argument instead"
+		));
+	}
+
+	Ok((args[0]
+		.1
+		.as_any()
+		.downcast_ref::<T1>()
+		.ok_or_else(|| anyhow!("Argument #1 should have type {}", type_name::<T1>()))?,))
 }

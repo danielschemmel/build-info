@@ -2,13 +2,17 @@ use anyhow::Result;
 use proc_macro2::Span;
 use proc_macro_error::{abort, abort_if_dirty, emit_error};
 
-use super::{as_arguments_1, Value};
+use super::{as_named_arguments_1, Value};
 
-pub(crate) fn call_macro(name: &str, args: &[Box<dyn Value>], span: Span) -> Result<Box<dyn Value>> {
+pub(crate) fn call_macro(name: &str, args: &[(Option<String>, Box<dyn Value>)], span: Span) -> Result<Box<dyn Value>> {
 	match name {
 		"concat" => {
 			let mut result = String::new();
-			for (i, value) in args.iter().enumerate() {
+			for (i, (name, value)) in args.iter().enumerate() {
+				if name.is_some() {
+					emit_error!(span, "`concat!` Takes no named arguments");
+				}
+
 				if let Some(value) = value.as_any().downcast_ref::<String>() {
 					result += value;
 				} else {
@@ -23,12 +27,12 @@ pub(crate) fn call_macro(name: &str, args: &[Box<dyn Value>], span: Span) -> Res
 			Ok(Box::new(result))
 		}
 		"env" => {
-			let (name,) = as_arguments_1::<String>(args)?;
+			let (name,) = as_named_arguments_1::<String>(args)?;
 			let value = std::env::var(name).unwrap_or_else(|_| abort!(span, "Environment variable `{}` not defined.", name));
 			Ok(Box::new(value))
 		}
 		"option_env" => {
-			let (name,) = as_arguments_1::<String>(args)?;
+			let (name,) = as_named_arguments_1::<String>(args)?;
 			let value = std::env::var(name).ok();
 			Ok(Box::new(value))
 		}

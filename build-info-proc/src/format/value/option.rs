@@ -3,7 +3,7 @@ use format_buf::format;
 
 use std::any::Any;
 
-use super::{as_arguments_0, as_arguments_1, FormatSpecifier, Type, Value};
+use super::{as_arguments_0, as_simple_arguments_1, FormatSpecifier, Type, Value};
 
 impl<T: 'static + Value + Clone> Value for Option<T> {
 	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
@@ -17,7 +17,7 @@ impl<T: 'static + Value + Clone> Value for Option<T> {
 				Ok(Box::new(self.is_some()))
 			}
 			"expect" => {
-				let (message,) = as_arguments_1::<String>(args)?;
+				let (message,) = as_simple_arguments_1::<String>(args)?;
 				self
 					.clone()
 					.map(|value| Box::new(value) as Box<dyn Value>)

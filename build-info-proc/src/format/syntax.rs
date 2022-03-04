@@ -44,13 +44,19 @@ impl Default for Meta {
 
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub(crate) struct Syntax {
-	pub(crate) args: Vec<Expr>,
+	pub(crate) args: Vec<(Option<Ident>, Expr)>,
 }
 
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub(crate) struct Expr {
 	pub(crate) atom: AtomicExpr,
 	pub(crate) suffixes: Vec<Suffix>,
+}
+
+impl Expr {
+	pub fn meta(&self) -> &Meta {
+		self.atom.meta()
+	}
 }
 
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
@@ -62,7 +68,22 @@ pub(crate) enum AtomicExpr {
 	LitStr(String, Meta),
 	Parenthesized(Box<Expr>, Meta),
 	FunctionCall(String, Vec<Expr>, Meta),
-	MacroCall(String, Vec<Expr>, Meta),
+	MacroCall(String, Vec<(Option<Ident>, Expr)>, Meta),
+}
+
+impl AtomicExpr {
+	pub fn meta(&self) -> &Meta {
+		match self {
+			AtomicExpr::BuildInfo(meta) => meta,
+			AtomicExpr::LitBool(_, meta) => meta,
+			AtomicExpr::LitInt(_, meta) => meta,
+			AtomicExpr::LitChar(_, meta) => meta,
+			AtomicExpr::LitStr(_, meta) => meta,
+			AtomicExpr::Parenthesized(_, meta) => meta,
+			AtomicExpr::FunctionCall(.., meta) => meta,
+			AtomicExpr::MacroCall(.., meta) => meta,
+		}
+	}
 }
 
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
@@ -76,35 +97,46 @@ pub(crate) enum Suffix {
 
 impl parse::Parse for Syntax {
 	fn parse(input: parse::ParseStream) -> parse::Result<Self> {
-		let args = parse_arguments(input)?;
+		let args = parse_named_arguments(input)?;
 
 		Ok(Self { args })
 	}
 }
 
-fn parse_arguments(input: parse::ParseStream) -> parse::Result<Vec<Expr>> {
-	let mut args = Vec::new();
-	if !input.is_empty() {
-		args.push(input.parse::<Expr>()?);
-		parse_trailing_arguments_impl(&mut args, input)?;
-	}
-	Ok(args)
+fn parse_simple_arguments(input: parse::ParseStream) -> parse::Result<Vec<Expr>> {
+	let result: syn::punctuated::Punctuated<Expr, Token![,]> = input.parse_terminated(parse::Parse::parse)?;
+	Ok(result.into_pairs().map(|pair| pair.into_tuple().0).collect())
 }
 
-/*
-fn parse_trailing_arguments(input: parse::ParseStream) -> parse::Result<Vec<Expr>> {
-	let mut args = Vec::new();
-	parse_trailing_arguments_impl(&mut args, input)?;
-	Ok(args)
-}
-*/
+fn parse_named_arguments(input: parse::ParseStream) -> parse::Result<Vec<(Option<Ident>, Expr)>> {
+	let result: syn::punctuated::Punctuated<_, Token![,]> = input.parse_terminated(parse_named_argument)?;
 
-fn parse_trailing_arguments_impl(args: &mut Vec<Expr>, input: parse::ParseStream) -> parse::Result<()> {
-	while !input.is_empty() {
-		input.parse::<Token![,]>()?;
-		args.push(input.parse::<Expr>()?);
+	let mut named = Vec::new();
+	for (name, expr) in result.iter() {
+		if name.is_none() {
+			if !named.is_empty() {
+				// TODO: use the spans in `named` to also point to the previous named args
+				return Err(syn::Error::new(
+					expr.meta().span,
+					"Positional arguments must be before named arguments",
+				));
+			}
+		} else {
+			named.push(expr.meta().span);
+		}
 	}
-	Ok(())
+
+	Ok(result.into_pairs().map(|pair| pair.into_tuple().0).collect())
+}
+
+fn parse_named_argument(input: parse::ParseStream) -> parse::Result<(Option<Ident>, Expr)> {
+	if input.peek(Ident) && input.peek2(Token![=]) {
+		let id = input.parse::<Ident>()?;
+		input.parse::<Token![=]>()?;
+		Ok((Some(id), input.parse()?))
+	} else {
+		Ok((None, input.parse()?))
+	}
 }
 
 impl parse::Parse for AtomicExpr {
@@ -148,7 +180,7 @@ impl parse::Parse for AtomicExpr {
 			if lookahead.peek(syn::token::Paren) {
 				let arguments;
 				parenthesized!(arguments in input);
-				let (arguments, span) = (parse_arguments(&arguments)?, arguments.span());
+				let (arguments, span) = (parse_simple_arguments(&arguments)?, arguments.span());
 				Ok(AtomicExpr::FunctionCall(id.to_string(), arguments, Meta { span }))
 			} else if lookahead.peek(Token![!]) {
 				input.parse::<Token![!]>()?;
@@ -156,15 +188,15 @@ impl parse::Parse for AtomicExpr {
 				let (arguments, span) = if lookahead.peek(syn::token::Paren) {
 					let arguments;
 					parenthesized!(arguments in input);
-					(parse_arguments(&arguments)?, arguments.span())
+					(parse_named_arguments(&arguments)?, arguments.span())
 				} else if lookahead.peek(syn::token::Brace) {
 					let arguments;
 					braced!(arguments in input);
-					(parse_arguments(&arguments)?, arguments.span())
+					(parse_named_arguments(&arguments)?, arguments.span())
 				} else if lookahead.peek(syn::token::Bracket) {
 					let arguments;
 					bracketed!(arguments in input);
-					(parse_arguments(&arguments)?, arguments.span())
+					(parse_named_arguments(&arguments)?, arguments.span())
 				} else {
 					return Err(lookahead.error());
 				};
@@ -200,7 +232,7 @@ impl parse::Parse for Expr {
 					if lookahead.peek(syn::token::Paren) {
 						let arguments;
 						parenthesized!(arguments in input);
-						let arguments = parse_arguments(&arguments)?;
+						let arguments = parse_simple_arguments(&arguments)?;
 						suffixes.push(Suffix::FunctionCall(id.to_string(), arguments));
 					} else {
 						suffixes.push(Suffix::Field(id.to_string()));
@@ -240,10 +272,13 @@ mod test {
 		assert_eq!(
 			result,
 			Syntax {
-				args: vec![Expr {
-					atom: AtomicExpr::LitStr(format, Meta::default()),
-					suffixes: vec![],
-				}],
+				args: vec![(
+					None,
+					Expr {
+						atom: AtomicExpr::LitStr(format, Meta::default()),
+						suffixes: vec![],
+					}
+				)],
 			}
 		);
 	}
@@ -257,14 +292,20 @@ mod test {
 			result,
 			Syntax {
 				args: vec![
-					Expr {
-						atom: AtomicExpr::LitStr(format, Meta::default()),
-						suffixes: vec![],
-					},
-					Expr {
-						atom: AtomicExpr::BuildInfo(Meta::default()),
-						suffixes: vec![]
-					}
+					(
+						None,
+						Expr {
+							atom: AtomicExpr::LitStr(format, Meta::default()),
+							suffixes: vec![],
+						}
+					),
+					(
+						None,
+						Expr {
+							atom: AtomicExpr::BuildInfo(Meta::default()),
+							suffixes: vec![]
+						}
+					)
 				]
 			}
 		);
@@ -279,32 +320,51 @@ mod test {
 			result,
 			Syntax {
 				args: vec![
-					Expr {
-						atom: AtomicExpr::LitStr(format, Meta::default()),
-						suffixes: vec![],
-					},
-					Expr {
-						atom: AtomicExpr::BuildInfo(Meta::default()),
-						suffixes: vec![
-							Suffix::FunctionCall("foo".to_string(), vec![]),
-							Suffix::TupleIndex(7),
-							Suffix::ArrayIndex(Box::new(Expr {
-								atom: AtomicExpr::LitInt(12.into(), Meta::default()),
-								suffixes: vec![],
-							})),
-							Suffix::Field("foo".to_string())
-						]
-					}
+					(
+						None,
+						Expr {
+							atom: AtomicExpr::LitStr(format, Meta::default()),
+							suffixes: vec![],
+						}
+					),
+					(
+						None,
+						Expr {
+							atom: AtomicExpr::BuildInfo(Meta::default()),
+							suffixes: vec![
+								Suffix::FunctionCall("foo".to_string(), vec![]),
+								Suffix::TupleIndex(7),
+								Suffix::ArrayIndex(Box::new(Expr {
+									atom: AtomicExpr::LitInt(12.into(), Meta::default()),
+									suffixes: vec![],
+								})),
+								Suffix::Field("foo".to_string())
+							]
+						}
+					)
 				],
 			}
 		);
 	}
 
 	#[test]
-	fn format_trailing_comma() {
-		let format = "{}".to_string();
+	fn format_trailing_comma() -> anyhow::Result<()> {
+		let format = "3".to_string();
 		let ast = quote! {#format,};
-		let result = syn::parse2::<Syntax>(ast);
-		assert!(result.is_err());
+		let result = syn::parse2::<Syntax>(ast)?;
+		assert_eq!(
+			result,
+			Syntax {
+				args: vec![(
+					None,
+					Expr {
+						atom: AtomicExpr::LitStr(format, Meta::default()),
+						suffixes: vec![],
+					}
+				),],
+			}
+		);
+
+		Ok(())
 	}
 }

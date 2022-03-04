@@ -6,13 +6,13 @@ use proc_macro_error::abort_call_site;
 
 use std::any::Any;
 
-use super::{as_arguments_0, as_arguments_1, as_index, FormatSpecifier, Type, Value, OP_ARRAY_INDEX};
+use super::{as_arguments_0, as_index, as_simple_arguments_1, FormatSpecifier, Type, Value, OP_ARRAY_INDEX};
 
 impl<T: 'static + Value + Clone> Value for Vec<T> {
 	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
 		match func {
 			"get" => {
-				let (index,) = as_arguments_1::<BigInt>(args)?;
+				let (index,) = as_simple_arguments_1::<BigInt>(args)?;
 				Ok(Box::new(index.to_usize().and_then(|index| self.get(index).cloned())))
 			}
 			"is_empty" => {

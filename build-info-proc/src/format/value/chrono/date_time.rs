@@ -5,13 +5,13 @@ use std::any::Any;
 
 use build_info_common::chrono::{DateTime, Utc};
 
-use super::super::{as_arguments_0, as_arguments_1, FormatSpecifier, Type, Value};
+use super::super::{as_arguments_0, as_simple_arguments_1, FormatSpecifier, Type, Value};
 
 impl Value for DateTime<Utc> {
 	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
 		match func {
 			"format" => {
-				let (format_string,) = as_arguments_1::<String>(args)?;
+				let (format_string,) = as_simple_arguments_1::<String>(args)?;
 				Ok(Box::new(self.format(format_string).to_string()))
 			}
 			"to_string" => {

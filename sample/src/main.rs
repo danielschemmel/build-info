@@ -22,7 +22,7 @@ fn main() {
 	println!("{}", build_info::format!());
 
 	// Your milage *will* vary, but you can attempt to "do stuff" inside `format!`
-	println!("{}", build_info::format!("Copyright 2020-{}", $.timestamp.format("%Y")));
+	println!("{}", build_info::format!("Copyright 2020-{compilation_year}", compilation_year = $.timestamp.format("%Y")));
 
 	// Some macros can also be called inside `format!`
 	println!(
