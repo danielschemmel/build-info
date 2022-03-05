@@ -1,6 +1,6 @@
 # See https://rust-lang.github.io/rustfmt/ for all possible settings & documentation.
 
-# When running `cargo fmt`, we don't need to set this option because it will be# picked up from cargo. However, this
+# When running `cargo fmt`, we don't need to set this option because it will be picked up from cargo. However, this
 # explicit setting is useful for (IDE) tools that run `rustfmt` directly, which otherwise default to "2015".
 edition = "2021"
 
