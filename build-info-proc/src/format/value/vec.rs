@@ -57,6 +57,12 @@ impl<T: 'static + Value + Clone> Value for Vec<T> {
 						if i < self.len() - 1 {
 							*buffer += ", ";
 						} else {
+							#[cfg(feature = "oxford-comma")]
+							{
+								if i > 1 {
+									*buffer += ","
+								}
+							}
 							*buffer += " and ";
 						}
 					}
@@ -66,5 +72,49 @@ impl<T: 'static + Value + Clone> Value for Vec<T> {
 			FormatSpecifier::Debug => format!(buffer, "{self:?}"),
 			FormatSpecifier::DebugAlt => format!(buffer, "{self:#?}"),
 		}
+	}
+}
+
+#[cfg(test)]
+mod test {
+	use pretty_assertions::assert_eq;
+
+	use super::*;
+
+	#[test]
+	fn format_vec0() {
+		let value: &dyn Value = &vec![] as &Vec<String>;
+		let mut result = String::new();
+		value.format(&mut result, FormatSpecifier::Default);
+		assert_eq!(&result, "");
+	}
+
+	#[test]
+	fn format_vec1() {
+		let value: &dyn Value = &vec!["abc".to_string()];
+		let mut result = String::new();
+		value.format(&mut result, FormatSpecifier::Default);
+		assert_eq!(&result, "abc");
+	}
+
+	#[test]
+	fn format_vec2() {
+		let value: &dyn Value = &vec!["ab".to_string(), "cd".to_string()];
+		let mut result = String::new();
+		value.format(&mut result, FormatSpecifier::Default);
+		assert_eq!(&result, "ab and cd");
+	}
+
+	#[test]
+	fn format_vec3() {
+		let value: &dyn Value = &vec!["ab".to_string(), "cd".to_string(), "ef".to_string()];
+		let mut result = String::new();
+		value.format(&mut result, FormatSpecifier::Default);
+
+		#[cfg(feature = "oxford-comma")]
+		assert_eq!(&result, "ab, cd, and ef");
+
+		#[cfg(not(feature = "oxford-comma"))]
+		assert_eq!(&result, "ab, cd and ef");
 	}
 }

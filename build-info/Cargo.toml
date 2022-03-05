@@ -20,5 +20,6 @@ build-info-proc = { version = "=0.0.26", path = "../build-info-proc" }
 [features]
 default = ["runtime"]
 nested = ["proc-macro-nested", "build-info-proc/nested"]
+oxford-comma = ["build-info-proc/oxford-comma"]
 runtime = ["lazy_static", "build-info-common", "build-info-proc/runtime"]
 serde = ["runtime", "build-info-common/enable-serde"]

@@ -37,3 +37,4 @@ pretty_assertions = "1"
 default = []
 nested = []
 runtime = []
+oxford-comma = []
