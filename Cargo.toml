@@ -1,4 +1,5 @@
 [workspace]
+resolver = "2"
 members = [
 	"build-info",
 	"build-info-build",
