@@ -61,6 +61,14 @@ pub struct BuildInfo {
 #[cfg(feature = "enable-pyo3")]
 #[pymethods]
 impl BuildInfo {
+	fn __str__(&self) -> String {
+		format!("{}", self)
+	}
+
+	fn __repr__(&self) -> String {
+		format!("{:?}", self)
+	}
+
 	/// Gets *almost* the timestamp, as Python's `datetime` does not account for leap seconds
 	#[getter]
 	fn timestamp<'py>(&self, py: Python<'py>) -> PyResult<&'py PyAny> {
@@ -152,6 +160,14 @@ pub struct CrateInfo {
 #[cfg(feature = "enable-pyo3")]
 #[pymethods]
 impl CrateInfo {
+	fn __str__(&self) -> String {
+		format!("{}", self)
+	}
+
+	fn __repr__(&self) -> String {
+		format!("{:?}", self)
+	}
+
 	#[getter]
 	fn name(&self) -> &str {
 		&self.name
@@ -215,6 +231,14 @@ pub struct CompilerInfo {
 #[cfg(feature = "enable-pyo3")]
 #[pymethods]
 impl CompilerInfo {
+	fn __str__(&self) -> String {
+		format!("{}", self)
+	}
+
+	fn __repr__(&self) -> String {
+		format!("{:?}", self)
+	}
+
 	#[getter]
 	fn version(&self) -> String {
 		self.version.to_string()
@@ -317,6 +341,14 @@ pub struct GitInfo {
 #[cfg(feature = "enable-pyo3")]
 #[pymethods]
 impl GitInfo {
+	fn __str__(&self) -> String {
+		format!("{}", self)
+	}
+
+	fn __repr__(&self) -> String {
+		format!("{:?}", self)
+	}
+
 	#[getter]
 	fn commit_id(&self) -> &str {
 		&self.commit_id
