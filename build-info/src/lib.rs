@@ -1,6 +1,8 @@
 /*!
-Begin by adding `build-info` as a `[dependency]` and `build-info-build` as a `[build-dependency]` to your [`Cargo.toml`](https://github.com/danielschemmel/build-info/tree/main/sample/Cargo.toml).
-Please make sure that both dependencies use the same version!
+Begin by adding `build-info` as a `[dependency]` and `build-info-build` as a `[build-dependency]` to your [`Cargo.toml`](sample/Cargo.toml).
+By separating those two crates, pure compile-time dependencies, such as `git2` are not compiled into your final program.
+For this to work properly, [ensure to opt in to resolver "2"](https://blog.rust-lang.org/2021/03/25/Rust-1.51.0.html#cargos-new-feature-resolver).
+Please also make sure that both dependencies use the same version!
 
 If it does not already exist, add a [`build.rs`](https://github.com/danielschemmel/build-info/tree/main/sample/build.rs) to your project's root, where you call `build_info_build::build_script()`.
 This will collect build information at compile time.
