@@ -16,6 +16,9 @@ use chrono::{DateTime, NaiveDate, Utc};
 pub use semver;
 use semver::Version;
 
+#[cfg(feature = "enable-pyo3")]
+use pyo3::prelude::*;
+
 #[cfg(feature = "enable-serde")]
 use serde::{Deserialize, Serialize};
 
@@ -32,6 +35,7 @@ pub fn crate_version() -> Version {
 }
 
 /// Information about the current build
+#[cfg_attr(feature = "enable-pyo3", pyclass)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct BuildInfo {
@@ -54,7 +58,58 @@ pub struct BuildInfo {
 	pub version_control: Option<VersionControl>,
 }
 
+#[cfg(feature = "enable-pyo3")]
+#[pymethods]
+impl BuildInfo {
+	/// Gets *almost* the timestamp, as Python's `datetime` does not account for leap seconds
+	#[getter]
+	fn timestamp<'py>(&self, py: Python<'py>) -> PyResult<&'py PyAny> {
+		use chrono::{Datelike, Timelike};
+
+		let py_datetime = py.import("datetime")?;
+		py_datetime.getattr("datetime")?.call1((
+			self.timestamp.year_ce().1,
+			self.timestamp.month(),
+			self.timestamp.day(),
+			self.timestamp.hour(),
+			self.timestamp.minute(),
+			self.timestamp.second(),
+			self.timestamp.timestamp_subsec_micros() % 1_000_000,
+			py_datetime.getattr("timezone")?.getattr("utc")?,
+		))
+	}
+
+	#[getter]
+	fn profile(&self) -> &str {
+		&self.profile
+	}
+
+	#[getter]
+	fn optimization_level(&self) -> OptimizationLevel {
+		self.optimization_level
+	}
+
+	#[getter]
+	fn crate_info(&self) -> CrateInfo {
+		self.crate_info.clone()
+	}
+
+	#[getter]
+	fn compiler(&self) -> CompilerInfo {
+		self.compiler.clone()
+	}
+
+	#[getter]
+	fn version_control<'py>(&self, py: Python<'py>) -> Py<PyAny> {
+		match self.version_control {
+			Some(VersionControl::Git(ref git)) => git.clone().into_py(py),
+			None => py.None(),
+		}
+	}
+}
+
 /// The various possible optimization levels
+#[cfg_attr(feature = "enable-pyo3", pyclass)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum OptimizationLevel {
@@ -67,6 +122,7 @@ pub enum OptimizationLevel {
 }
 
 /// Information about the current crate (i.e., the crate for which build information has been generated)
+#[cfg_attr(feature = "enable-pyo3", pyclass)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct CrateInfo {
@@ -93,7 +149,47 @@ pub struct CrateInfo {
 	pub dependencies: Vec<CrateInfo>,
 }
 
+#[cfg(feature = "enable-pyo3")]
+#[pymethods]
+impl CrateInfo {
+	#[getter]
+	fn name(&self) -> &str {
+		&self.name
+	}
+
+	#[getter]
+	fn version(&self) -> String {
+		self.version.to_string()
+	}
+
+	#[getter]
+	fn authors(&self) -> Vec<&str> {
+		self.authors.iter().map(|s| s as &str).collect()
+	}
+
+	#[getter]
+	fn license<'py>(&self) -> Option<&str> {
+		self.license.as_ref().map(|s| s as &str)
+	}
+
+	#[getter]
+	fn enabled_features(&self) -> Vec<&str> {
+		self.enabled_features.iter().map(|s| s as &str).collect()
+	}
+
+	#[getter]
+	fn available_features(&self) -> Vec<&str> {
+		self.available_features.iter().map(|s| s as &str).collect()
+	}
+
+	#[getter]
+	fn dependencies(&self) -> Vec<CrateInfo> {
+		self.dependencies.clone()
+	}
+}
+
 /// `rustc` version and configuration
+#[cfg_attr(feature = "enable-pyo3", pyclass)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct CompilerInfo {
@@ -116,7 +212,51 @@ pub struct CompilerInfo {
 	pub target_triple: String,
 }
 
+#[cfg(feature = "enable-pyo3")]
+#[pymethods]
+impl CompilerInfo {
+	#[getter]
+	fn version(&self) -> String {
+		self.version.to_string()
+	}
+
+	#[getter]
+	fn commit_id(&self) -> Option<&str> {
+		self.commit_id.as_ref().map(|s| s as &str)
+	}
+
+	#[getter]
+	fn commit_date<'py>(&self, py: Python<'py>) -> PyResult<Option<&'py PyAny>> {
+		use chrono::Datelike;
+
+		self
+			.commit_date
+			.map(|ref date| {
+				py.import("datetime")?
+					.getattr("date")?
+					.call1((date.year_ce().1, date.month(), date.day()))
+			})
+			.transpose()
+	}
+
+	#[getter]
+	fn channel(&self) -> CompilerChannel {
+		self.channel
+	}
+
+	#[getter]
+	fn host_triple(&self) -> &str {
+		&self.host_triple
+	}
+
+	#[getter]
+	fn target_triple(&self) -> &str {
+		&self.target_triple
+	}
+}
+
 /// `rustc` distribution channel (some compiler features are only available on specific channels)
+#[cfg_attr(feature = "enable-pyo3", pyclass)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Display, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum CompilerChannel {
@@ -148,6 +288,7 @@ Information about a git repository
 If a git repository is detected (and, thereby, this information included), the build script will be rerun whenever the
 currently checked out commit changes.
 */
+#[cfg_attr(feature = "enable-pyo3", pyclass)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct GitInfo {
@@ -171,4 +312,51 @@ pub struct GitInfo {
 
 	/// All tags that point to the current commit (e.g., `["v0.0.10", "sample@v0.0.10"]`)
 	pub tags: Vec<String>,
+}
+
+#[cfg(feature = "enable-pyo3")]
+#[pymethods]
+impl GitInfo {
+	#[getter]
+	fn commit_id(&self) -> &str {
+		&self.commit_id
+	}
+
+	#[getter]
+	fn commit_short_id(&self) -> &str {
+		&self.commit_short_id
+	}
+
+	/// Gets *almost* the timestamp, as Python's `datetime` does not account for leap seconds
+	#[getter]
+	fn commit_timestamp<'py>(&self, py: Python<'py>) -> PyResult<&'py PyAny> {
+		use chrono::{Datelike, Timelike};
+
+		let py_datetime = py.import("datetime")?;
+		py_datetime.getattr("datetime")?.call1((
+			self.commit_timestamp.year_ce().1,
+			self.commit_timestamp.month(),
+			self.commit_timestamp.day(),
+			self.commit_timestamp.hour(),
+			self.commit_timestamp.minute(),
+			self.commit_timestamp.second(),
+			self.commit_timestamp.timestamp_subsec_micros() % 1_000_000,
+			py_datetime.getattr("timezone")?.getattr("utc")?,
+		))
+	}
+
+	#[getter]
+	fn dirty(&self) -> bool {
+		self.dirty
+	}
+
+	#[getter]
+	fn branch<'py>(&self) -> Option<&str> {
+		self.branch.as_ref().map(|s| s as &str)
+	}
+
+	#[getter]
+	fn tags(&self) -> Vec<&str> {
+		self.tags.iter().map(|s| s as &str).collect()
+	}
 }
