@@ -29,6 +29,9 @@ mod display;
 #[cfg(feature = "enable-pyo3")]
 mod pyo3_methods;
 
+#[cfg(feature = "enable-pyo3")]
+pub use pyo3;
+
 /// Gets the version of the `build-info-common` crate (this crate)
 pub fn crate_version() -> Version {
 	Version::parse(env!("CARGO_PKG_VERSION")).unwrap()

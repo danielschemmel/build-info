@@ -33,6 +33,7 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
 		visibility,
 		id,
 	} = parse_macro_input!(input as FunctionSyntax);
+	let pyfunction = if cfg!(feature = "enable-pyo3") { quote!(#[#definition_crate::pyfunction]) } else { quote!() };
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));
 
 	let mut tokens = proc_macro2::TokenStream::new();
@@ -41,6 +42,7 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
 	#[allow(clippy::let_and_return)]
 	let output = quote_spanned! {
 		proc_macro::Span::mixed_site().into() =>
+		#pyfunction
 		#visibility fn #id() -> &'static #definition_crate::BuildInfo {
 			#definition_crate::lazy_static! {
 				static ref VERSION: #definition_crate::BuildInfo = #tokens;

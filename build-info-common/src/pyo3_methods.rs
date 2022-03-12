@@ -2,6 +2,15 @@ use pyo3::prelude::*;
 
 use crate::{BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, OptimizationLevel, VersionControl};
 
+/// The function generated via `build_info::build_info!` returns a reference to a statically initialized object
+/// (`&'static BuildInfo`). However, `pyo3` wants to move the result, which is of course impossible for a borrowed
+/// object. To deal with this, we add a conversion for `&BuildInfo` that automatically clones the borrowed value.
+impl IntoPy<PyObject> for &BuildInfo {
+	fn into_py(self, py: Python) -> PyObject {
+			self.clone().into_py(py)
+	}
+}
+
 #[pymethods]
 impl BuildInfo {
 	fn __str__(&self) -> String {
