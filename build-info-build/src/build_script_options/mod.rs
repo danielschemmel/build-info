@@ -144,7 +144,7 @@ fn rebuild_if_project_changes(workspace_root: &str) {
 		},
 	)
 	.unwrap()
-	.map(|source| source.unwrap())
+	.filter_map(|source| source.ok())
 	{
 		println!("cargo:rerun-if-changed={}", source.to_str().unwrap());
 	}
