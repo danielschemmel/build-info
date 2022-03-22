@@ -4,7 +4,7 @@ By separating those two crates, pure compile-time dependencies, such as `git2` a
 For this to work properly, [ensure to opt in to resolver "2"](https://blog.rust-lang.org/2021/03/25/Rust-1.51.0.html#cargos-new-feature-resolver).
 Please also make sure that both dependencies use the same version!
 
-If it does not already exist, add a [`build.rs`](sample/build.rs) to your project's root, where you call `build_info_build::build_script()`.
+If it does not already exist, add a [`build.rs`](https://github.com/danielschemmel/build-info/tree/main/sample/build.rs) to your project's root, where you call `build_info_build::build_script()`.
 This will collect build information at compile time.
 
 Then, either use the `build_info!` macro to add a function that returns version information at runtime:
@@ -17,7 +17,7 @@ or use `build_info::format!` to generate a string at compile time:
 build_info::format!("{{{} v{} built with {} at {}}}", $.crate_info.name, $.crate_info.version, $.compiler, $.timestamp)
 ```
 
-The [sample](sample) project shows both variants.
+The [sample](https://github.com/danielschemmel/build-info/tree/main/sample) project shows both variants.
 
 ## Features
 The `build_info` package supports several feature flags:
