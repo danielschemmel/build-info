@@ -60,7 +60,7 @@ impl BuildInfo {
 	}
 
 	#[getter]
-	fn version_control<'py>(&self, py: Python<'py>) -> Py<PyAny> {
+	fn version_control(&self, py: Python<'_>) -> Py<PyAny> {
 		match self.version_control {
 			Some(VersionControl::Git(ref git)) => git.clone().into_py(py),
 			None => py.None(),
@@ -94,7 +94,7 @@ impl CrateInfo {
 	}
 
 	#[getter]
-	fn license<'py>(&self) -> Option<&str> {
+	fn license(&self) -> Option<&str> {
 		self.license.as_ref().map(|s| s as &str)
 	}
 
@@ -208,7 +208,7 @@ impl GitInfo {
 	}
 
 	#[getter]
-	fn branch<'py>(&self) -> Option<&str> {
+	fn branch(&self) -> Option<&str> {
 		self.branch.as_ref().map(|s| s as &str)
 	}
 
