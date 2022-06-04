@@ -1,10 +1,8 @@
-use pretty_assertions::assert_eq;
-
-use build_info_common::semver::Version;
-use build_info_common::CrateInfo;
-use cargo_metadata::*;
-
 use std::collections::hash_map::{Entry, HashMap};
+
+use build_info_common::{semver::Version, CrateInfo};
+use cargo_metadata::*;
+use pretty_assertions::assert_eq;
 
 impl crate::BuildScriptOptions {
 	/// Enables and disables dependency collection.

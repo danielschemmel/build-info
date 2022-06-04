@@ -1,5 +1,3 @@
-use anyhow::Result;
-
 use std::any::Any;
 
 use build_info_common::BuildInfo;
@@ -7,7 +5,7 @@ use build_info_common::BuildInfo;
 use super::{as_arguments_0, as_field_name, FormatSpecifier, Type, Value, OP_FIELD_ACCESS};
 
 impl Value for BuildInfo {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
 		match func {
 			OP_FIELD_ACCESS => match as_field_name(args) {
 				"timestamp" => Ok(Box::new(self.timestamp)),
@@ -36,7 +34,7 @@ impl Value for BuildInfo {
 
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
 		use std::fmt::Write;
-		
+
 		match spec {
 			FormatSpecifier::Default => write!(buffer, "{self}").unwrap(),
 			FormatSpecifier::Debug => write!(buffer, "{self:?}").unwrap(),

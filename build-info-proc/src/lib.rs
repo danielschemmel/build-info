@@ -1,14 +1,13 @@
 #![forbid(unsafe_code)]
 
+use std::io::Cursor;
+
 use base64::read::DecoderReader as Base64Decoder;
+use build_info_common::{BuildInfo, VersionedString};
 use proc_macro::TokenStream;
 use proc_macro_error::{abort_call_site, emit_call_site_error, proc_macro_error};
 use proc_macro_hack::proc_macro_hack;
 use xz2::read::XzDecoder;
-
-use std::io::Cursor;
-
-use build_info_common::{BuildInfo, VersionedString};
 
 mod format;
 #[cfg(feature = "runtime")]

@@ -39,9 +39,9 @@ fn get_timestamp_internal(epoch: Option<String>) -> DateTime<Utc> {
 
 #[cfg(test)]
 mod test {
-	use super::*;
-
 	use pretty_assertions::assert_eq;
+
+	use super::*;
 
 	#[test]
 	fn get_current_timestamp() {

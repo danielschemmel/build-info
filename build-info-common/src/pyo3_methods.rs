@@ -7,7 +7,7 @@ use crate::{BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, Optimi
 /// object. To deal with this, we add a conversion for `&BuildInfo` that automatically clones the borrowed value.
 impl IntoPy<PyObject> for &BuildInfo {
 	fn into_py(self, py: Python) -> PyObject {
-			self.clone().into_py(py)
+		self.clone().into_py(py)
 	}
 }
 

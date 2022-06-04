@@ -1,14 +1,13 @@
-use anyhow::Result;
+use std::any::Any;
+
 use num_bigint::BigInt;
 use num_traits::cast::ToPrimitive;
 use proc_macro_error::abort_call_site;
 
-use std::any::Any;
-
 use super::{as_arguments_0, as_index, as_simple_arguments_1, FormatSpecifier, Type, Value, OP_ARRAY_INDEX};
 
 impl<T: 'static + Value + Clone> Value for Vec<T> {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
 		match func {
 			"get" => {
 				let (index,) = as_simple_arguments_1::<BigInt>(args)?;
@@ -50,7 +49,7 @@ impl<T: 'static + Value + Clone> Value for Vec<T> {
 
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
 		use std::fmt::Write;
-		
+
 		match spec {
 			FormatSpecifier::Default => {
 				for (i, value) in self.iter().enumerate() {

@@ -1,5 +1,3 @@
-use anyhow::Result;
-
 use std::any::Any;
 
 use build_info_common::chrono::NaiveDate;
@@ -7,7 +5,7 @@ use build_info_common::chrono::NaiveDate;
 use super::super::{as_arguments_0, as_simple_arguments_1, FormatSpecifier, Type, Value};
 
 impl Value for NaiveDate {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
 		match func {
 			"format" => {
 				let (format_string,) = as_simple_arguments_1::<String>(args)?;
@@ -31,7 +29,7 @@ impl Value for NaiveDate {
 
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
 		use std::fmt::Write;
-		
+
 		match spec {
 			FormatSpecifier::Default => write!(buffer, "{self}").unwrap(),
 			FormatSpecifier::Debug => write!(buffer, "{self:?}").unwrap(),

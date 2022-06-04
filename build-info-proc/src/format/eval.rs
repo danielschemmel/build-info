@@ -1,8 +1,10 @@
 use anyhow::Result;
 use num_bigint::BigInt;
 
-use super::syntax::{AtomicExpr, Expr, Suffix};
-use super::{Value, OP_ARRAY_INDEX, OP_FIELD_ACCESS, OP_TUPLE_INDEX};
+use super::{
+	syntax::{AtomicExpr, Expr, Suffix},
+	Value, OP_ARRAY_INDEX, OP_FIELD_ACCESS, OP_TUPLE_INDEX,
+};
 
 pub(crate) trait Eval {
 	fn eval(&self) -> Result<Box<dyn Value>>;

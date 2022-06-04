@@ -19,7 +19,6 @@ The ´build-info-build` crate has the following features:
 pub use build_info_common::{
 	semver, BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, OptimizationLevel, VersionControl,
 };
-
 // By reusing the `chrono` crate from `build-info-build` instead of from `build-info-common`, we do not rely on the
 // crates merged into one. This crate will fail to compile if the versions have an incompatible API.
 pub use chrono;

@@ -1,10 +1,13 @@
-use anyhow::Result;
 use proc_macro2::Span;
 use proc_macro_error::{abort, abort_if_dirty, emit_error};
 
 use super::{as_named_arguments_1, Value};
 
-pub(crate) fn call_macro(name: &str, args: &[(Option<String>, Box<dyn Value>)], span: Span) -> Result<Box<dyn Value>> {
+pub(crate) fn call_macro(
+	name: &str,
+	args: &[(Option<String>, Box<dyn Value>)],
+	span: Span,
+) -> anyhow::Result<Box<dyn Value>> {
 	match name {
 		"concat" => {
 			let mut result = String::new();

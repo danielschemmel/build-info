@@ -1,12 +1,11 @@
-use anyhow::Result;
-use num_bigint::BigInt;
-
 use std::any::Any;
+
+use num_bigint::BigInt;
 
 use super::{as_arguments_0, FormatSpecifier, Type, Value};
 
 impl Value for String {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
 		match func {
 			"is_empty" => {
 				as_arguments_0(args)?;
@@ -65,8 +64,9 @@ impl Value for String {
 
 #[cfg(test)]
 mod test {
-	use super::*;
 	use pretty_assertions::assert_eq;
+
+	use super::*;
 
 	#[test]
 	fn format_default() {

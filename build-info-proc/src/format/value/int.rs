@@ -1,12 +1,11 @@
-use anyhow::Result;
-use num_bigint::BigInt;
-
 use std::any::Any;
+
+use num_bigint::BigInt;
 
 use super::{as_arguments_0, FormatSpecifier, Type, Value};
 
 impl Value for BigInt {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
 		match func {
 			"to_string" => {
 				as_arguments_0(args)?;
@@ -26,7 +25,7 @@ impl Value for BigInt {
 
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
 		use std::fmt::Write;
-		
+
 		match spec {
 			FormatSpecifier::Default => write!(buffer, "{self}").unwrap(),
 			FormatSpecifier::Debug => write!(buffer, "{self:?}").unwrap(),

@@ -1,11 +1,10 @@
-use proc_macro2::{Delimiter, Group, Ident, TokenStream};
-use quote::{quote, quote_spanned, TokenStreamExt};
-
-use build_info_common::chrono::{DateTime, Datelike, NaiveDate, Utc};
-use build_info_common::semver::Version;
 use build_info_common::{
+	chrono::{DateTime, Datelike, NaiveDate, Utc},
+	semver::Version,
 	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, OptimizationLevel, VersionControl,
 };
+use proc_macro2::{Delimiter, Group, Ident, TokenStream};
+use quote::{quote, quote_spanned, TokenStreamExt};
 
 pub(crate) fn init_value<T: InitValue>(this: &T, tokens: &mut TokenStream, definition_crate: &Ident) {
 	this.init_value(tokens, definition_crate)

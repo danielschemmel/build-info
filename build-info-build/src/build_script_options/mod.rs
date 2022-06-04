@@ -1,13 +1,14 @@
-use base64::write::EncoderWriter as Base64Encoder;
-use xz2::write::XzEncoder;
-
 use core::sync::atomic::{AtomicBool, Ordering};
 use std::path::{Path, PathBuf};
 
+use base64::write::EncoderWriter as Base64Encoder;
 use build_info_common::{OptimizationLevel, VersionedString};
+use xz2::write::XzEncoder;
 
-use super::chrono::{DateTime, Utc};
-use super::BuildInfo;
+use super::{
+	chrono::{DateTime, Utc},
+	BuildInfo,
+};
 
 mod compiler;
 mod crate_info;

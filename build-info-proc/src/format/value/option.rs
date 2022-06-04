@@ -1,11 +1,11 @@
-use anyhow::{anyhow, Result};
-
 use std::any::Any;
+
+use anyhow::anyhow;
 
 use super::{as_arguments_0, as_simple_arguments_1, FormatSpecifier, Type, Value};
 
 impl<T: 'static + Value + Clone> Value for Option<T> {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
 		match func {
 			"is_none" => {
 				as_arguments_0(args)?;
@@ -52,7 +52,7 @@ impl<T: 'static + Value + Clone> Value for Option<T> {
 
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
 		use std::fmt::Write;
-		
+
 		match spec {
 			FormatSpecifier::Default => match self {
 				Some(value) => value.format(buffer, spec),
@@ -66,8 +66,9 @@ impl<T: 'static + Value + Clone> Value for Option<T> {
 
 #[cfg(test)]
 mod test {
-	use super::*;
 	use pretty_assertions::assert_eq;
+
+	use super::*;
 
 	#[test]
 	fn format_default() {

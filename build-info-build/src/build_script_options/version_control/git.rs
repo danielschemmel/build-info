@@ -1,8 +1,8 @@
 use anyhow::{anyhow, Result};
-
-use build_info_common::chrono::{TimeZone, Utc};
-use build_info_common::GitInfo;
-
+use build_info_common::{
+	chrono::{TimeZone, Utc},
+	GitInfo,
+};
 use git2::{Oid, Repository, StatusOptions};
 
 pub(crate) fn get_info() -> Result<GitInfo> {

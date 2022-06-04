@@ -1,8 +1,5 @@
+use build_info_common::{chrono::NaiveDate, semver::Version, CompilerChannel, CompilerInfo};
 use rustc_version::{version_meta, Channel};
-
-use build_info_common::chrono::NaiveDate;
-use build_info_common::semver::Version;
-use build_info_common::{CompilerChannel, CompilerInfo};
 
 pub(crate) fn get_info() -> CompilerInfo {
 	let rustc_version = version_meta().unwrap();

@@ -1,11 +1,9 @@
-use anyhow::Result;
-
 use std::any::Any;
 
 use super::{as_arguments_0, FormatSpecifier, Type, Value};
 
 impl Value for char {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
 		match func {
 			"to_string" => {
 				as_arguments_0(args)?;
@@ -36,8 +34,9 @@ impl Value for char {
 
 #[cfg(test)]
 mod test {
-	use super::*;
 	use pretty_assertions::assert_eq;
+
+	use super::*;
 
 	#[test]
 	fn format_default() {

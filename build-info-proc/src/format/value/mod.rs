@@ -1,9 +1,11 @@
-use anyhow::{anyhow, Result};
+use std::{
+	any::{type_name, Any},
+	fmt::Debug,
+};
+
+use anyhow::anyhow;
 use num_bigint::BigInt;
 use num_traits::ToPrimitive;
-
-use std::any::{type_name, Any};
-use std::fmt::Debug;
 
 use super::Type;
 
@@ -32,7 +34,7 @@ mod macros;
 pub(crate) use macros::call_macro;
 
 pub(crate) trait Value: Debug {
-	fn call_base(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
+	fn call_base(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
 		match func {
 			OP_FIELD_ACCESS => {
 				let field = as_field_name(args);
@@ -53,7 +55,7 @@ pub(crate) trait Value: Debug {
 		}
 	}
 
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
 		self.call_base(func, args)
 	}
 
@@ -101,7 +103,7 @@ fn as_index(args: &[Box<dyn Value>]) -> usize {
 		.expect("The array index does not fit into the type usize.")
 }
 
-fn as_arguments_0(args: &[Box<dyn Value>]) -> Result<()> {
+fn as_arguments_0(args: &[Box<dyn Value>]) -> anyhow::Result<()> {
 	if args.is_empty() {
 		Ok(())
 	} else {
@@ -109,7 +111,7 @@ fn as_arguments_0(args: &[Box<dyn Value>]) -> Result<()> {
 	}
 }
 
-fn as_simple_arguments_1<'a, T1: 'static>(args: &'a [Box<dyn Value>]) -> Result<(&'a T1,)> {
+fn as_simple_arguments_1<'a, T1: 'static>(args: &'a [Box<dyn Value>]) -> anyhow::Result<(&'a T1,)> {
 	if args.len() != 1 {
 		return Err(anyhow!("Wrong number of arguments (should be 1)"));
 	}
@@ -120,7 +122,7 @@ fn as_simple_arguments_1<'a, T1: 'static>(args: &'a [Box<dyn Value>]) -> Result<
 		.ok_or_else(|| anyhow!("Argument #1 should have type {}", type_name::<T1>()))?,))
 }
 
-fn as_named_arguments_1<'a, T1: 'static>(args: &'a [(Option<String>, Box<dyn Value>)]) -> Result<(&'a T1,)> {
+fn as_named_arguments_1<'a, T1: 'static>(args: &'a [(Option<String>, Box<dyn Value>)]) -> anyhow::Result<(&'a T1,)> {
 	if args.len() != 1 {
 		return Err(anyhow!("Wrong number of arguments (should be 1)"));
 	}

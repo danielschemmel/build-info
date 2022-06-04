@@ -8,14 +8,11 @@ For example, `build_info_common::BuildInfo` should be used as `build_info::Build
 
 #![forbid(unsafe_code)]
 
-use derive_more::Display;
-
 pub use chrono;
 use chrono::{DateTime, NaiveDate, Utc};
-
+use derive_more::Display;
 pub use semver;
 use semver::Version;
-
 #[cfg(feature = "enable-serde")]
 use serde::{Deserialize, Serialize};
 

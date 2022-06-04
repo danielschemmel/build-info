@@ -1,8 +1,7 @@
+use build_info_common::BuildInfo;
 use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
 use syn::{parse, parse_macro_input, Ident, Token, Visibility};
-
-use build_info_common::BuildInfo;
 
 mod init_value;
 use init_value::init_value;
@@ -33,7 +32,11 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
 		visibility,
 		id,
 	} = parse_macro_input!(input as FunctionSyntax);
-	let pyfunction = if cfg!(feature = "enable-pyo3") { quote!(#[#definition_crate::pyfunction]) } else { quote!() };
+	let pyfunction = if cfg!(feature = "enable-pyo3") {
+		quote!(#[#definition_crate::pyfunction])
+	} else {
+		quote!()
+	};
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));
 
 	let mut tokens = proc_macro2::TokenStream::new();

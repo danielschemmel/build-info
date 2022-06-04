@@ -1,9 +1,11 @@
+use std::{
+	cmp::Ordering,
+	hash::{Hash, Hasher},
+};
+
 use num_bigint::BigInt;
 use proc_macro2::Span;
 use syn::{braced, bracketed, parenthesized, parse, Ident, LitBool, LitChar, LitInt, LitStr, Token};
-
-use std::cmp::Ordering;
-use std::hash::{Hash, Hasher};
 
 #[derive(Clone, Debug)]
 pub(crate) struct Meta {
@@ -259,10 +261,10 @@ impl parse::Parse for Expr {
 
 #[cfg(test)]
 mod test {
-	use super::*;
-
 	use pretty_assertions::assert_eq;
 	use quote::quote;
+
+	use super::*;
 
 	#[test]
 	fn no_format() -> anyhow::Result<()> {
