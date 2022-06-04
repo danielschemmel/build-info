@@ -1,0 +1,40 @@
+on:
+  push:
+  schedule:
+    - cron: '1 1 1 * *'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+      - name: format
+        run: cargo fmt -- --check
+      - name: clippy
+        run: cargo clippy --all-features --all-targets -- --deny warnings
+
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        toolchain: [stable, beta, nightly]
+        feature_bug: ['', '--features=bug']
+        feature_subcommands: ['', '--features=subcommands']
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          override: true
+      - name: Build
+        run: cargo build ${{ matrix.feature_bug }} ${{ matrix.feature_subcommands }} --verbose
+      - name: Run tests
+        run: cargo test ${{ matrix.feature_bug }} ${{ matrix.feature_subcommands }} --verbose
