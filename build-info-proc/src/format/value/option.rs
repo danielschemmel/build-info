@@ -1,5 +1,4 @@
 use anyhow::{anyhow, Result};
-use format_buf::format;
 
 use std::any::Any;
 
@@ -52,13 +51,15 @@ impl<T: 'static + Value + Clone> Value for Option<T> {
 	}
 
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
+		use std::fmt::Write;
+		
 		match spec {
 			FormatSpecifier::Default => match self {
 				Some(value) => value.format(buffer, spec),
 				None => *buffer += "None",
 			},
-			FormatSpecifier::Debug => format!(buffer, "{self:?}"),
-			FormatSpecifier::DebugAlt => format!(buffer, "{self:#?}"),
+			FormatSpecifier::Debug => write!(buffer, "{self:?}").unwrap(),
+			FormatSpecifier::DebugAlt => write!(buffer, "{self:#?}").unwrap(),
 		}
 	}
 }

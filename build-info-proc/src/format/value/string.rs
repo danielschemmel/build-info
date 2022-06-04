@@ -1,5 +1,4 @@
 use anyhow::Result;
-use format_buf::format;
 use num_bigint::BigInt;
 
 use std::any::Any;
@@ -54,10 +53,12 @@ impl Value for String {
 	}
 
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
+		use std::fmt::Write;
+
 		match spec {
 			FormatSpecifier::Default => *buffer += self,
-			FormatSpecifier::Debug => format!(buffer, "{self:?}"),
-			FormatSpecifier::DebugAlt => format!(buffer, "{self:#?}"),
+			FormatSpecifier::Debug => write!(buffer, "{self:?}").unwrap(),
+			FormatSpecifier::DebugAlt => write!(buffer, "{self:#?}").unwrap(),
 		}
 	}
 }
@@ -75,7 +76,7 @@ mod test {
 
 		buff.clear();
 		Value::format(&"\0!".to_string(), &mut buff, FormatSpecifier::Default);
-		assert_eq!(buff, "\0!");
+		assert_eq!(buff, format!("{}", "\0!"));
 	}
 
 	#[test]
@@ -86,7 +87,7 @@ mod test {
 
 		buff.clear();
 		Value::format(&"\0!".to_string(), &mut buff, FormatSpecifier::Debug);
-		assert_eq!(buff, "\"\\u{0}!\"");
+		assert_eq!(buff, format!("{:?}", "\0!"));
 	}
 
 	#[test]
@@ -97,6 +98,6 @@ mod test {
 
 		buff.clear();
 		Value::format(&"\0!".to_string(), &mut buff, FormatSpecifier::DebugAlt);
-		assert_eq!(buff, "\"\\u{0}!\"");
+		assert_eq!(buff, format!("{:#?}", "\0!"));
 	}
 }

@@ -1,5 +1,4 @@
 use anyhow::Result;
-use format_buf::format;
 
 use std::any::Any;
 
@@ -31,10 +30,12 @@ impl Value for DateTime<Utc> {
 	}
 
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
+		use std::fmt::Write;
+		
 		match spec {
-			FormatSpecifier::Default => format!(buffer, "{}", self.format("%Y-%m-%d %H:%M:%SZ")),
-			FormatSpecifier::Debug => format!(buffer, "{self:?}"),
-			FormatSpecifier::DebugAlt => format!(buffer, "{self:#?}"),
+			FormatSpecifier::Default => write!(buffer, "{}", self.format("%Y-%m-%d %H:%M:%SZ")).unwrap(),
+			FormatSpecifier::Debug => write!(buffer, "{self:?}").unwrap(),
+			FormatSpecifier::DebugAlt => write!(buffer, "{self:#?}").unwrap(),
 		}
 	}
 }

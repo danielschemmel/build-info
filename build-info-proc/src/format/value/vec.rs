@@ -1,5 +1,4 @@
 use anyhow::Result;
-use format_buf::format;
 use num_bigint::BigInt;
 use num_traits::cast::ToPrimitive;
 use proc_macro_error::abort_call_site;
@@ -50,6 +49,8 @@ impl<T: 'static + Value + Clone> Value for Vec<T> {
 	}
 
 	fn format(&self, buffer: &mut String, spec: FormatSpecifier) {
+		use std::fmt::Write;
+		
 		match spec {
 			FormatSpecifier::Default => {
 				for (i, value) in self.iter().enumerate() {
@@ -69,8 +70,8 @@ impl<T: 'static + Value + Clone> Value for Vec<T> {
 					value.format(buffer, spec);
 				}
 			}
-			FormatSpecifier::Debug => format!(buffer, "{self:?}"),
-			FormatSpecifier::DebugAlt => format!(buffer, "{self:#?}"),
+			FormatSpecifier::Debug => write!(buffer, "{self:?}").unwrap(),
+			FormatSpecifier::DebugAlt => write!(buffer, "{self:#?}").unwrap(),
 		}
 	}
 }
