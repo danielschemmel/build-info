@@ -111,7 +111,7 @@ fn as_arguments_0(args: &[Box<dyn Value>]) -> anyhow::Result<()> {
 	}
 }
 
-fn as_simple_arguments_1<'a, T1: 'static>(args: &'a [Box<dyn Value>]) -> anyhow::Result<(&'a T1,)> {
+fn as_simple_arguments_1<T1: 'static>(args: &[Box<dyn Value>]) -> anyhow::Result<(&T1,)> {
 	if args.len() != 1 {
 		return Err(anyhow!("Wrong number of arguments (should be 1)"));
 	}
@@ -122,7 +122,7 @@ fn as_simple_arguments_1<'a, T1: 'static>(args: &'a [Box<dyn Value>]) -> anyhow:
 		.ok_or_else(|| anyhow!("Argument #1 should have type {}", type_name::<T1>()))?,))
 }
 
-fn as_named_arguments_1<'a, T1: 'static>(args: &'a [(Option<String>, Box<dyn Value>)]) -> anyhow::Result<(&'a T1,)> {
+fn as_named_arguments_1<T1: 'static>(args: &[(Option<String>, Box<dyn Value>)]) -> anyhow::Result<(&T1,)> {
 	if args.len() != 1 {
 		return Err(anyhow!("Wrong number of arguments (should be 1)"));
 	}
