@@ -20,7 +20,7 @@ build_info::format!("{{{} v{} built with {} at {}}}", $.crate_info.name, $.crate
 The [sample](https://github.com/danielschemmel/build-info/tree/main/sample) project shows both variants.
 
 ## Features
-The `build_info` package supports several feature flags:
+The `build_info` crate supports several feature flags:
 - The `runtime` feature enables `build_info::build_info!`. It is enabled by default, but if you intend to only use `build_info::format!`, it is safe to disable this flag.
 - The `nested` feature adds support for [`proc-macro-nested`](https://crates.io/crates/proc-macro-nested), which lets the `build_info::format!` macro be nested inside other proc-macros. This may require you to set `#![recursion_limit = "..."]` in your crate. The feature is disabled by default.
 - The `chrono` feature enables the default features of the `chrono` package, which is used by `build_info::build_info!`. It is disabled by default.
