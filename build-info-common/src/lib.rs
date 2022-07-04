@@ -29,7 +29,6 @@ pub fn crate_version() -> Version {
 }
 
 /// Information about the current build
-#[cfg_attr(feature = "enable-pyo3", pyo3::pyclass)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct BuildInfo {
@@ -53,7 +52,6 @@ pub struct BuildInfo {
 }
 
 /// The various possible optimization levels
-#[cfg_attr(feature = "enable-pyo3", pyo3::pyclass)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum OptimizationLevel {
@@ -66,7 +64,6 @@ pub enum OptimizationLevel {
 }
 
 /// Information about the current crate (i.e., the crate for which build information has been generated)
-#[cfg_attr(feature = "enable-pyo3", pyo3::pyclass)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct CrateInfo {
@@ -94,7 +91,6 @@ pub struct CrateInfo {
 }
 
 /// `rustc` version and configuration
-#[cfg_attr(feature = "enable-pyo3", pyo3::pyclass)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct CompilerInfo {
@@ -118,7 +114,6 @@ pub struct CompilerInfo {
 }
 
 /// `rustc` distribution channel (some compiler features are only available on specific channels)
-#[cfg_attr(feature = "enable-pyo3", pyo3::pyclass)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Display, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum CompilerChannel {
@@ -150,7 +145,6 @@ Information about a git repository
 If a git repository is detected (and, thereby, this information included), the build script will be rerun whenever the
 currently checked out commit changes.
 */
-#[cfg_attr(feature = "enable-pyo3", pyo3::pyclass)]
 #[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct GitInfo {
