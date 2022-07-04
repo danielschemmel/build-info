@@ -24,7 +24,6 @@ The `build_info` package supports several feature flags:
 - The `runtime` feature enables `build_info::build_info!`. It is enabled by default, but if you intend to only use `build_info::format!`, it is safe to disable this flag.
 - The `nested` feature adds support for [`proc-macro-nested`](https://crates.io/crates/proc-macro-nested), which lets the `build_info::format!` macro be nested inside other proc-macros. This may require you to set `#![recursion_limit = "..."]` in your crate. The feature is disabled by default.
 - The `chrono` feature enables the default features of the `chrono` package, which is used by `build_info::build_info!`. It is disabled by default.
-- The `pyo3` feature enables the use of `build_info` types in a `pyo3`-Python enabled application, including extension modules. For example, a function `build_info::build_info!(fn version);` can be added to a module by using `module.add_function(wrap_pyfunction!(version, m)?)?;`. Note that this feature is *not* needed to just add the `__version__` tag to your module, which can be facilitated via `my_module.add("__version__", build_info::format!("{}", $.crate_info.version))?;`.
 - The `serde` feature adds `Serialize`/`Deserialize` support to the types used by `build_info::build_info!`. It is disabled by default.
 
 # Caveats

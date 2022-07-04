@@ -21,6 +21,5 @@ build-info-proc = { version = "=0.0.26", path = "../build-info-proc" }
 default = ["runtime"]
 nested = ["proc-macro-nested", "build-info-proc/nested"]
 oxford-comma = ["build-info-proc/oxford-comma"]
-pyo3 = ["runtime", "build-info-common/enable-pyo3", "build-info-proc/enable-pyo3"]
 runtime = ["lazy_static", "build-info-common", "build-info-proc/runtime"]
 serde = ["runtime", "build-info-common/enable-serde"]
