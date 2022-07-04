@@ -1,6 +1,6 @@
 [package]
 name = "build-info"
-version = "0.0.26"
+version = "0.0.27"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 edition = "2021"
 publish = ["crates-io"]
@@ -14,8 +14,8 @@ lazy_static = { version = "1", optional = true }
 proc-macro-hack = "0.5"
 proc-macro-nested = { version = "0.1", optional = true }
 
-build-info-common = { version = "=0.0.26", path = "../build-info-common", optional = true }
-build-info-proc = { version = "=0.0.26", path = "../build-info-proc" }
+build-info-common = { version = "=0.0.27", path = "../build-info-common", optional = true }
+build-info-proc = { version = "=0.0.27", path = "../build-info-proc" }
 
 [features]
 default = ["runtime"]
