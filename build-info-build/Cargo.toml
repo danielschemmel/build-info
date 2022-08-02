@@ -16,7 +16,7 @@ bincode = "1"
 cargo_metadata = "0.15"
 chrono = { version = "0.4", default_features = true }
 lazy_static = "1"
-git2 = { version = "0.14", default-features = false, optional = true }
+git2 = { version = "0.15", default-features = false, optional = true }
 glob = "0.3"
 pretty_assertions = "1"
 rustc_version = "0.4"
