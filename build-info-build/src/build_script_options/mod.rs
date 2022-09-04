@@ -15,10 +15,8 @@ mod crate_info;
 mod timestamp;
 mod version_control;
 
-lazy_static::lazy_static! {
-	static ref CARGO_TOML: PathBuf = Path::new(&std::env::var_os("CARGO_MANIFEST_DIR").unwrap())
-		.join("Cargo.toml");
-}
+static CARGO_TOML: once_cell::sync::Lazy<PathBuf> =
+	once_cell::sync::Lazy::new(|| Path::new(&std::env::var_os("CARGO_MANIFEST_DIR").unwrap()).join("Cargo.toml"));
 
 /// Type to store any (optional) options for the build script.
 pub struct BuildScriptOptions {

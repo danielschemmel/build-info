@@ -41,9 +41,7 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
 	let output = quote_spanned! {
 		proc_macro::Span::mixed_site().into() =>
 		#visibility fn #id() -> &'static #definition_crate::BuildInfo {
-			#definition_crate::lazy_static! {
-				static ref VERSION: #definition_crate::BuildInfo = #tokens;
-			}
+			static VERSION: #definition_crate::Lazy<#definition_crate::BuildInfo> = #definition_crate::Lazy::new(|| #tokens);
 			&VERSION
 		}
 	};
