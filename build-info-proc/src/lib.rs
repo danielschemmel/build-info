@@ -6,7 +6,6 @@ use base64::read::DecoderReader as Base64Decoder;
 use build_info_common::{BuildInfo, VersionedString};
 use proc_macro::TokenStream;
 use proc_macro_error::{abort_call_site, emit_call_site_error, proc_macro_error};
-use proc_macro_hack::proc_macro_hack;
 use xz2::read::XzDecoder;
 
 mod format;
@@ -27,12 +26,15 @@ pub fn build_info(input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_error]
-#[proc_macro_hack]
+#[proc_macro]
 pub fn format(input: TokenStream) -> TokenStream {
 	format::format(input, deserialize_build_info())
 }
 
 fn deserialize_build_info() -> BuildInfo {
+	// explicitly pull std::format into this namespace, as `abort_call_site` seems to use the macro without properly qualifying it.
+	use std::format;
+
 	let data = std::env::var("BUILD_INFO").unwrap_or_else(|err| {
 		abort_call_site!("No BuildInfo data found!";
 			note = "Did you call build_info_build::build_script() in your build.rs?";

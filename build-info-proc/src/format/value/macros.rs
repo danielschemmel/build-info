@@ -40,19 +40,10 @@ pub(crate) fn call_macro(
 			Ok(Box::new(value))
 		}
 		_ => {
-			if cfg!(feature = "nested") {
-				abort!(span,
-					"Macro `{}!` cannot be called inside `build_info::format!`", name;
-					note = "Only macros using proc-macro-nested, `concat!`, `env!` and `option_env!` are available for use in `build_info::format!`, as of now.";
-					note = "The `nested` feature is enabled, but did not help.";
-				)
-			} else {
-				abort!(span,
-					"Macro `{}!` cannot be called inside `build_info::format!`", name;
-					note = "Only `concat!`, `env!` and `option_env!` are implemented for use in `build_info::format!`, as of now.";
-					note = "Depending on the macro, the `nested` feature might help.";
-				)
-			}
+			abort!(span,
+				"Macro `{}!` cannot be called inside `build_info::format!`", name;
+				note = "Only `concat!`, `env!` and `option_env!` are implemented for use in `build_info::format!`, as of now.";
+			)
 		}
 	}
 }

@@ -13,7 +13,6 @@ pub use build_info_proc as proc;
 #[doc(hidden)]
 #[cfg(feature = "runtime")]
 pub use once_cell::sync::Lazy;
-use proc_macro_hack::proc_macro_hack;
 
 /**
 Generates a function that returns a reference to the `BuildInfo` structure for the crate.
@@ -38,6 +37,4 @@ You can use `?` to unwrap `Option`s and some additional types can be formatted t
 
 Literal curly braces can be printed by doubling them up: `build_info::format!("{{}}") // yields "{}"`.
 */
-#[cfg_attr(not(feature = "nested"), proc_macro_hack)]
-#[cfg_attr(feature = "nested", proc_macro_hack(support_nested))]
 pub use build_info_proc::format;

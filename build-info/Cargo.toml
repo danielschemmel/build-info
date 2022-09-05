@@ -11,15 +11,12 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 once_cell = { version = "1", optional = true }
-proc-macro-hack = "0.5"
-proc-macro-nested = { version = "0.1", optional = true }
 
 build-info-common = { version = "=0.0.27", path = "../build-info-common", optional = true }
 build-info-proc = { version = "=0.0.27", path = "../build-info-proc" }
 
 [features]
 default = ["runtime"]
-nested = ["proc-macro-nested", "build-info-proc/nested"]
 oxford-comma = ["build-info-proc/oxford-comma"]
 runtime = ["once_cell", "build-info-common", "build-info-proc/runtime"]
 serde = ["runtime", "build-info-common/enable-serde"]
