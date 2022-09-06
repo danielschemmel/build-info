@@ -32,7 +32,8 @@ pub fn format(input: TokenStream) -> TokenStream {
 }
 
 fn deserialize_build_info() -> BuildInfo {
-	// explicitly pull std::format into this namespace, as `abort_call_site` seems to use the macro without properly qualifying it.
+	// explicitly pull std::format into this namespace, as `abort_call_site` seems to use the macro without properly
+	// qualifying it.
 	use std::format;
 
 	let data = std::env::var("BUILD_INFO").unwrap_or_else(|err| {
