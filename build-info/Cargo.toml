@@ -5,7 +5,6 @@ description = "Collects build-information of your Rust crate."
 readme = "README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 edition = "2021"
-publish = ["crates-io"]
 repository = "https://github.com/danielschemmel/build-info/"
 license = "MIT OR Apache-2.0"
 
