@@ -17,5 +17,5 @@ build-info-proc = { version = "=0.0.27", path = "../build-info-proc" }
 [features]
 default = ["runtime"]
 oxford-comma = ["build-info-proc/oxford-comma"]
-runtime = ["once_cell", "build-info-common", "build-info-proc/runtime"]
-serde = ["runtime", "build-info-common/enable-serde"]
+runtime = ["dep:once_cell", "dep:build-info-common", "build-info-proc/runtime"]
+serde = ["build-info-common?/serde"]

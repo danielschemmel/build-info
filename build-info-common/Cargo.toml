@@ -16,4 +16,4 @@ serde = { version = "1", features = ["derive"], optional = true }
 
 [features]
 default = []
-enable-serde = ["serde", "semver/serde", "chrono/serde"]
+serde = ["dep:serde", "semver/serde", "chrono/serde"]

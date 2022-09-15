@@ -13,12 +13,12 @@ use chrono::{DateTime, NaiveDate, Utc};
 use derive_more::Display;
 pub use semver;
 use semver::Version;
-#[cfg(feature = "enable-serde")]
+#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
-#[cfg(feature = "enable-serde")]
+#[cfg(feature = "serde")]
 mod versioned_string;
-#[cfg(feature = "enable-serde")]
+#[cfg(feature = "serde")]
 pub use versioned_string::VersionedString;
 
 mod display;
@@ -29,7 +29,7 @@ pub fn crate_version() -> Version {
 }
 
 /// Information about the current build
-#[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct BuildInfo {
 	/// Updated whenever `build.rs` is rerun.
@@ -52,7 +52,7 @@ pub struct BuildInfo {
 }
 
 /// The various possible optimization levels
-#[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum OptimizationLevel {
 	O0,
@@ -64,7 +64,7 @@ pub enum OptimizationLevel {
 }
 
 /// Information about the current crate (i.e., the crate for which build information has been generated)
-#[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct CrateInfo {
 	/// The name, as defined in `Cargo.toml`.
@@ -91,7 +91,7 @@ pub struct CrateInfo {
 }
 
 /// `rustc` version and configuration
-#[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct CompilerInfo {
 	/// Version of the current `rustc`
@@ -114,7 +114,7 @@ pub struct CompilerInfo {
 }
 
 /// `rustc` distribution channel (some compiler features are only available on specific channels)
-#[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Display, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum CompilerChannel {
 	Dev,
@@ -124,7 +124,7 @@ pub enum CompilerChannel {
 }
 
 /// Support for different version control systems
-#[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum VersionControl {
 	Git(GitInfo),
@@ -145,7 +145,7 @@ Information about a git repository
 If a git repository is detected (and, thereby, this information included), the build script will be rerun whenever the
 currently checked out commit changes.
 */
-#[cfg_attr(feature = "enable-serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct GitInfo {
 	/// Full commit hash for the currently checked out commit
