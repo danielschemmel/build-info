@@ -15,7 +15,7 @@ proc-macro = true
 anyhow = "1"
 base64 = "0.13"
 bincode = "1"
-chrono = { version = "0.4", default_features = false, features = ["clock", "std", "wasmbind"] }
+chrono = { version = "0.4", default_features = false, features = ["clock", "std"] }
 num-bigint = "0.4"
 num-traits = "0.2"
 proc-macro2 = "1"
