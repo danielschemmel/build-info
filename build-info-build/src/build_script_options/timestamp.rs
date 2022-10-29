@@ -1,5 +1,4 @@
-// Note that we do not use `build_info_common::chrono` here.
-use crate::chrono::{DateTime, TimeZone, Utc};
+use chrono::{DateTime, TimeZone, Utc};
 
 impl crate::BuildScriptOptions {
 	/// Set the build timestamp by hand.

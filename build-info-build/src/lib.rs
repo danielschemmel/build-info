@@ -17,7 +17,7 @@ The ´build-info-build` crate has the following features:
 #![allow(clippy::tabs_in_doc_comments)]
 
 pub use build_info_common::{
-	chrono, semver, BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, OptimizationLevel, VersionControl,
+	semver, BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, OptimizationLevel, VersionControl,
 };
 
 mod build_script_options;

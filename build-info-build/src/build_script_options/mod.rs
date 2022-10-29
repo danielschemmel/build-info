@@ -3,12 +3,10 @@ use std::path::{Path, PathBuf};
 
 use base64::write::EncoderWriter as Base64Encoder;
 use build_info_common::{OptimizationLevel, VersionedString};
+use chrono::{DateTime, Utc};
 use xz2::write::XzEncoder;
 
-use super::{
-	chrono::{DateTime, Utc},
-	BuildInfo,
-};
+use super::BuildInfo;
 
 mod compiler;
 mod crate_info;

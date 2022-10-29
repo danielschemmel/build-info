@@ -1,6 +1,6 @@
 use std::any::Any;
 
-use build_info_common::chrono::NaiveDate;
+use chrono::NaiveDate;
 
 use super::super::{as_arguments_0, as_simple_arguments_1, FormatSpecifier, Type, Value};
 
