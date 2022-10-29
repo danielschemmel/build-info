@@ -114,7 +114,7 @@ fn to_crate_info(
 	let version = Version::parse(&pkg.version.to_string()).unwrap();
 	let authors = pkg.authors.clone();
 	let license = pkg.license.clone();
-	let available_features = pkg.features.iter().map(|(key, _value)| key.clone()).collect();
+	let available_features = pkg.features.keys().cloned().collect();
 	let enabled_features = node.features.clone();
 	let dependencies = if collect_dependencies {
 		node

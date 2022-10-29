@@ -3,7 +3,7 @@ impl std::fmt::Display for crate::BuildInfo {
 		write!(f, "{} {} build", self.crate_info, self.profile)?;
 
 		if let Some(crate::VersionControl::Git(ref git)) = self.version_control {
-			write!(f, " from {}", git)?;
+			write!(f, " from {git}")?;
 		}
 
 		Ok(())
@@ -36,9 +36,9 @@ impl std::fmt::Display for crate::CompilerInfo {
 		if let Some(ref commit_id) = self.commit_id {
 			let commit_id = &commit_id[0..9];
 			if let Some(ref commit_date) = self.commit_date {
-				write!(f, " ({} {})", commit_id, commit_date)?;
+				write!(f, " ({commit_id} {commit_date})")?;
 			} else {
-				write!(f, " ({})", commit_id)?;
+				write!(f, " ({commit_id})")?;
 			}
 		}
 
@@ -49,7 +49,7 @@ impl std::fmt::Display for crate::CompilerInfo {
 impl std::fmt::Display for crate::VersionControl {
 	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
 		match self {
-			crate::VersionControl::Git(ref git) => write!(f, "{}", git),
+			crate::VersionControl::Git(ref git) => write!(f, "{git}"),
 		}
 	}
 }
@@ -63,7 +63,7 @@ impl std::fmt::Display for crate::GitInfo {
 		}
 
 		if let Some(branch) = &self.branch {
-			write!(f, " ({})", branch)?;
+			write!(f, " ({branch})")?;
 		}
 
 		Ok(())

@@ -76,7 +76,7 @@ impl BuildScriptOptions {
 		let versioned = VersionedString::build_info_common_versioned(string);
 		let serialized = serde_json::to_string(&versioned).unwrap();
 
-		println!("cargo:rustc-env=BUILD_INFO={}", serialized);
+		println!("cargo:rustc-env=BUILD_INFO={serialized}");
 
 		// Whenever any `cargo:rerun-if-changed` key is set, the default set is cleared.
 		// Since we will need to emit such keys to trigger rebuilds when the vcs repository changes state,
