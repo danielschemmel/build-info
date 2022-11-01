@@ -4,9 +4,11 @@ version = "0.0.28"
 description = "Part of the build-info crate: This crate provides the proc-macros."
 readme = "../README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
-edition = "2021"
 repository = "https://github.com/danielschemmel/build-info/"
 license = "MIT OR Apache-2.0"
+
+edition = "2021"
+rust-version = "1.60.0"
 
 [lib]
 proc-macro = true

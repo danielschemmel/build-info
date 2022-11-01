@@ -4,9 +4,11 @@ version = "0.0.28"
 description = "Provides the data consumed by the build-info crate. Use as a build-dependency."
 readme = "../README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
-edition = "2021"
 repository = "https://github.com/danielschemmel/build-info/"
 license = "MIT OR Apache-2.0"
+
+edition = "2021"
+rust-version = "1.60.0"
 
 [dependencies]
 anyhow = "1"
