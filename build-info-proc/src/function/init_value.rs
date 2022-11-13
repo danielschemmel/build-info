@@ -256,7 +256,7 @@ impl InitValue for NaiveDate {
 		let month = self.month();
 		let day = self.day();
 		tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() =>
-			#definition_crate::chrono::NaiveDate::from_ymd(#year, #month, #day)
+			#definition_crate::chrono::NaiveDate::from_ymd_opt(#year, #month, #day).unwrap()
 		));
 	}
 }
