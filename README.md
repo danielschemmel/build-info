@@ -20,7 +20,7 @@ The [sample](https://github.com/danielschemmel/build-info/tree/main/sample) proj
 
 ## Features
 The `build_info` crate supports several feature flags:
-- The `runtime` feature enables `build_info::build_info!`. It is enabled by default, but if you intend to only use `build_info::format!`, it is safe to disable this flag.
+- The `runtime` feature enables `build_info::build_info!`. It is enabled by default, but if you intend to only use `build_info::format!`, it is safe to disable this flag. Disable this feature to use `build_info` in a `no_std` context.
 - The `chrono` feature enables the default features of the `chrono` package, which is used by `build_info::build_info!`. It is disabled by default.
 - The `serde` feature adds `Serialize`/`Deserialize` support to the types used by `build_info::build_info!`. It is disabled by default.
 

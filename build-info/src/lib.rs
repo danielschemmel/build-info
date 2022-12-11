@@ -1,5 +1,6 @@
 #![doc = include_str!("../README.md")]
 #![forbid(unsafe_code)]
+#![cfg_attr(not(feature = "runtime"), no_std)]
 
 #[cfg(feature = "runtime")]
 pub use build_info_common::{
