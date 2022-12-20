@@ -1,6 +1,6 @@
 [package]
 name = "build-info"
-version = "0.0.28"
+version = "0.0.29"
 description = "Collects build-information of your Rust crate."
 readme = "README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
@@ -13,8 +13,8 @@ rust-version = "1.60.0"
 [dependencies]
 once_cell = { version = "1", optional = true }
 
-build-info-common = { version = "=0.0.28", path = "../build-info-common", optional = true }
-build-info-proc = { version = "=0.0.28", path = "../build-info-proc" }
+build-info-common = { version = "=0.0.29", path = "../build-info-common", optional = true }
+build-info-proc = { version = "=0.0.29", path = "../build-info-proc" }
 
 [features]
 default = ["runtime"]
