@@ -12,7 +12,7 @@ rust-version = "1.60.0"
 
 [dependencies]
 anyhow = "1"
-base64 = "0.13"
+base64 = "0.20"
 bincode = "1"
 cargo_metadata = "0.15"
 chrono = { version = "0.4.23", default-features = false, features = ["clock"] }

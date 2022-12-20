@@ -62,7 +62,12 @@ fn deserialize_build_info() -> BuildInfo {
 	}
 
 	let mut cursor = Cursor::new(versioned.string.as_bytes());
-	let string_safe = Base64Decoder::new(&mut cursor, base64::STANDARD_NO_PAD);
+	const BASE64_ENGINE: base64::engine::fast_portable::FastPortable = base64::engine::fast_portable::FastPortable::from(
+		&base64::alphabet::STANDARD,
+		base64::engine::fast_portable::FastPortableConfig::new()
+			.with_decode_padding_mode(base64::engine::DecodePaddingMode::Indifferent),
+	);
+	let string_safe = Base64Decoder::from(&mut cursor, &BASE64_ENGINE);
 	let decoder = XzDecoder::new(string_safe);
 	bincode::deserialize_from(decoder).unwrap_or_else(|err| {
 		abort_call_site!("BuildInfo data cannot be deserialized!";
