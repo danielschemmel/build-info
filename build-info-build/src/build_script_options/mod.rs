@@ -67,12 +67,11 @@ impl BuildScriptOptions {
 		};
 
 		let mut bytes = Vec::new();
-		const BASE64_ENGINE: base64::engine::GeneralPurpose =
-			base64::engine::GeneralPurpose::new(
-				&base64::alphabet::STANDARD,
-				base64::engine::GeneralPurposeConfig::new()
-					.with_decode_padding_mode(base64::engine::DecodePaddingMode::Indifferent),
-			);
+		const BASE64_ENGINE: base64::engine::GeneralPurpose = base64::engine::GeneralPurpose::new(
+			&base64::alphabet::STANDARD,
+			base64::engine::GeneralPurposeConfig::new()
+				.with_decode_padding_mode(base64::engine::DecodePaddingMode::Indifferent),
+		);
 		let string_safe = Base64Encoder::new(&mut bytes, &BASE64_ENGINE);
 		let mut compressed = XzEncoder::new(string_safe, 9);
 		bincode::serialize_into(&mut compressed, &build_info).unwrap();
