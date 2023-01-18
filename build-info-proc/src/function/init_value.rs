@@ -1,7 +1,8 @@
 use build_info_common::{
 	chrono::{DateTime, Datelike, NaiveDate, Utc},
 	semver::Version,
-	BuildInfo, CompilerChannel, CompilerInfo, CrateInfo, GitInfo, OptimizationLevel, VersionControl,
+	BuildInfo, CompilerChannel, CompilerInfo, CpuInfo, CrateInfo, Endianness, GitInfo, OptimizationLevel, TargetInfo,
+	VersionControl,
 };
 use proc_macro2::{Delimiter, Group, Ident, TokenStream};
 use quote::{quote, quote_spanned, TokenStreamExt};
@@ -33,6 +34,10 @@ impl InitValue for BuildInfo {
 
 		initializer.append_all(quote!(crate_info:));
 		init_value(&self.crate_info, &mut initializer, definition_crate);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(target:));
+		init_value(&self.target, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		initializer.append_all(quote!(compiler:));
@@ -103,6 +108,68 @@ impl InitValue for CrateInfo {
 	}
 }
 
+impl InitValue for TargetInfo {
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
+		tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::TargetInfo));
+		let mut initializer = TokenStream::new();
+
+		initializer.append_all(quote!(triple:));
+		init_value(&self.triple, &mut initializer, definition_crate);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(family:));
+		init_value(&self.family, &mut initializer, definition_crate);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(os:));
+		init_value(&self.os, &mut initializer, definition_crate);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(cpu:));
+		init_value(&self.cpu, &mut initializer, definition_crate);
+		initializer.append_all(quote!(,));
+
+		tokens.append(Group::new(Delimiter::Brace, initializer));
+	}
+}
+
+impl InitValue for CpuInfo {
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
+		tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::CpuInfo));
+		let mut initializer = TokenStream::new();
+
+		initializer.append_all(quote!(arch:));
+		init_value(&self.arch, &mut initializer, definition_crate);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(pointer_width:));
+		init_value(&self.pointer_width, &mut initializer, definition_crate);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(endianness:));
+		init_value(&self.endianness, &mut initializer, definition_crate);
+		initializer.append_all(quote!(,));
+
+		initializer.append_all(quote!(features:));
+		init_value(&self.features, &mut initializer, definition_crate);
+		initializer.append_all(quote!(,));
+
+		tokens.append(Group::new(Delimiter::Brace, initializer));
+	}
+}
+
+impl InitValue for Endianness {
+	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
+		match self {
+			Endianness::Little => tokens
+				.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::Endianness::Little)),
+			Endianness::Big => {
+				tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::Endianness::Big))
+			}
+		};
+	}
+}
+
 impl InitValue for CompilerInfo {
 	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
 		tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() => #definition_crate::CompilerInfo));
@@ -126,10 +193,6 @@ impl InitValue for CompilerInfo {
 
 		initializer.append_all(quote!(host_triple:));
 		init_value(&self.host_triple, &mut initializer, definition_crate);
-		initializer.append_all(quote!(,));
-
-		initializer.append_all(quote!(target_triple:));
-		init_value(&self.target_triple, &mut initializer, definition_crate);
 		initializer.append_all(quote!(,));
 
 		tokens.append(Group::new(Delimiter::Brace, initializer));

@@ -29,6 +29,18 @@ impl std::fmt::Display for crate::CrateInfo {
 	}
 }
 
+impl std::fmt::Display for crate::TargetInfo {
+	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+		write!(f, "{}", self.triple)
+	}
+}
+
+impl std::fmt::Display for crate::CpuInfo {
+	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+		write!(f, "{}", self.arch)
+	}
+}
+
 impl std::fmt::Display for crate::CompilerInfo {
 	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
 		write!(f, "rustc {}", self.version)?;

@@ -1,20 +1,17 @@
 use std::any::Any;
 
-use build_info_common::BuildInfo;
+use build_info_common::TargetInfo;
 
 use super::{as_arguments_0, as_field_name, FormatSpecifier, Type, Value, OP_FIELD_ACCESS};
 
-impl Value for BuildInfo {
+impl Value for TargetInfo {
 	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
 		match func {
 			OP_FIELD_ACCESS => match as_field_name(args) {
-				"timestamp" => Ok(Box::new(self.timestamp)),
-				"profile" => Ok(Box::new(self.profile.clone())),
-				"optimization_level" => Ok(Box::new(self.optimization_level)),
-				"crate_info" => Ok(Box::new(self.crate_info.clone())),
-				"target" => Ok(Box::new(self.target.clone())),
-				"compiler" => Ok(Box::new(self.compiler.clone())),
-				"version_control" => Ok(Box::new(self.version_control.clone())),
+				"triple" => Ok(Box::new(self.triple.clone())),
+				"family" => Ok(Box::new(self.family.clone())),
+				"os" => Ok(Box::new(self.os.clone())),
+				"cpu" => Ok(Box::new(self.cpu.clone())),
 				_ => self.call_base(func, args),
 			},
 			"to_string" => {
@@ -26,7 +23,7 @@ impl Value for BuildInfo {
 	}
 
 	fn get_type(&self) -> Type {
-		Type::BuildInfo
+		Type::CompilerInfo
 	}
 
 	fn as_any(&self) -> &dyn Any {

@@ -44,10 +44,13 @@ pub struct BuildInfo {
 	/// Information about the current crate
 	pub crate_info: CrateInfo,
 
-	/// Information about the compiler used.
+	/// Information about the target system
+	pub target: TargetInfo,
+
+	/// Information about the compiler used
 	pub compiler: CompilerInfo,
 
-	/// `Some` if the project is inside a check-out of a supported version control system.
+	/// `Some` if the project is inside a check-out of a supported version control system
 	pub version_control: Option<VersionControl>,
 }
 
@@ -90,6 +93,40 @@ pub struct CrateInfo {
 	pub dependencies: Vec<CrateInfo>,
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub struct TargetInfo {
+	/// Identifies the target architecture for which the crate is being compiled
+	pub triple: String,
+	/// A generic description of the target, e.g., `"unix"` or `"wasm"`
+	pub family: String,
+	/// The target OS
+	pub os: String,
+	/// The target CPU
+	pub cpu: CpuInfo,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub struct CpuInfo {
+	/// The CPU target architecture
+	pub arch: String,
+	/// The CPU pointer width
+	pub pointer_width: u64,
+	/// The CPU target endianness
+	pub endianness: Endianness,
+	///  List of CPU target features enabled
+	pub features: Vec<String>,
+}
+
+/// CPU Endianness
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Display, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub enum Endianness {
+	Big,
+	Little,
+}
+
 /// `rustc` version and configuration
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
@@ -108,9 +145,6 @@ pub struct CompilerInfo {
 
 	/// Identifies the host on which `rustc` was running
 	pub host_triple: String,
-
-	/// Identifies the target architecture for which the crate is being compiled
-	pub target_triple: String,
 }
 
 /// `rustc` distribution channel (some compiler features are only available on specific channels)

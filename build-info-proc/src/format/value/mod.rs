@@ -22,9 +22,12 @@ mod semver;
 mod build_info;
 mod compiler_channel;
 mod compiler_info;
+mod cpu_info;
 mod crate_info;
+mod endianness;
 mod git_info;
 mod optimization_level;
+mod target_info;
 mod version_control;
 
 mod functions;

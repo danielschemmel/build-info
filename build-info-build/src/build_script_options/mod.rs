@@ -10,6 +10,7 @@ use super::BuildInfo;
 
 mod compiler;
 mod crate_info;
+mod target;
 mod timestamp;
 mod version_control;
 
@@ -50,10 +51,11 @@ impl BuildScriptOptions {
 		};
 
 		let compiler = compiler::get_info();
+		let target = target::get_info();
 		let crate_info::Manifest {
 			crate_info,
 			workspace_root,
-		} = crate_info::read_manifest(&compiler.target_triple, self.collect_dependencies);
+		} = crate_info::read_manifest(&target.triple, self.collect_dependencies);
 		let version_control = version_control::get_info();
 
 		let timestamp = self.timestamp.unwrap_or_else(timestamp::get_timestamp);
@@ -63,6 +65,7 @@ impl BuildScriptOptions {
 			optimization_level,
 			crate_info,
 			compiler,
+			target,
 			version_control,
 		};
 

@@ -26,6 +26,5 @@ pub(crate) fn get_info() -> CompilerInfo {
 		commit_date,
 		channel,
 		host_triple: rustc_version.host,
-		target_triple: std::env::var("TARGET").unwrap_or_else(|_| "UNKNOWN".to_string()),
 	}
 }
