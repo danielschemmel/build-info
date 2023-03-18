@@ -106,12 +106,12 @@ impl parse::Parse for Syntax {
 }
 
 fn parse_simple_arguments(input: parse::ParseStream) -> parse::Result<Vec<Expr>> {
-	let result: syn::punctuated::Punctuated<Expr, Token![,]> = input.parse_terminated(parse::Parse::parse)?;
+	let result = input.parse_terminated(parse::Parse::parse, Token![,])?;
 	Ok(result.into_pairs().map(|pair| pair.into_tuple().0).collect())
 }
 
 fn parse_named_arguments(input: parse::ParseStream) -> parse::Result<Vec<(Option<Ident>, Expr)>> {
-	let result: syn::punctuated::Punctuated<_, Token![,]> = input.parse_terminated(parse_named_argument)?;
+	let result = input.parse_terminated(parse_named_argument, Token![,])?;
 
 	let mut named = Vec::new();
 	for (name, expr) in result.iter() {
