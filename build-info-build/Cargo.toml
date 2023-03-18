@@ -1,6 +1,6 @@
 [package]
 name = "build-info-build"
-version = "0.0.29"
+version = "0.0.30"
 description = "Provides the data consumed by the build-info crate. Use as a build-dependency."
 readme = "../README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
@@ -24,7 +24,7 @@ rustc_version = "0.4"
 serde_json = "1"
 xz2 = "0.1"
 
-build-info-common = { version = "=0.0.29", path = "../build-info-common", features = ["serde"] }
+build-info-common = { version = "=0.0.30", path = "../build-info-common", features = ["serde"] }
 
 [features]
 default = ["git"]

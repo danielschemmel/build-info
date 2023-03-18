@@ -1,6 +1,6 @@
 [package]
 name = "build-info-proc"
-version = "0.0.29"
+version = "0.0.30"
 description = "Part of the build-info crate: This crate provides the proc-macros."
 readme = "../README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
@@ -27,7 +27,7 @@ serde_json = "1"
 syn = "2"
 xz2 = "0.1"
 
-build-info-common = { version = "=0.0.29", path = "../build-info-common", features = ["serde"] }
+build-info-common = { version = "=0.0.30", path = "../build-info-common", features = ["serde"] }
 
 [dev-dependencies]
 pretty_assertions = "1"
