@@ -11,13 +11,11 @@ edition = "2021"
 rust-version = "1.60.0"
 
 [dependencies]
-once_cell = { version = "1", optional = true }
-
 build-info-common = { version = "=0.0.31", path = "../build-info-common", optional = true }
 build-info-proc = { version = "=0.0.31", path = "../build-info-proc" }
 
 [features]
 default = ["runtime"]
 oxford-comma = ["build-info-proc/oxford-comma"]
-runtime = ["dep:once_cell", "dep:build-info-common", "build-info-proc/runtime"]
+runtime = ["dep:build-info-common", "build-info-proc/runtime"]
 serde = ["build-info-common?/serde"]
