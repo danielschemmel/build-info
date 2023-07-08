@@ -14,8 +14,10 @@ mod target;
 mod timestamp;
 mod version_control;
 
-static CARGO_TOML: once_cell::sync::Lazy<PathBuf> =
-	once_cell::sync::Lazy::new(|| Path::new(&std::env::var_os("CARGO_MANIFEST_DIR").unwrap()).join("Cargo.toml"));
+pub fn cargo_toml() -> &'static Path {
+	static CARGO_TOML: std::sync::OnceLock<PathBuf> = std::sync::OnceLock::new();
+	CARGO_TOML.get_or_init(|| Path::new(&std::env::var_os("CARGO_MANIFEST_DIR").unwrap()).join("Cargo.toml"))
+}
 
 /// Type to store any (optional) options for the build script.
 pub struct BuildScriptOptions {
@@ -134,7 +136,7 @@ impl Drop for BuildScriptOptions {
 /// - `$workspace_root/Cargo.lock`
 /// - Any file that ends in `.rs`
 fn rebuild_if_project_changes(workspace_root: &str) {
-	println!("cargo:rerun-if-changed={}", CARGO_TOML.to_str().unwrap());
+	println!("cargo:rerun-if-changed={}", cargo_toml().to_str().unwrap());
 	println!(
 		"cargo:rerun-if-changed={}",
 		Path::new(workspace_root).join("Cargo.lock").to_str().unwrap()

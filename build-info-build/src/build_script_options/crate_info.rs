@@ -32,7 +32,7 @@ pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -
 
 	let meta = MetadataCommand::new()
 		.cargo_path(std::env::var_os("CARGO").unwrap())
-		.manifest_path(&*super::CARGO_TOML)
+		.manifest_path(super::cargo_toml())
 		.features(CargoOpt::NoDefaultFeatures)
 		.other_options(args.clone())
 		.exec()
@@ -72,7 +72,7 @@ pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -
 
 	let meta = MetadataCommand::new()
 		.cargo_path(std::env::var_os("CARGO").unwrap())
-		.manifest_path(&*super::CARGO_TOML)
+		.manifest_path(super::cargo_toml())
 		.features(CargoOpt::NoDefaultFeatures)
 		.other_options(args)
 		.exec()
