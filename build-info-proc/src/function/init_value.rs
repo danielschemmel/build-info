@@ -306,7 +306,7 @@ impl InitValue for Version {
 
 impl InitValue for DateTime<Utc> {
 	fn init_value(&self, tokens: &mut TokenStream, definition_crate: &Ident) {
-		let nanos = self.timestamp_nanos();
+		let nanos = self.timestamp_nanos_opt().unwrap();
 		tokens.append_all(quote_spanned!(proc_macro::Span::mixed_site().into() =>
 			#definition_crate::chrono::TimeZone::timestamp_nanos(&#definition_crate::chrono::Utc, #nanos)
 		));
