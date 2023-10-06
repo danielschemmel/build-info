@@ -21,7 +21,7 @@ pub use build_info_common::{
 };
 
 mod build_script_options;
-pub use build_script_options::BuildScriptOptions;
+pub use build_script_options::{BuildScriptOptions, DependencyDepth};
 
 /// Call this function in your `build.rs` script to generate the data consumed by the `build_info` crate.
 /// Additional customization options are available by manipulating the return type.
