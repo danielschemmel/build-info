@@ -89,7 +89,7 @@ pub struct CrateInfo {
 	pub available_features: Vec<String>,
 
 	/// Dependencies of this crate.
-	/// Will only be filled with data if `build-info-build` has the `dependencies` feature enabled.
+	/// Will only be filled with data if `collect_dependencies(true)` was called on `build_script()`.
 	pub dependencies: Vec<CrateInfo>,
 }
 
