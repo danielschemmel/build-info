@@ -4,12 +4,40 @@ use build_info_common::{semver::Version, CrateInfo};
 use cargo_metadata::*;
 use pretty_assertions::assert_eq;
 
+/// Depth of dependencies to collect
+///
+/// A dependency depth that is too high may crash the build process
+#[derive(Clone, Copy, Debug)]
+pub enum DependencyDepth {
+	/// Do not collect any dependencies
+	None,
+	/// Collect all dependencies
+	///
+	/// This may crash the build process if your dependencies are very deep
+	Full,
+	/// Collect dependencies to this depth
+	///
+	/// A too-high value may crash the build process
+	Depth(usize),
+}
+
+impl DependencyDepth {
+	/// Returns false if the dependency collection depth has been reached.
+	pub fn do_collect(&self, depth: usize) -> bool {
+		match self {
+			DependencyDepth::None => false,
+			DependencyDepth::Full => true,
+			DependencyDepth::Depth(limit) => depth <= *limit,
+		}
+	}
+}
+
 impl crate::BuildScriptOptions {
 	/// Enables and disables dependency collection.
 	///
 	/// Dependency data is fairly large, which may cause problems, mainly by crashing the build process. If the project
 	/// compiles successfully with dependency collection enabled, you are probably fine.
-	pub fn collect_dependencies(mut self, collect_dependencies: bool) -> Self {
+	pub fn collect_dependencies(mut self, collect_dependencies: DependencyDepth) -> Self {
 		self.collect_dependencies = collect_dependencies;
 		self
 	}
@@ -20,7 +48,7 @@ pub(crate) struct Manifest {
 	pub workspace_root: String,
 }
 
-pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -> Manifest {
+pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: DependencyDepth) -> Manifest {
 	let mut args = vec!["--filter-platform".to_string(), target_platform.to_string()];
 
 	// Cargo does not provide a proper list of enabled features, so we collect metadata once to find all possible
@@ -95,19 +123,20 @@ pub(crate) fn read_manifest(target_platform: &str, collect_dependencies: bool) -
 	}
 }
 
-fn make_crate_info(meta: &Metadata, collect_dependencies: bool) -> CrateInfo {
+fn make_crate_info(meta: &Metadata, collect_dependencies: DependencyDepth) -> CrateInfo {
 	let resolve = meta.resolve.as_ref().unwrap();
 	let root_id = resolve.root.as_ref().unwrap();
 	let dependencies: HashMap<&PackageId, &Node> = resolve.nodes.iter().map(|node| (&node.id, node)).collect();
 
-	to_crate_info(dependencies[&root_id], &dependencies, meta, collect_dependencies)
+	to_crate_info(dependencies[&root_id], &dependencies, meta, collect_dependencies, 0)
 }
 
 fn to_crate_info(
 	node: &Node,
 	dependencies: &HashMap<&PackageId, &Node>,
 	meta: &Metadata,
-	collect_dependencies: bool,
+	collect_dependencies: DependencyDepth,
+	depth: usize,
 ) -> CrateInfo {
 	let pkg = &meta[&node.id];
 	let name = pkg.name.clone();
@@ -116,11 +145,19 @@ fn to_crate_info(
 	let license = pkg.license.clone();
 	let available_features = pkg.features.keys().cloned().collect();
 	let enabled_features = node.features.clone();
-	let dependencies = if collect_dependencies {
+	let dependencies = if collect_dependencies.do_collect(depth) {
 		node
 			.deps
 			.iter()
-			.map(|dep| to_crate_info(dependencies[&dep.pkg], dependencies, meta, collect_dependencies))
+			.map(|dep| {
+				to_crate_info(
+					dependencies[&dep.pkg],
+					dependencies,
+					meta,
+					collect_dependencies,
+					depth + 1,
+				)
+			})
 			.collect()
 	} else {
 		Vec::new()

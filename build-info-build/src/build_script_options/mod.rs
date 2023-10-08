@@ -6,6 +6,7 @@ use build_info_common::{OptimizationLevel, VersionedString};
 use chrono::{DateTime, Utc};
 use xz2::write::XzEncoder;
 
+pub use self::crate_info::DependencyDepth;
 use super::BuildInfo;
 
 mod compiler;
@@ -28,7 +29,7 @@ pub struct BuildScriptOptions {
 	timestamp: Option<DateTime<Utc>>,
 
 	/// Enable dependency collection
-	collect_dependencies: bool,
+	collect_dependencies: DependencyDepth,
 }
 static BUILD_SCRIPT_RAN: AtomicBool = AtomicBool::new(false);
 
@@ -117,7 +118,7 @@ impl Default for BuildScriptOptions {
 		Self {
 			consumed: false,
 			timestamp: None,
-			collect_dependencies: false,
+			collect_dependencies: DependencyDepth::None,
 		}
 	}
 }
