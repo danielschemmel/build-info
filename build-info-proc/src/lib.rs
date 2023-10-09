@@ -6,7 +6,6 @@ use base64::read::DecoderReader as Base64Decoder;
 use build_info_common::{BuildInfo, VersionedString};
 use proc_macro::TokenStream;
 use proc_macro_error::{abort_call_site, emit_call_site_error, proc_macro_error};
-use xz2::read::XzDecoder;
 
 mod format;
 #[cfg(feature = "runtime")]
@@ -68,7 +67,7 @@ fn deserialize_build_info() -> BuildInfo {
 			.with_decode_padding_mode(base64::engine::DecodePaddingMode::Indifferent),
 	);
 	let string_safe = Base64Decoder::new(&mut cursor, &BASE64_ENGINE);
-	let decoder = XzDecoder::new(string_safe);
+	let decoder = zstd::Decoder::new(string_safe).expect("Could not crate ZSTD decoder");
 	bincode::deserialize_from(decoder).unwrap_or_else(|err| {
 		abort_call_site!("BuildInfo data cannot be deserialized!";
 			note = "The serialized data has version {}", versioned.version;

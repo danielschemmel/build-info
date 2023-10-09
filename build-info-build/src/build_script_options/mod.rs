@@ -4,7 +4,6 @@ use std::path::{Path, PathBuf};
 use base64::write::EncoderWriter as Base64Encoder;
 use build_info_common::{OptimizationLevel, VersionedString};
 use chrono::{DateTime, Utc};
-use xz2::write::XzEncoder;
 
 pub use self::crate_info::DependencyDepth;
 use super::BuildInfo;
@@ -79,7 +78,7 @@ impl BuildScriptOptions {
 				.with_decode_padding_mode(base64::engine::DecodePaddingMode::Indifferent),
 		);
 		let string_safe = Base64Encoder::new(&mut bytes, &BASE64_ENGINE);
-		let mut compressed = XzEncoder::new(string_safe, 9);
+		let mut compressed = zstd::Encoder::new(string_safe, 22).expect("Could not create ZSTD encoder");
 		bincode::serialize_into(&mut compressed, &build_info).unwrap();
 		compressed.finish().unwrap().finish().unwrap();
 

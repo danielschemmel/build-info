@@ -25,7 +25,7 @@ proc-macro-error = "1"
 quote = "1"
 serde_json = "1"
 syn = "2"
-xz2 = "0.1"
+zstd = "0.12"
 
 build-info-common = { version = "=0.0.33", path = "../build-info-common", features = ["serde"] }
 
