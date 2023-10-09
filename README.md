@@ -28,3 +28,14 @@ The `build_info` crate supports several feature flags:
 The build script will ask cargo to rerun it whenever the project or the currently checked out commit changes.
 It will not necessarily be rerun if only the dependencies change (`build_info_build::build_script` will try to find the lockfile and depend on it, but it is not really aware of any of the more intricate features, such as, cargo workspaces).
 Please open an issue if your specific use case requires a more strict rerun policy for `build.rs` and include a short description what additional files should trigger a rebuild when changed.
+
+# Copyright and license
+
+This project is copyright its authors and licensed under either of
+- Apache License, Version 2.0, (LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0)
+- MIT license (LICENSE-MIT or http://opensource.org/licenses/MIT)
+at your option.
+
+## Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this project, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
