@@ -3,9 +3,6 @@ use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
 use syn::{parse, parse_macro_input, Ident, Token, Visibility};
 
-mod init_value;
-use init_value::init_value;
-
 struct FunctionSyntax {
 	definition_crate: Ident,
 	visibility: Option<Visibility>,
@@ -34,15 +31,15 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
 	} = parse_macro_input!(input as FunctionSyntax);
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));
 
-	let mut tokens = proc_macro2::TokenStream::new();
-	init_value(&build_info, &mut tokens, &definition_crate);
+	let bytes = bincode::serialize(&build_info).unwrap();
+	let bytes = proc_macro2::Literal::byte_string(&bytes);
 
 	#[allow(clippy::let_and_return)]
 	let output = quote_spanned! {
 		proc_macro::Span::mixed_site().into() =>
 		#visibility fn #id() -> &'static #definition_crate::BuildInfo {
 			static VERSION: ::std::sync::OnceLock<#definition_crate::BuildInfo> = ::std::sync::OnceLock::new();
-			VERSION.get_or_init(|| #tokens)
+			VERSION.get_or_init(|| #definition_crate::bincode::deserialize(#bytes).unwrap())
 		}
 	};
 

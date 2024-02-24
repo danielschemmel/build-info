@@ -1,3 +1,5 @@
+//! Not currently enabled.
+
 use build_info_common::{
 	chrono::{DateTime, Datelike, NaiveDate, Utc},
 	semver::Version,

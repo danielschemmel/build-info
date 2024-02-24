@@ -120,7 +120,7 @@ fn interpolate_once(
 	let mut named = None;
 	if c.is_ascii_digit() {
 		let mut acc = 0;
-		#[allow(clippy::blocks_in_if_conditions)]
+		#[allow(clippy::blocks_in_conditions)]
 		while {
 			acc = acc * 10 + c.to_digit(10).unwrap() as usize;
 			c = chars
@@ -131,7 +131,7 @@ fn interpolate_once(
 		explicit_position = Some(acc);
 	} else if c.is_alphabetic() {
 		let mut acc = String::new();
-		#[allow(clippy::blocks_in_if_conditions)]
+		#[allow(clippy::blocks_in_conditions)]
 		while {
 			acc.push(c);
 			c = chars
