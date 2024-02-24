@@ -8,7 +8,7 @@ build_info_build::build_script();
 ```
 
 # Features
-The ´build-info-build` crate has the following features:
+The `build-info-build` crate has the following features:
 
 - `git` (enabled by default): Enables git support. A git repository will only be detected if this feature is available.
 */
