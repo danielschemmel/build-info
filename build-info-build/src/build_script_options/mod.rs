@@ -27,8 +27,14 @@ pub struct BuildScriptOptions {
 	/// Use this as the build timestamp, if set.
 	timestamp: Option<DateTime<Utc>>,
 
-	/// Enable dependency collection
-	collect_dependencies: DependencyDepth,
+	/// Enable runtime dependency collection
+	collect_runtime_dependencies: DependencyDepth,
+
+	/// Enable build dependency collection
+	collect_build_dependencies: DependencyDepth,
+
+	/// Enable dev dependency collection
+	collect_dev_dependencies: DependencyDepth,
 }
 static BUILD_SCRIPT_RAN: AtomicBool = AtomicBool::new(false);
 
@@ -57,7 +63,12 @@ impl BuildScriptOptions {
 		let crate_info::Manifest {
 			crate_info,
 			workspace_root,
-		} = crate_info::read_manifest(&target.triple, self.collect_dependencies);
+		} = crate_info::read_manifest(
+			&target.triple,
+			self.collect_runtime_dependencies,
+			self.collect_build_dependencies,
+			self.collect_dev_dependencies,
+		);
 		let version_control = version_control::get_info();
 
 		let timestamp = self.timestamp.unwrap_or_else(timestamp::get_timestamp);
@@ -111,13 +122,15 @@ impl From<BuildScriptOptions> for BuildInfo {
 
 impl Default for BuildScriptOptions {
 	fn default() -> Self {
-		let build_script_ran = BUILD_SCRIPT_RAN.swap(true, Ordering::Relaxed);
+		let build_script_ran = BUILD_SCRIPT_RAN.swap(true, Ordering::SeqCst);
 		assert!(!build_script_ran, "The build script may only be run once.");
 
 		Self {
 			consumed: false,
 			timestamp: None,
-			collect_dependencies: DependencyDepth::None,
+			collect_runtime_dependencies: DependencyDepth::None,
+			collect_build_dependencies: DependencyDepth::None,
+			collect_dev_dependencies: DependencyDepth::None,
 		}
 	}
 }
