@@ -6,7 +6,7 @@
 build_info::build_info!(fn build_info);
 
 // The same, but as a public function:
-build_info::build_info!(pub fn build_info);
+build_info::build_info!(pub fn pub_build_info);
 
 fn main() {
 	// We can now either use the `build_info` function to work with the collected data at runtime...
