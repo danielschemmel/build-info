@@ -27,7 +27,6 @@ macro_rules! build_info {
 #[cfg(feature = "runtime")]
 #[doc(hidden)]
 pub use bincode;
-
 /**
 Generates a string at compile-time that includes build information.
 

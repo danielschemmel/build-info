@@ -5,8 +5,13 @@
 // This macro supports visibility-specifiers, like `build_info!(pub fn how_this_crate_was_built)`.
 build_info::build_info!(fn build_info);
 
-// The same, but as a public function:
-build_info::build_info!(pub fn pub_build_info);
+// The function can have visibility specifiers, doc-comments and attributes. The choice of curly braces versus
+// parentheses is somewhat arbitrary, but will impact whether a terminating semicolon is expected, or not.
+build_info::build_info! {
+	/// Public functions should really have a doc comment.
+	#[inline]
+	pub fn pub_build_info
+}
 
 fn main() {
 	// We can now either use the `build_info` function to work with the collected data at runtime...
