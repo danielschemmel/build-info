@@ -35,6 +35,9 @@ pub struct BuildScriptOptions {
 
 	/// Enable dev dependency collection
 	collect_dev_dependencies: DependencyDepth,
+
+	/// Disable network access
+	offline: bool,
 }
 static BUILD_SCRIPT_RAN: AtomicBool = AtomicBool::new(false);
 
@@ -68,6 +71,7 @@ impl BuildScriptOptions {
 			self.collect_runtime_dependencies,
 			self.collect_build_dependencies,
 			self.collect_dev_dependencies,
+			self.offline
 		);
 		let version_control = version_control::get_info();
 
@@ -131,6 +135,7 @@ impl Default for BuildScriptOptions {
 			collect_runtime_dependencies: DependencyDepth::None,
 			collect_build_dependencies: DependencyDepth::None,
 			collect_dev_dependencies: DependencyDepth::None,
+			offline: false,
 		}
 	}
 }

@@ -70,6 +70,14 @@ impl crate::BuildScriptOptions {
 		self.collect_dev_dependencies = collect_dependencies;
 		self
 	}
+
+	/// Disables polling the network
+	/// 
+	/// This is to allow building workspaces on doc.rs
+	pub fn set_offline(mut self, offline: bool) -> Self {
+		self.offline = offline;
+		self
+	}
 }
 
 pub(crate) struct Manifest {
@@ -82,8 +90,14 @@ pub(crate) fn read_manifest(
 	collect_runtime_dependencies: DependencyDepth,
 	collect_build_dependencies: DependencyDepth,
 	collect_dev_dependencies: DependencyDepth,
+	offline: bool,
 ) -> Manifest {
 	let mut args = vec!["--filter-platform".to_string(), target_platform.to_string()];
+
+	// Disable network access
+	if offline {
+		args.push("--offline".to_string());
+	}
 
 	// Cargo does not provide a proper list of enabled features, so we collect metadata once to find all possible
 	// features, convert them to the equivalent `CARGO_FEATURE_` representation, check for collisions, and then rerun
