@@ -15,7 +15,7 @@ proc-macro = true
 
 [dependencies]
 anyhow = "1"
-base64 = "0.21"
+base64 = "0.22"
 bincode = "1"
 chrono = { version = "0.4.23", default-features = false, features = ["std"] }
 num-bigint = "0.4"
