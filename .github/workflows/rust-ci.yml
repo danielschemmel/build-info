@@ -31,6 +31,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.toolchain }}
+          components: clippy
       - name: Build
         run: cargo build --verbose
       - name: Run tests
