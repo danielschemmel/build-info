@@ -1,6 +1,6 @@
 [package]
 name = "build-info"
-version = "0.0.37"
+version = "0.0.38"
 description = "Collects build-information of your Rust crate."
 readme = "README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
@@ -11,8 +11,8 @@ edition = "2021"
 rust-version = "1.75.0"
 
 [dependencies]
-build-info-common = { version = "=0.0.37", path = "../build-info-common", optional = true, features = ["serde"] }
-build-info-proc = { version = "=0.0.37", path = "../build-info-proc" }
+build-info-common = { version = "=0.0.38", path = "../build-info-common", optional = true, features = ["serde"] }
+build-info-proc = { version = "=0.0.38", path = "../build-info-proc" }
 bincode = { version = "1", optional = true }
 
 [features]

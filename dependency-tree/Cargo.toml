@@ -1,6 +1,6 @@
 [package]
 name = "dependency-tree"
-version = "0.0.37"
+version = "0.0.38"
 description = "A sample program that uses the build-info crate to print a tree of all dependencies."
 readme = "../README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
@@ -10,7 +10,7 @@ repository = "https://github.com/danielschemmel/build-info/"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-build-info = { version = "=0.0.37", path = "../build-info" }
+build-info = { version = "=0.0.38", path = "../build-info" }
 
 [build-dependencies]
-build-info-build = { version = "=0.0.37", path = "../build-info-build" }
+build-info-build = { version = "=0.0.38", path = "../build-info-build" }
