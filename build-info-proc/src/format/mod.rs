@@ -4,7 +4,7 @@ use anyhow::Result;
 use build_info_common::BuildInfo;
 use proc_macro::TokenStream;
 use proc_macro2::Span;
-use proc_macro_error::{abort, abort_call_site, emit_error};
+use proc_macro_error2::{abort, abort_call_site, emit_error};
 use quote::quote;
 use syn::parse_macro_input;
 
