@@ -1,5 +1,5 @@
 use proc_macro2::Span;
-use proc_macro_error::abort;
+use proc_macro_error2::abort;
 
 use super::Value;
 

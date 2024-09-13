@@ -1,5 +1,5 @@
 use proc_macro2::Span;
-use proc_macro_error::{abort, abort_if_dirty, emit_error};
+use proc_macro_error2::{abort, abort_if_dirty, emit_error};
 
 use super::{as_named_arguments_1, Value};
 

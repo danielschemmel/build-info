@@ -5,7 +5,7 @@ use std::io::Cursor;
 use base64::read::DecoderReader as Base64Decoder;
 use build_info_common::{BuildInfo, VersionedString};
 use proc_macro::TokenStream;
-use proc_macro_error::{abort_call_site, emit_call_site_error, proc_macro_error};
+use proc_macro_error2::{abort_call_site, emit_call_site_error, proc_macro_error};
 
 mod format;
 #[cfg(feature = "runtime")]
