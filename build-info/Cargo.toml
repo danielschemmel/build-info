@@ -7,8 +7,8 @@ authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 repository = "https://github.com/danielschemmel/build-info/"
 license = "MIT OR Apache-2.0"
 
-edition = "2021"
-rust-version = "1.75.0"
+edition.workspace = true
+rust-version.workspace = true
 
 [dependencies]
 build-info-common = { version = "=0.0.39", path = "../build-info-common", optional = true, features = ["serde"] }
