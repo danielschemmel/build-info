@@ -1,6 +1,6 @@
 use std::collections::hash_map::{Entry, HashMap};
 
-use build_info_common::{semver::Version, CrateInfo};
+use build_info_common::{CrateInfo, semver::Version};
 use cargo_metadata::*;
 use pretty_assertions::assert_eq;
 

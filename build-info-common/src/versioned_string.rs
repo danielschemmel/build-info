@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{crate_version, Version};
+use crate::{Version, crate_version};
 
 /// Used internally to ensure that `build-info` and `build-info-build` use the same version of `build-info-common`.
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]

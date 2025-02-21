@@ -1,7 +1,7 @@
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use build_info_common::{
-	chrono::{TimeZone, Utc},
 	GitInfo,
+	chrono::{TimeZone, Utc},
 };
 use git2::{Oid, Repository, StatusOptions};
 

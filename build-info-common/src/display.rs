@@ -61,7 +61,7 @@ impl std::fmt::Display for crate::CompilerInfo {
 impl std::fmt::Display for crate::VersionControl {
 	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
 		match self {
-			crate::VersionControl::Git(ref git) => write!(f, "{git}"),
+			crate::VersionControl::Git(git) => write!(f, "{git}"),
 		}
 	}
 }

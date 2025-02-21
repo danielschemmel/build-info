@@ -4,8 +4,8 @@
 
 #[cfg(feature = "runtime")]
 pub use build_info_common::{
-	chrono, semver, BuildInfo, CompilerChannel, CompilerInfo, CpuInfo, CrateInfo, Endianness, GitInfo, OptimizationLevel,
-	TargetInfo, VersionControl,
+	BuildInfo, CompilerChannel, CompilerInfo, CpuInfo, CrateInfo, Endianness, GitInfo, OptimizationLevel, TargetInfo,
+	VersionControl, chrono, semver,
 };
 /// This crate defines macro_rules that pass `$crate` (i.e., this crate) to the proc-macros doing the actual work
 /// The proc-macro crate that contains said proc-macros is reexported here, to be found in the macro_rules.
