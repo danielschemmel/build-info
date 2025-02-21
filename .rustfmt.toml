@@ -2,7 +2,7 @@
 
 # When running `cargo fmt`, we don't need to set this option because it will be picked up from cargo. However, this
 # explicit setting is useful for (IDE) tools that run `rustfmt` directly, which otherwise default to "2015".
-edition = "2021"
+edition = "2024"
 
 max_width = 120
 hard_tabs = true
