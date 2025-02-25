@@ -1,5 +1,5 @@
 [workspace]
-resolver = "3"
+resolver = "2"
 members = [
 	"build-info",
 	"build-info-build",
@@ -10,5 +10,5 @@ members = [
 ]
 
 [workspace.package]
-edition = "2024"
-rust-version = "1.85.0"
+edition = "2021"
+rust-version = "1.78.0"
