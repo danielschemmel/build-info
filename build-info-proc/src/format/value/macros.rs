@@ -1,7 +1,7 @@
-use proc_macro2::Span;
 use proc_macro_error2::{abort, abort_if_dirty, emit_error};
+use proc_macro2::Span;
 
-use super::{as_named_arguments_1, Value};
+use super::{Value, as_named_arguments_1};
 
 pub(crate) fn call_macro(
 	name: &str,

@@ -2,7 +2,7 @@ use std::any::Any;
 
 use num_bigint::BigInt;
 
-use super::{as_arguments_0, FormatSpecifier, Type, Value};
+use super::{FormatSpecifier, Type, Value, as_arguments_0};
 
 impl Value for BigInt {
 	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {

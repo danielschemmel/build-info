@@ -90,7 +90,7 @@ impl BuildScriptOptions {
 		);
 		let string_safe = Base64Encoder::new(&mut bytes, &BASE64_ENGINE);
 		let mut compressed = zstd::Encoder::new(string_safe, 22).expect("Could not create ZSTD encoder");
-		bincode::serialize_into(&mut compressed, &build_info).unwrap();
+		bincode::serde::encode_into_std_write(&build_info, &mut compressed, bincode::config::standard()).unwrap();
 		compressed.finish().unwrap().finish().unwrap();
 
 		let string = String::from_utf8(bytes).unwrap();

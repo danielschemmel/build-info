@@ -2,7 +2,7 @@ use std::any::Any;
 
 use build_info_common::TargetInfo;
 
-use super::{as_arguments_0, as_field_name, FormatSpecifier, Type, Value, OP_FIELD_ACCESS};
+use super::{FormatSpecifier, OP_FIELD_ACCESS, Type, Value, as_arguments_0, as_field_name};
 
 impl Value for TargetInfo {
 	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {

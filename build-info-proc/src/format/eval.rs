@@ -2,8 +2,8 @@ use anyhow::Result;
 use num_bigint::BigInt;
 
 use super::{
+	OP_ARRAY_INDEX, OP_FIELD_ACCESS, OP_TUPLE_INDEX, Value,
 	syntax::{AtomicExpr, Expr, Suffix},
-	Value, OP_ARRAY_INDEX, OP_FIELD_ACCESS, OP_TUPLE_INDEX,
 };
 
 pub(crate) trait Eval {

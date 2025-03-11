@@ -5,7 +5,7 @@ use std::{
 
 use num_bigint::BigInt;
 use proc_macro2::Span;
-use syn::{braced, bracketed, parenthesized, parse, Ident, LitBool, LitChar, LitInt, LitStr, Token};
+use syn::{Ident, LitBool, LitChar, LitInt, LitStr, Token, braced, bracketed, parenthesized, parse};
 
 #[derive(Clone, Debug)]
 pub(crate) struct Meta {

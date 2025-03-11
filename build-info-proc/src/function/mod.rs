@@ -1,7 +1,7 @@
 use build_info_common::BuildInfo;
 use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
-use syn::{parse, parse_macro_input, Attribute, Ident, Token, Visibility};
+use syn::{Attribute, Ident, Token, Visibility, parse, parse_macro_input};
 
 struct FunctionSyntax {
 	attrs: Vec<Attribute>,
@@ -37,7 +37,7 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
 	} = parse_macro_input!(input as FunctionSyntax);
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));
 
-	let bytes = bincode::serialize(&build_info).unwrap();
+	let bytes = bincode::serde::encode_to_vec(&build_info, bincode::config::standard()).unwrap();
 	let bytes = proc_macro2::Literal::byte_string(&bytes);
 
 	#[allow(clippy::let_and_return)]
@@ -46,7 +46,15 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
 		#(#attrs)*
 		#visibility fn #id() -> &'static #definition_crate::BuildInfo {
 			static VERSION: ::std::sync::OnceLock<#definition_crate::BuildInfo> = ::std::sync::OnceLock::new();
-			VERSION.get_or_init(|| #definition_crate::bincode::deserialize(#bytes).unwrap())
+			const BYTES: &[u8] = #bytes;
+			VERSION.get_or_init(|| {
+				let (result, len) = #definition_crate::bincode::serde::decode_from_slice(
+					&BYTES,
+					#definition_crate::bincode::config::standard()
+				).unwrap();
+				assert_eq!(len, BYTES.len(), "Could not fully deserialize stored build info.");
+				result
+			})
 		}
 	};
 

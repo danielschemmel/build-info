@@ -2,7 +2,7 @@ use std::any::Any;
 
 use build_info_common::OptimizationLevel;
 
-use super::{as_arguments_0, FormatSpecifier, Type, Value};
+use super::{FormatSpecifier, Type, Value, as_arguments_0};
 
 impl Value for OptimizationLevel {
 	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {

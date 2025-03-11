@@ -4,7 +4,7 @@ use num_bigint::BigInt;
 use num_traits::cast::ToPrimitive;
 use proc_macro_error2::abort_call_site;
 
-use super::{as_arguments_0, as_index, as_simple_arguments_1, FormatSpecifier, Type, Value, OP_ARRAY_INDEX};
+use super::{FormatSpecifier, OP_ARRAY_INDEX, Type, Value, as_arguments_0, as_index, as_simple_arguments_1};
 
 impl<T: 'static + Value + Clone> Value for Vec<T> {
 	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {

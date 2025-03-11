@@ -2,7 +2,7 @@ use std::any::Any;
 
 use anyhow::anyhow;
 
-use super::{as_arguments_0, as_simple_arguments_1, FormatSpecifier, Type, Value};
+use super::{FormatSpecifier, Type, Value, as_arguments_0, as_simple_arguments_1};
 
 impl<T: 'static + Value + Clone> Value for Option<T> {
 	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {

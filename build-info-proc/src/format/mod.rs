@@ -3,8 +3,8 @@ use std::str::Chars;
 use anyhow::Result;
 use build_info_common::BuildInfo;
 use proc_macro::TokenStream;
-use proc_macro2::Span;
 use proc_macro_error2::{abort, abort_call_site, emit_error};
+use proc_macro2::Span;
 use quote::quote;
 use syn::parse_macro_input;
 
@@ -17,7 +17,7 @@ mod types;
 use types::Type;
 
 mod value;
-use value::{FormatSpecifier, Value, OP_ARRAY_INDEX, OP_FIELD_ACCESS, OP_TUPLE_INDEX};
+use value::{FormatSpecifier, OP_ARRAY_INDEX, OP_FIELD_ACCESS, OP_TUPLE_INDEX, Value};
 
 pub fn format(input: TokenStream, _build_info: BuildInfo) -> TokenStream {
 	let syntax = parse_macro_input!(input as syntax::Syntax);

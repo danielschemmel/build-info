@@ -67,8 +67,8 @@ fn deserialize_build_info() -> BuildInfo {
 			.with_decode_padding_mode(base64::engine::DecodePaddingMode::Indifferent),
 	);
 	let string_safe = Base64Decoder::new(&mut cursor, &BASE64_ENGINE);
-	let decoder = zstd::Decoder::new(string_safe).expect("Could not crate ZSTD decoder");
-	bincode::deserialize_from(decoder).unwrap_or_else(|err| {
+	let mut decoder = zstd::Decoder::new(string_safe).expect("Could not crate ZSTD decoder");
+	bincode::serde::decode_from_std_read(&mut decoder, bincode::config::standard()).unwrap_or_else(|err| {
 		abort_call_site!("BuildInfo data cannot be deserialized!";
 			note = "The serialized data has version {}", versioned.version;
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();

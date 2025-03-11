@@ -1,6 +1,6 @@
 use std::any::Any;
 
-use super::{as_arguments_0, FormatSpecifier, Type, Value};
+use super::{FormatSpecifier, Type, Value, as_arguments_0};
 
 impl Value for char {
 	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
