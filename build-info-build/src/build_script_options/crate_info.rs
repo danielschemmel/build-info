@@ -193,12 +193,12 @@ fn to_crate_info(
 	depth: usize,
 ) -> CrateInfo {
 	let pkg = &meta[&node.id];
-	let name = pkg.name.clone();
+	let name = pkg.name.to_string();
 	let version = Version::parse(&pkg.version.to_string()).unwrap();
 	let authors = pkg.authors.clone();
 	let license = pkg.license.clone();
 	let available_features = pkg.features.keys().cloned().collect();
-	let enabled_features = node.features.clone();
+	let enabled_features = node.features.iter().map(|name| name.to_string()).collect::<Vec<_>>();
 	let dependencies = if collect_runtime_dependencies.do_collect(depth) || collect_build_dependencies.do_collect(depth) {
 		node
 			.deps
