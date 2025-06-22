@@ -1,14 +1,14 @@
 [package]
-name = "sample"
-version = "0.0.41"
-description = "A sample program that uses the build-info crate."
-readme = "../README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
+description = "A sample program that uses the build-info crate."
+name = "sample"
 publish = false
+readme = "../README.md"
+version = "0.0.41"
 
-repository.workspace = true
-license.workspace = true
 edition.workspace = true
+license.workspace = true
+repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]

@@ -1,13 +1,13 @@
 [package]
-name = "build-info-build"
-version = "0.0.41"
-description = "Provides the data consumed by the build-info crate. Use as a build-dependency."
-readme = "../README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
+description = "Provides the data consumed by the build-info crate. Use as a build-dependency."
+name = "build-info-build"
+readme = "../README.md"
+version = "0.0.41"
 
-repository.workspace = true
-license.workspace = true
 edition.workspace = true
+license.workspace = true
+repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]

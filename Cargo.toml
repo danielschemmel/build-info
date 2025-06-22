@@ -1,16 +1,9 @@
 [workspace]
+members = ["build-info", "build-info-build", "build-info-common", "build-info-proc", "dependency-tree", "sample"]
 resolver = "3"
-members = [
-	"build-info",
-	"build-info-build",
-	"build-info-common",
-	"build-info-proc",
-	"dependency-tree",
-	"sample",
-]
 
 [workspace.package]
 edition = "2024"
-rust-version = "1.85.0"
-repository = "https://github.com/danielschemmel/build-info/"
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/danielschemmel/build-info/"
+rust-version = "1.85.0"

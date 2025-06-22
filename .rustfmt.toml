@@ -4,15 +4,15 @@
 # explicit setting is useful for (IDE) tools that run `rustfmt` directly, which otherwise default to "2015".
 edition = "2024"
 
-max_width = 120
 hard_tabs = true
-tab_spaces = 2
+max_width = 120
 newline_style = "Unix"
+tab_spaces = 2
 
 comment_width = 120
 wrap_comments = true
 
-imports_granularity = "Crate"
 group_imports = "StdExternalCrate"
+imports_granularity = "Crate"
 
 use_field_init_shorthand = true

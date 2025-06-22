@@ -1,21 +1,22 @@
 [package]
-name = "build-info"
-version = "0.0.41"
-description = "Collects build-information of your Rust crate."
-readme = "README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
+description = "Collects build-information of your Rust crate."
+name = "build-info"
+readme = "README.md"
+version = "0.0.41"
 
-repository.workspace = true
-license.workspace = true
 edition.workspace = true
+license.workspace = true
+repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+bincode = { version = "2", features = ["serde"], optional = true }
+
 build-info-common = { version = "=0.0.41", path = "../build-info-common", optional = true, features = ["serde"] }
 build-info-proc = { version = "=0.0.41", path = "../build-info-proc" }
-bincode = { version = "2", features = ["serde"], optional = true }
 
 [features]
 default = ["runtime"]
 oxford-comma = ["build-info-proc/oxford-comma"]
-runtime = ["dep:build-info-common", "dep:bincode", "build-info-proc/runtime"]
+runtime = ["build-info-proc/runtime", "dep:bincode", "dep:build-info-common"]

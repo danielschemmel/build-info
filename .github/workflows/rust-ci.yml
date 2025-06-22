@@ -38,3 +38,13 @@ jobs:
         run: cargo test --verbose
       - name: Run clippy
         run: cargo clippy --all-targets
+
+  taplo:
+    name: Check toml file formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: taplo
+      - uses: actions/checkout@v4
+      - run: taplo fmt --check

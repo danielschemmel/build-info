@@ -1,13 +1,13 @@
 [package]
-name = "build-info-proc"
-version = "0.0.41"
-description = "Part of the build-info crate: This crate provides the proc-macros."
-readme = "../README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
+description = "Part of the build-info crate: This crate provides the proc-macros."
+name = "build-info-proc"
+readme = "../README.md"
+version = "0.0.41"
 
-repository.workspace = true
-license.workspace = true
 edition.workspace = true
+license.workspace = true
+repository.workspace = true
 rust-version.workspace = true
 
 [lib]
@@ -20,8 +20,8 @@ bincode = { version = "2", features = ["serde"] }
 chrono = { version = "0.4.23", default-features = false, features = ["std"] }
 num-bigint = "0.4"
 num-traits = "0.2"
-proc-macro2 = "1"
 proc-macro-error2 = "2.0"
+proc-macro2 = "1"
 quote = "1"
 serde_json = "1"
 syn = { version = "2", features = ["full"] }
@@ -34,5 +34,5 @@ pretty_assertions = "1"
 
 [features]
 default = []
-runtime = []
 oxford-comma = []
+runtime = []
