@@ -4,9 +4,9 @@ version = "0.0.41"
 description = "Provides the data consumed by the build-info crate. Use as a build-dependency."
 readme = "../README.md"
 authors = ["Daniel Schemmel <daniel@schemmel.net>"]
-repository = "https://github.com/danielschemmel/build-info/"
-license = "MIT OR Apache-2.0"
 
+repository.workspace = true
+license.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 
