@@ -4,7 +4,7 @@ description = "A sample program that uses the build-info crate to print a tree o
 name = "dependency-tree"
 publish = false
 readme = "../README.md"
-version = "0.0.41"
+version = "0.0.42"
 
 edition.workspace = true
 license.workspace = true
@@ -12,7 +12,7 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
-build-info = { version = "=0.0.41", path = "../build-info" }
+build-info = { version = "=0.0.42", path = "../build-info" }
 
 [build-dependencies]
-build-info-build = { version = "=0.0.41", path = "../build-info-build" }
+build-info-build = { version = "=0.0.42", path = "../build-info-build" }

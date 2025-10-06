@@ -3,7 +3,7 @@ authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 description = "Collects build-information of your Rust crate."
 name = "build-info"
 readme = "README.md"
-version = "0.0.41"
+version = "0.0.42"
 
 edition.workspace = true
 license.workspace = true
@@ -13,8 +13,8 @@ rust-version.workspace = true
 [dependencies]
 bincode = { version = "2", features = ["serde"], optional = true }
 
-build-info-common = { version = "=0.0.41", path = "../build-info-common", optional = true, features = ["serde"] }
-build-info-proc = { version = "=0.0.41", path = "../build-info-proc" }
+build-info-common = { version = "=0.0.42", path = "../build-info-common", optional = true, features = ["serde"] }
+build-info-proc = { version = "=0.0.42", path = "../build-info-proc" }
 
 [features]
 default = ["runtime"]
