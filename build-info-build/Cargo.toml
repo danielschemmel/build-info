@@ -14,7 +14,7 @@ rust-version.workspace = true
 anyhow = "1"
 base64 = "0.22"
 bincode = { version = "2", features = ["serde"] }
-cargo_metadata = "0.22.0"
+cargo_metadata = "0.23.0"
 chrono = { version = "0.4.23", default-features = false, features = ["clock"] }
 git2 = { version = "0.20.0", default-features = false, optional = true }
 glob = "0.3"
