@@ -11,7 +11,7 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
-bincode = { version = "2", features = ["serde"], optional = true }
+ciborium = { version = "0.2.2", optional = true }
 
 build-info-common = { version = "=0.0.42", path = "../build-info-common", optional = true, features = ["serde"] }
 build-info-proc = { version = "=0.0.42", path = "../build-info-proc" }
@@ -19,4 +19,4 @@ build-info-proc = { version = "=0.0.42", path = "../build-info-proc" }
 [features]
 default = ["runtime"]
 oxford-comma = ["build-info-proc/oxford-comma"]
-runtime = ["build-info-proc/runtime", "dep:bincode", "dep:build-info-common"]
+runtime = ["build-info-proc/runtime", "dep:build-info-common", "dep:ciborium"]

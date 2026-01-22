@@ -1,7 +1,6 @@
 use core::sync::atomic::{AtomicBool, Ordering};
 use std::path::{Path, PathBuf};
 
-use base64::write::EncoderWriter as Base64Encoder;
 use build_info_common::{OptimizationLevel, VersionedString};
 use chrono::{DateTime, Utc};
 
@@ -83,17 +82,11 @@ impl BuildScriptOptions {
 		};
 
 		let mut bytes = Vec::new();
-		const BASE64_ENGINE: base64::engine::GeneralPurpose = base64::engine::GeneralPurpose::new(
-			&base64::alphabet::STANDARD,
-			base64::engine::GeneralPurposeConfig::new()
-				.with_decode_padding_mode(base64::engine::DecodePaddingMode::Indifferent),
-		);
-		let string_safe = Base64Encoder::new(&mut bytes, &BASE64_ENGINE);
-		let mut compressed = zstd::Encoder::new(string_safe, 22).expect("Could not create ZSTD encoder");
-		bincode::serde::encode_into_std_write(&build_info, &mut compressed, bincode::config::standard()).unwrap();
-		compressed.finish().unwrap().finish().unwrap();
+		let mut compressed = zstd::Encoder::new(&mut bytes, 22).expect("Could not create ZSTD encoder");
+		ciborium::into_writer(&build_info, &mut compressed).unwrap();
+		compressed.finish().unwrap();
 
-		let string = String::from_utf8(bytes).unwrap();
+		let string = z85::encode(&bytes);
 		let versioned = VersionedString::build_info_common_versioned(string);
 		let serialized = serde_json::to_string(&versioned).unwrap();
 

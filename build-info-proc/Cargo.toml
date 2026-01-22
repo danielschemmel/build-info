@@ -15,9 +15,8 @@ proc-macro = true
 
 [dependencies]
 anyhow = "1"
-base64 = "0.22"
-bincode = { version = "2", features = ["serde"] }
 chrono = { version = "0.4.23", default-features = false, features = ["std"] }
+ciborium = "0.2.2"
 num-bigint = "0.4"
 num-traits = "0.2"
 proc-macro-error2 = "2.0"
@@ -25,6 +24,7 @@ proc-macro2 = "1"
 quote = "1"
 serde_json = "1"
 syn = { version = "2", features = ["full"] }
+z85 = "3.0.6"
 zstd = "0.13"
 
 build-info-common = { version = "=0.0.42", path = "../build-info-common", features = ["serde"] }

@@ -12,15 +12,15 @@ rust-version.workspace = true
 
 [dependencies]
 anyhow = "1"
-base64 = "0.22"
-bincode = { version = "2", features = ["serde"] }
 cargo_metadata = "0.23.0"
 chrono = { version = "0.4.23", default-features = false, features = ["clock"] }
+ciborium = "0.2.2"
 git2 = { version = "0.20.0", default-features = false, optional = true }
 glob = "0.3"
 pretty_assertions = "1"
 rustc_version = "0.4"
 serde_json = "1"
+z85 = "3.0.6"
 zstd = "0.13"
 
 build-info-common = { version = "=0.0.42", path = "../build-info-common", features = ["serde"] }

@@ -37,7 +37,8 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
 	} = parse_macro_input!(input as FunctionSyntax);
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));
 
-	let bytes = bincode::serde::encode_to_vec(&build_info, bincode::config::standard()).unwrap();
+	let mut bytes = Vec::new();
+	ciborium::into_writer(&build_info, &mut bytes).unwrap();
 	let bytes = proc_macro2::Literal::byte_string(&bytes);
 
 	#[allow(clippy::let_and_return)]
@@ -48,12 +49,7 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
 			static VERSION: ::std::sync::OnceLock<#definition_crate::BuildInfo> = ::std::sync::OnceLock::new();
 			const BYTES: &[u8] = #bytes;
 			VERSION.get_or_init(|| {
-				let (result, len) = #definition_crate::bincode::serde::decode_from_slice(
-					&BYTES,
-					#definition_crate::bincode::config::standard()
-				).unwrap();
-				assert_eq!(len, BYTES.len(), "Could not fully deserialize stored build info.");
-				result
+				#definition_crate::ciborium::from_reader(BYTES).unwrap()
 			})
 		}
 	};

@@ -2,7 +2,6 @@
 
 use std::io::Cursor;
 
-use base64::read::DecoderReader as Base64Decoder;
 use build_info_common::{BuildInfo, VersionedString};
 use proc_macro::TokenStream;
 use proc_macro_error2::{abort_call_site, emit_call_site_error, proc_macro_error};
@@ -60,15 +59,16 @@ fn deserialize_build_info() -> BuildInfo {
 		);
 	}
 
-	let mut cursor = Cursor::new(versioned.string.as_bytes());
-	const BASE64_ENGINE: base64::engine::GeneralPurpose = base64::engine::GeneralPurpose::new(
-		&base64::alphabet::STANDARD,
-		base64::engine::GeneralPurposeConfig::new()
-			.with_decode_padding_mode(base64::engine::DecodePaddingMode::Indifferent),
-	);
-	let string_safe = Base64Decoder::new(&mut cursor, &BASE64_ENGINE);
-	let mut decoder = zstd::Decoder::new(string_safe).expect("Could not crate ZSTD decoder");
-	bincode::serde::decode_from_std_read(&mut decoder, bincode::config::standard()).unwrap_or_else(|err| {
+	let bytes = z85::decode(versioned.string.as_bytes()).unwrap_or_else(|err| {
+		abort_call_site!("BuildInfo data cannot be deserialized!";
+			note = "The serialized data has version {}", versioned.version;
+			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
+			note = "Underlying cause: {}", err;
+		)
+	});
+	let cursor = Cursor::new(&bytes);
+	let mut decoder = zstd::Decoder::new(cursor).expect("Could not crate ZSTD decoder");
+	ciborium::from_reader(&mut decoder).unwrap_or_else(|err| {
 		abort_call_site!("BuildInfo data cannot be deserialized!";
 			note = "The serialized data has version {}", versioned.version;
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
