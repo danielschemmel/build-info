@@ -15,10 +15,8 @@ fn get_git_info() -> anyhow::Result<VersionControl> {
 
 pub(crate) fn get_info() -> Option<VersionControl> {
 	if cfg!(feature = "git") {
-		if let Ok(info) = get_git_info() {
-			return Some(info);
-		}
+		get_git_info().ok()
+	} else {
+		None
 	}
-
-	None
 }
