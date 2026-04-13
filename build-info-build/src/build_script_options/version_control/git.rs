@@ -16,13 +16,16 @@ pub(crate) fn get_info() -> Result<GitInfo> {
 	if let Some(name) = head.name() {
 		// HEAD has already been added
 		if name != "HEAD" {
-			let path = repository.path().join(name);
+			// Refs and packed-refs live in the common directory, which differs
+			// from path() in a git worktree.
+			let commondir = repository.commondir();
+			let path = commondir.join(name);
 			if path.is_file() {
 				println!("cargo:rerun-if-changed={}", path.to_str().unwrap());
 			} else {
 				println!(
 					"cargo:rerun-if-changed={}",
-					repository.path().join("packed-refs").to_str().unwrap()
+					commondir.join("packed-refs").to_str().unwrap()
 				);
 			}
 		}
