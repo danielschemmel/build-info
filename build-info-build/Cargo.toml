@@ -3,7 +3,7 @@ authors = ["Daniel Schemmel <daniel@schemmel.net>"]
 description = "Provides the data consumed by the build-info crate. Use as a build-dependency."
 name = "build-info-build"
 readme = "../README.md"
-version = "0.0.43"
+version = "0.0.44"
 
 edition.workspace = true
 license.workspace = true
@@ -23,7 +23,7 @@ serde_json = "1"
 z85 = "3.0.6"
 zstd = "0.13"
 
-build-info-common = { version = "=0.0.43", path = "../build-info-common", features = ["serde"] }
+build-info-common = { version = "=0.0.44", path = "../build-info-common", features = ["serde"] }
 
 [features]
 default = ["git"]
