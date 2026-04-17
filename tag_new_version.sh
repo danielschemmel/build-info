@@ -4,6 +4,8 @@ set -e
 set -u
 set -o pipefail
 
+cargo update --verbose
+cargo deny check
 cargo clippy -- -D warnings
 cargo test
 cargo test --all-features
