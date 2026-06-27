@@ -1,4 +1,4 @@
-use anyhow::{Result, anyhow};
+use anyhow::{Context, Result, anyhow};
 use build_info_common::{
 	GitInfo,
 	chrono::{TimeZone, Utc},
@@ -13,7 +13,7 @@ pub(crate) fn get_info() -> Result<GitInfo> {
 	);
 
 	let head = repository.head()?;
-	if let Some(name) = head.name() {
+	if let Ok(name) = head.name() {
 		// HEAD has already been added
 		if name != "HEAD" {
 			// Refs and packed-refs live in the common directory, which differs
@@ -53,7 +53,7 @@ pub(crate) fn get_info() -> Result<GitInfo> {
 		commit_timestamp,
 		dirty,
 		branch: if head.is_branch() {
-			head.shorthand().map(|s| s.to_string())
+			head.shorthand().ok().map(|s| s.to_string())
 		} else {
 			None
 		},
@@ -72,7 +72,7 @@ fn tags(repository: &Repository, commit_id: &Oid) -> Result<Vec<String>> {
 			if referenced_commit.id() == *commit_id {
 				let name = reference
 					.name()
-					.ok_or_else(|| anyhow!("Encountered a tag without a UTF-8 compatible name"))?;
+					.with_context(|| anyhow!("Encountered a tag without a UTF-8 compatible name"))?;
 				let short_name = name
 					.strip_prefix(TAGS_PREFIX)
 					.ok_or_else(|| anyhow!("Encountered tag that does not begin with {:?}: {:?}", TAGS_PREFIX, name))?;
