@@ -5,7 +5,7 @@ use build_info_common::GitInfo;
 use super::{FormatSpecifier, Type, Value, as_arguments_0, as_field_name};
 
 impl Value for GitInfo {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> manyhow::Result<Box<dyn Value>> {
 		match func {
 			"!field" => match as_field_name(args) {
 				"commit_id" => Ok(Box::new(self.commit_id.clone())),

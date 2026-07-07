@@ -68,7 +68,7 @@ impl std::fmt::Display for crate::VersionControl {
 
 impl std::fmt::Display for crate::GitInfo {
 	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		write!(f, "{}", &self.commit_id)?;
+		write!(f, "{}", self.commit_id)?;
 
 		if self.dirty {
 			write!(f, ".+")?;

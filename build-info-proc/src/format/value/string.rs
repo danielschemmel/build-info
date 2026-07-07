@@ -5,7 +5,7 @@ use num_bigint::BigInt;
 use super::{FormatSpecifier, Type, Value, as_arguments_0};
 
 impl Value for String {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> manyhow::Result<Box<dyn Value>> {
 		match func {
 			"is_empty" => {
 				as_arguments_0(args)?;
@@ -76,7 +76,7 @@ mod test {
 
 		buff.clear();
 		Value::format(&"\0!".to_string(), &mut buff, FormatSpecifier::Default);
-		assert_eq!(buff, format!("{}", "\0!"));
+		assert_eq!(buff, "\0!".to_string());
 	}
 
 	#[test]

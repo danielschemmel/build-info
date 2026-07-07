@@ -5,7 +5,7 @@ use build_info_common::VersionControl;
 use super::{FormatSpecifier, Type, Value, as_arguments_0};
 
 impl Value for VersionControl {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> manyhow::Result<Box<dyn Value>> {
 		match func {
 			"git" => {
 				as_arguments_0(args)?;

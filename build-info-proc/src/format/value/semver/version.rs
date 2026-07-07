@@ -6,7 +6,7 @@ use num_bigint::BigInt;
 use super::super::{FormatSpecifier, OP_FIELD_ACCESS, Type, Value, as_arguments_0, as_field_name};
 
 impl Value for Version {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> manyhow::Result<Box<dyn Value>> {
 		match func {
 			OP_FIELD_ACCESS => match as_field_name(args) {
 				"major" => Ok(Box::new(BigInt::from(self.major))),

@@ -1,7 +1,8 @@
 use build_info_common::BuildInfo;
 use proc_macro::TokenStream;
+use proc_macro2::TokenStream as TokenStream2;
 use quote::{quote, quote_spanned};
-use syn::{Attribute, Ident, Token, Visibility, parse, parse_macro_input};
+use syn::{Attribute, Ident, Token, Visibility, parse};
 
 struct FunctionSyntax {
 	attrs: Vec<Attribute>,
@@ -28,13 +29,13 @@ impl parse::Parse for FunctionSyntax {
 	}
 }
 
-pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
+pub fn build_info(input: TokenStream, build_info: BuildInfo) -> manyhow::Result<TokenStream2> {
 	let FunctionSyntax {
 		attrs,
 		definition_crate,
 		visibility,
 		id,
-	} = parse_macro_input!(input as FunctionSyntax);
+	} = syn::parse::<FunctionSyntax>(input)?;
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));
 
 	let mut bytes = Vec::new();
@@ -55,5 +56,5 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> TokenStream {
 	};
 
 	// println!("{}", output.to_string());
-	output.into()
+	Ok(output)
 }

@@ -1,11 +1,11 @@
 use std::any::Any;
 
-use anyhow::anyhow;
+use manyhow::error_message;
 
 use super::{FormatSpecifier, Type, Value, as_arguments_0, as_simple_arguments_1};
 
 impl<T: 'static + Value + Clone> Value for Option<T> {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> manyhow::Result<Box<dyn Value>> {
 		match func {
 			"is_none" => {
 				as_arguments_0(args)?;
@@ -21,7 +21,7 @@ impl<T: 'static + Value + Clone> Value for Option<T> {
 					.clone()
 					.map(|value| Box::new(value) as Box<dyn Value>)
 					.ok_or_else(|| {
-						anyhow!("Could not unwrap Option (object does not contain a value)").context(message.to_string())
+						error_message!("Could not unwrap Option (object does not contain a value)"; message = "{message}").into()
 					})
 			}
 			"unwrap" => {
@@ -29,14 +29,14 @@ impl<T: 'static + Value + Clone> Value for Option<T> {
 				self
 					.clone()
 					.map(|value| Box::new(value) as Box<dyn Value>)
-					.ok_or_else(|| anyhow!("Could not unwrap Option (object does not contain a value)"))
+					.ok_or_else(|| error_message!("Could not unwrap Option (object does not contain a value)").into())
 			}
 			"?" => {
 				as_arguments_0(args)?;
 				self
 					.clone()
 					.map(|value| Box::new(value) as Box<dyn Value>)
-					.ok_or_else(|| anyhow!("Could not unwrap Option (object does not contain a value)"))
+					.ok_or_else(|| error_message!("Could not unwrap Option (object does not contain a value)").into())
 			}
 			_ => self.call_base(func, args),
 		}

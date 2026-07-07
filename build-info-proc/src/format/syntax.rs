@@ -267,7 +267,7 @@ mod test {
 	use super::*;
 
 	#[test]
-	fn no_format() -> anyhow::Result<()> {
+	fn no_format() -> manyhow::Result<()> {
 		let format = "This is a $test".to_string();
 		let ast = quote! {#format};
 		let result = syn::parse2::<Syntax>(ast)?;
@@ -288,7 +288,7 @@ mod test {
 	}
 
 	#[test]
-	fn format_self() -> anyhow::Result<()> {
+	fn format_self() -> manyhow::Result<()> {
 		let format = "{}".to_string();
 		let ast = quote! {#format, $};
 		let result = syn::parse2::<Syntax>(ast)?;
@@ -318,7 +318,7 @@ mod test {
 	}
 
 	#[test]
-	fn format_suffixes() -> anyhow::Result<()> {
+	fn format_suffixes() -> manyhow::Result<()> {
 		let format = "{}".to_string();
 		let ast = quote! {#format, $.foo().7[0x0_C].foo};
 		let result = syn::parse2::<Syntax>(ast)?;
@@ -356,7 +356,7 @@ mod test {
 	}
 
 	#[test]
-	fn format_trailing_comma() -> anyhow::Result<()> {
+	fn format_trailing_comma() -> manyhow::Result<()> {
 		let format = "3".to_string();
 		let ast = quote! {#format,};
 		let result = syn::parse2::<Syntax>(ast)?;

@@ -5,7 +5,7 @@ use build_info_common::BuildInfo;
 use super::{FormatSpecifier, OP_FIELD_ACCESS, Type, Value, as_arguments_0, as_field_name};
 
 impl Value for BuildInfo {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> manyhow::Result<Box<dyn Value>> {
 		match func {
 			OP_FIELD_ACCESS => match as_field_name(args) {
 				"timestamp" => Ok(Box::new(self.timestamp)),

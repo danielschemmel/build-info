@@ -3,8 +3,9 @@
 use std::io::Cursor;
 
 use build_info_common::{BuildInfo, VersionedString};
+use manyhow::Emitter;
 use proc_macro::TokenStream;
-use proc_macro_error2::{abort_call_site, emit_call_site_error, proc_macro_error};
+use proc_macro2::TokenStream as TokenStream2;
 
 mod format;
 #[cfg(feature = "runtime")]
@@ -17,62 +18,61 @@ and cached `BuildInfo` object.
 This macro also accepts a visibility specifier for the generated function, such as `build_info!(pub fn version)`.
 */
 #[cfg(feature = "runtime")]
-#[proc_macro_error]
+#[manyhow::manyhow]
 #[proc_macro]
-pub fn build_info(input: TokenStream) -> TokenStream {
-	function::build_info(input, deserialize_build_info())
+pub fn build_info(input: TokenStream) -> manyhow::Result<TokenStream2> {
+	function::build_info(input, deserialize_build_info()?)
 }
 
-#[proc_macro_error]
+#[manyhow::manyhow]
 #[proc_macro]
-pub fn format(input: TokenStream) -> TokenStream {
-	format::format(input, deserialize_build_info())
+pub fn format(input: TokenStream, emitter: &mut Emitter) -> manyhow::Result<TokenStream2> {
+	let result = format::format(input, deserialize_build_info()?, emitter)?;
+	emitter.into_result()?;
+	Ok(result)
 }
 
-fn deserialize_build_info() -> BuildInfo {
-	// explicitly pull std::format into this namespace, as `abort_call_site` seems to use the macro without properly
-	// qualifying it.
-	use std::format;
-
-	let data = std::env::var("BUILD_INFO").unwrap_or_else(|err| {
-		abort_call_site!("No BuildInfo data found!";
+fn deserialize_build_info() -> manyhow::Result<BuildInfo> {
+	let data = std::env::var("BUILD_INFO").map_err(|err| {
+		manyhow::error_message!("No BuildInfo data found!";
 			note = "Did you call build_info_build::build_script() in your build.rs?";
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
-			note = "Caused by: {}", err;
+			note = "Caused by: {}", err
 		)
-	});
+	})?;
 
 	// println!("Serialized data is {} bytes long.", data.len());
 
-	let versioned: VersionedString = serde_json::from_str(&data).unwrap_or_else(|err| {
-		abort_call_site!("Could not deserialize BuildInfo data at all!";
+	let versioned: VersionedString = serde_json::from_str(&data).map_err(|err| {
+		manyhow::error_message!("Could not deserialize BuildInfo data at all!";
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
 			note = "Caused by: {}", err;
 		)
-	});
+	})?;
 
 	if !versioned.check() {
 		// TODO: This should really be a warning - but warnings are currently nightly-only...
-		emit_call_site_error!("BuildInfo data has an different version!";
+		manyhow::bail!("BuildInfo data has an different version!";
 			note = "The serialized data has version {}", versioned.version;
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
 		);
 	}
 
-	let bytes = z85::decode(versioned.string.as_bytes()).unwrap_or_else(|err| {
-		abort_call_site!("BuildInfo data cannot be deserialized!";
+	let bytes = z85::decode(versioned.string.as_bytes()).map_err(|err| {
+		manyhow::error_message!("BuildInfo data cannot be deserialized!";
 			note = "The serialized data has version {}", versioned.version;
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
 			note = "Underlying cause: {}", err;
 		)
-	});
+	})?;
 	let cursor = Cursor::new(&bytes);
 	let mut decoder = zstd::Decoder::new(cursor).expect("Could not crate ZSTD decoder");
-	ciborium::from_reader(&mut decoder).unwrap_or_else(|err| {
-		abort_call_site!("BuildInfo data cannot be deserialized!";
+	ciborium::from_reader(&mut decoder).map_err(|err| {
+		manyhow::error_message!("BuildInfo data cannot be deserialized!";
 			note = "The serialized data has version {}", versioned.version;
 			note = "This crate expects version {} of the BuildInfo data", build_info_common::crate_version();
 			note = "Underlying cause: {}", err;
 		)
+		.into()
 	})
 }

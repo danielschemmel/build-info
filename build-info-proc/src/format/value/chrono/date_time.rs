@@ -5,7 +5,7 @@ use chrono::{DateTime, Utc};
 use super::super::{FormatSpecifier, Type, Value, as_arguments_0, as_simple_arguments_1};
 
 impl Value for DateTime<Utc> {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> manyhow::Result<Box<dyn Value>> {
 		match func {
 			"format" => {
 				let (format_string,) = as_simple_arguments_1::<String>(args)?;

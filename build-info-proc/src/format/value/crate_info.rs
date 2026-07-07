@@ -5,7 +5,7 @@ use build_info_common::CrateInfo;
 use super::{FormatSpecifier, OP_FIELD_ACCESS, Type, Value, as_arguments_0, as_field_name};
 
 impl Value for CrateInfo {
-	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> anyhow::Result<Box<dyn Value>> {
+	fn call(&self, func: &str, args: &[Box<dyn Value>]) -> manyhow::Result<Box<dyn Value>> {
 		match func {
 			OP_FIELD_ACCESS => match as_field_name(args) {
 				"name" => Ok(Box::new(self.name.clone())),
