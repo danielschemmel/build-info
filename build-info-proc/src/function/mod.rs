@@ -8,6 +8,7 @@ struct FunctionSyntax {
 	attrs: Vec<Attribute>,
 	definition_crate: Ident,
 	visibility: Option<Visibility>,
+	fn_token: Token![fn],
 	id: Ident,
 }
 
@@ -17,13 +18,14 @@ impl parse::Parse for FunctionSyntax {
 
 		let attrs = input.call(Attribute::parse_outer)?;
 		let visibility: Option<Visibility> = input.parse().ok();
-		input.parse::<Token![fn]>()?;
+		let fn_token = input.parse::<Token![fn]>()?;
 		let id = input.parse::<Ident>()?;
 
 		Ok(FunctionSyntax {
 			attrs,
 			definition_crate,
 			visibility,
+			fn_token,
 			id,
 		})
 	}
@@ -34,6 +36,7 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> manyhow::Result<
 		attrs,
 		definition_crate,
 		visibility,
+		fn_token,
 		id,
 	} = syn::parse::<FunctionSyntax>(input)?;
 	let visibility = visibility.map_or(quote!(), |vis| quote!(#vis));
@@ -46,7 +49,7 @@ pub fn build_info(input: TokenStream, build_info: BuildInfo) -> manyhow::Result<
 	let output = quote_spanned! {
 		proc_macro::Span::mixed_site().into() =>
 		#(#attrs)*
-		#visibility fn #id() -> &'static #definition_crate::BuildInfo {
+		#visibility #fn_token #id() -> &'static #definition_crate::BuildInfo {
 			static VERSION: ::std::sync::OnceLock<#definition_crate::BuildInfo> = ::std::sync::OnceLock::new();
 			const BYTES: &[u8] = #bytes;
 			VERSION.get_or_init(|| {
