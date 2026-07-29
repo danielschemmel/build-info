@@ -34,8 +34,8 @@ Please open an issue if your specific use case requires a more strict rerun poli
 # Copyright and license
 This project is copyright its authors and licensed under either of
 
-- Apache License, Version 2.0, (LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0)
-- MIT license (LICENSE-MIT or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0, (LICENSE-APACHE or <http://www.apache.org/licenses/LICENSE-2.0>)
+- MIT license (LICENSE-MIT or <http://opensource.org/licenses/MIT>)
 
 at your option.
 
