@@ -11,12 +11,10 @@ mod format;
 #[cfg(feature = "runtime")]
 mod function;
 
-/**
-Call as `build_info!(fn name)` to create a function called `name` that returns a reference to a lazily created
-and cached `BuildInfo` object.
-
-This macro also accepts a visibility specifier for the generated function, such as `build_info!(pub fn version)`.
-*/
+/// Call as `build_info!(fn name)` to create a function called `name` that returns a reference to a lazily created and
+/// cached `BuildInfo` object.
+///
+/// This macro also accepts a visibility specifier for the generated function, such as `build_info!(pub fn version)`.
 #[cfg(feature = "runtime")]
 #[manyhow::manyhow]
 #[proc_macro]

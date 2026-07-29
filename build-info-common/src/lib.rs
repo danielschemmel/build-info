@@ -173,12 +173,10 @@ impl VersionControl {
 	}
 }
 
-/**
-Information about a git repository
-
-If a git repository is detected (and, thereby, this information included), the build script will be rerun whenever the
-currently checked out commit changes.
-*/
+/// Information about a git repository
+///
+/// If a git repository is detected (and, thereby, this information included), the build script will be rerun whenever
+/// the currently checked out commit changes.
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct GitInfo {
