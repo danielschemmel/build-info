@@ -1,10 +1,8 @@
-/*!
-Common types used by the `build-info` and `build-info-build` crates.
-
-User code should not depend on this crate directly, but rather depend on `build-info` (as a `[dependency]`) and `build-info-build` (as a `[build-dependency]`).
-The types provided herein are reexported by `build-info` and should be used that way.
-For example, `build_info_common::BuildInfo` should be used as `build_info::BuildInfo` instead.
-*/
+//! Common types used by the `build-info` and `build-info-build` crates.
+//!
+//! User code should not depend on this crate directly, but rather depend on `build-info` (as a `[dependency]`) and
+//! `build-info-build` (as a `[build-dependency]`). The types provided herein are reexported by `build-info` and should
+//! be used that way. For example, `build_info_common::BuildInfo` should be used as `build_info::BuildInfo` instead.
 
 #![forbid(unsafe_code)]
 
@@ -123,7 +121,9 @@ pub struct CpuInfo {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Display, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum Endianness {
+	/// Big endian CPUs store numbers least significant byte first. E.g., `0xAB` is stored as `[0xA, 0xB]`.
 	Big,
+	/// Big endian CPUs store numbers most significant byte first. E.g., `0xAB` is stored as `[0xB, 0xA]`.
 	Little,
 }
 
