@@ -16,7 +16,7 @@ proc-macro = true
 [dependencies]
 chrono = { version = "0.4.23", default-features = false, features = ["std"] }
 ciborium = "0.2.2"
-manyhow = "0.12.0"
+manyhow = "0.13.0"
 num-bigint = "0.5.1"
 num-traits = "0.2"
 proc-macro2 = "1"
