@@ -1,6 +1,7 @@
 use core::sync::atomic::{AtomicBool, Ordering};
 use std::path::{Path, PathBuf};
 
+use anyhow::Context;
 use build_info_common::{OptimizationLevel, VersionedString};
 use chrono::{DateTime, Utc};
 
@@ -95,7 +96,7 @@ impl BuildScriptOptions {
 		// Whenever any `cargo:rerun-if-changed` key is set, the default set is cleared.
 		// Since we will need to emit such keys to trigger rebuilds when the vcs repository changes state,
 		// we also have to emit the customary triggers again, or we will only be rerun in that exact case.
-		rebuild_if_project_changes(&workspace_root);
+		rebuild_if_project_changes(&workspace_root).unwrap();
 
 		build_info
 	}
@@ -141,7 +142,7 @@ impl Drop for BuildScriptOptions {
 /// - `Cargo.toml`
 /// - `$workspace_root/Cargo.lock`
 /// - Any file that ends in `.rs`
-fn rebuild_if_project_changes(workspace_root: &str) {
+fn rebuild_if_project_changes(workspace_root: &str) -> anyhow::Result<()> {
 	println!("cargo:rerun-if-changed={}", cargo_toml().to_str().unwrap());
 	println!(
 		"cargo:rerun-if-changed={}",
@@ -156,9 +157,21 @@ fn rebuild_if_project_changes(workspace_root: &str) {
 			require_literal_leading_dot: false,
 		},
 	)
-	.unwrap()
-	.map(|source| source.unwrap())
+	.with_context(|| "Error enumerating source files")?
 	{
-		println!("cargo:rerun-if-changed={}", source.to_str().unwrap());
+		match source {
+			Ok(source) => {
+				if let Some(source) = source.to_str() {
+					println!("cargo:rerun-if-changed={}", source);
+				} else {
+					return Err(anyhow::anyhow!("Source file path {source:?} is not valid UTF-8"));
+				}
+			}
+			Err(err) => {
+				eprintln!("WARNING: file system error while enumerating source files: {err}");
+			}
+		}
 	}
+
+	Ok(())
 }
