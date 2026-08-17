@@ -168,7 +168,7 @@ fn rebuild_if_project_changes(workspace_root: &str) -> anyhow::Result<()> {
 				}
 			}
 			Err(err) => {
-				eprintln!("WARNING: file system error while enumerating source files: {err}");
+				println!("cargo::warning=file system error while enumerating source files: {err}");
 			}
 		}
 	}
