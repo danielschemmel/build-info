@@ -1,17 +1,16 @@
-/*!
-This crate is used to collect build info for consumption by the `build-info` crate.
-
-```rust,no_run
-// Calling `build_info_build::build_script` collects all data and makes it available to `build_info::build_info!`
-// and `build_info::format!` in the main program.
-build_info_build::build_script();
-```
-
-# Features
-The `build-info-build` crate has the following features:
-
-- `git` (enabled by default): Enables git support. A git repository will only be detected if this feature is available.
-*/
+//! This crate is used to collect build info for consumption by the `build-info` crate.
+//!
+//! ```rust,no_run
+//! // Calling `build_info_build::build_script` collects all data and makes it available to `build_info::build_info!`
+//! // and `build_info::format!` in the main program.
+//! build_info_build::build_script();
+//! ```
+//!
+//! # Features
+//! The `build-info-build` crate has the following features:
+//!
+//! - `git` (enabled by default): Enables git support. A git repository will only be detected if this feature is
+//!   available.
 
 #![forbid(unsafe_code)]
 #![allow(clippy::tabs_in_doc_comments)]
