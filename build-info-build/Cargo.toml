@@ -21,7 +21,7 @@ pretty_assertions = "1"
 rustc_version = "0.4"
 serde_json = "1"
 z85 = "3.0.6"
-zstd = "0.13"
+zstd = "0.14.0"
 
 build-info-common = { version = "=0.0.46", path = "../build-info-common", features = ["serde"] }
 
