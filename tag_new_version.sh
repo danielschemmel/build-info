@@ -4,6 +4,8 @@ set -e
 set -u
 set -o pipefail
 
+taplo fmt --check
+cargo +nightly fmt --check
 cargo update --verbose
 cargo deny check
 cargo clippy -- -D warnings
