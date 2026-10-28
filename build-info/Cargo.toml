@@ -18,5 +18,7 @@ build-info-proc = { version = "=0.0.47", path = "../build-info-proc" }
 
 [features]
 default = ["runtime"]
+
+chrono = ["build-info-common/chrono", "runtime"]
 oxford-comma = ["build-info-proc/oxford-comma"]
 runtime = ["build-info-proc/runtime", "dep:build-info-common", "dep:ciborium"]

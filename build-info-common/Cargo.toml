@@ -18,4 +18,6 @@ serde = { version = "1", features = ["derive"], optional = true }
 
 [features]
 default = []
+
+chrono = ["chrono/default"]
 serde = ["chrono/serde", "dep:serde", "semver/serde"]
